@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaza Strip — Food Security Crisis Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #080c14;
+  --surface: #0e1420;
+  --surface2: #141b28;
+  --surface3: #1a2234;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text-primary: #f0f4ff;
+  --text-secondary: #8899bb;
+  --text-muted: #4a5875;
+  --phase5: #c0392b;
+  --phase5-glow: rgba(192,57,43,0.35);
+  --phase4: #d4810a;
+  --phase4-glow: rgba(212,129,10,0.3);
+  --phase3: #1d6da5;
+  --phase3-glow: rgba(29,109,165,0.3);
+  --accent: #e55a4e;
+  --accent2: #f0a050;
+  --gold: #f5c842;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Inter', -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--sans);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── HEADER ─────────────────────────────────────── */
+.header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 900;
+}
+
+.header-left { display: flex; flex-direction: column; gap: 1px; }
+
+.header-eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.header-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.header-subtitle {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.header-stats {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.hstat {
+  text-align: right;
+}
+.hstat-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.hstat-val.danger { color: var(--accent); }
+.hstat-val.warn { color: var(--accent2); }
+.hstat-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ─── MAIN LAYOUT ────────────────────────────────── */
+.layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  min-height: 0;
+  position: relative;
+}
+
+/* ─── MAP ─────────────────────────────────────────── */
+#map {
+  width: 100%;
+  height: 100%;
+  background: #050912;
+}
+
+/* Leaflet overrides */
+.leaflet-container { background: #050912 !important; }
+.leaflet-popup-content-wrapper {
+  background: rgba(14,20,32,0.97);
+  color: var(--text-primary);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+  backdrop-filter: blur(12px);
+}
+.leaflet-popup-tip { background: rgba(14,20,32,0.97); }
+.leaflet-popup-content { margin: 11px 15px; font-size: 12px; line-height: 1.55; }
+.leaflet-control-attribution {
+  background: rgba(5,9,18,0.85) !important;
+  color: var(--text-muted) !important;
+  font-size: 9px;
+}
+.leaflet-control-attribution a { color: var(--text-muted) !important; }
+.leaflet-control-zoom a {
+  background: var(--surface2) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border2) !important;
+}
+
+/* Map overlay: period label */
+.map-period-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 800;
+  background: rgba(8,12,20,0.88);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 7px 12px;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+.map-period-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+.map-period-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Famine marker on map */
+.famine-pulse {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(200,60,50,0.7);
+  animation: famine-pulse 2s infinite;
+  position: relative;
+}
+@keyframes famine-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(200,60,50,0.7); }
+  70%  { box-shadow: 0 0 0 10px rgba(200,60,50,0); }
+  100% { box-shadow: 0 0 0 0 rgba(200,60,50,0); }
+}
+
+/* ─── SIDEBAR ─────────────────────────────────────── */
+.sidebar {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 100;
+}
+
+/* Timeline / period control */
+.timeline-panel {
+  flex-shrink: 0;
+  padding: 12px 16px 10px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.period-slider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, var(--accent) 0%, var(--accent2) 60%, var(--accent) 100%);
+  border-radius: 2px;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+.period-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  box-shadow: 0 0 8px rgba(200,100,80,0.6);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.period-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+.period-ticks {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+.period-tick {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text-muted);
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.15s;
+  line-height: 1.3;
+}
+.period-tick.active-tick { color: var(--accent2); font-weight: 600; }
+.period-tick:hover { color: var(--text-secondary); }
+
+.period-current-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 6px;
+}
+.period-current-sub {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--accent);
+  margin-top: 1px;
+}
+
+/* Layer tabs */
+.layer-tabs {
+  flex-shrink: 0;
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.layer-tab {
+  flex: 1;
+  padding: 7px 0;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--sans);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-bottom: 2px solid transparent;
+  letter-spacing: 0.03em;
+}
+.layer-tab.active {
+  color: var(--accent2);
+  border-bottom-color: var(--accent2);
+  background: rgba(244,160,80,0.04);
+}
+.layer-tab:hover:not(.active) { color: var(--text-secondary); }
+
+/* Info panel scroll area */
+.info-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface3) transparent;
+}
+.info-scroll::-webkit-scrollbar { width: 4px; }
+.info-scroll::-webkit-scrollbar-track { background: transparent; }
+.info-scroll::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* Welcome / no-selection state */
+.welcome-state {
+  padding: 24px 16px;
+  text-align: center;
+}
+.welcome-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+  display: block;
+  opacity: 0.4;
+}
+.welcome-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Gov info card */
+.gov-card { padding: 14px 16px 0; }
+
+.gov-header { margin-bottom: 10px; }
+.gov-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.gov-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.phase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin: 6px 0 12px;
+  letter-spacing: 0.01em;
+}
+.phase-pill-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* Stat grid */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.stat-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 10px;
+  transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: var(--border2); }
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 3px;
+}
+.stat-value {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-unit {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Wide stat row */
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+/* Phase breakdown stacked bar */
+.breakdown-section {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.breakdown-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+.stack-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  gap: 2px;
+}
+.stack-seg {
+  height: 100%;
+  transition: flex 0.5s ease;
+  position: relative;
+  border-radius: 2px;
+}
+.stack-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-top: 5px;
+}
+.sleg-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  color: var(--text-muted);
+}
+.sleg-dot {
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* MUAC / threshold meter */
+.muac-section {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.muac-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 7px;
+}
+.muac-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.muac-threshold-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--accent);
+  background: rgba(192,57,43,0.15);
+  border: 1px solid rgba(192,57,43,0.3);
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+.meter-track {
+  height: 10px;
+  background: var(--surface3);
+  border-radius: 5px;
+  position: relative;
+  overflow: visible;
+}
+.meter-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+.meter-threshold {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 2px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 1px;
+}
+.meter-threshold::after {
+  content: '20%';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  font-family: var(--mono);
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+}
+.muac-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+/* Aid metrics row */
+.aid-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+/* Context note */
+.context-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--surface3);
+  border-radius: 7px;
+  margin-bottom: 10px;
+}
+.context-note strong { color: var(--text-primary); }
+
+/* Charts */
+.chart-section {
+  padding: 0 16px 14px;
+}
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.chart-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.chart-legend {
+  display: flex;
+  gap: 10px;
+}
+.legend-dot-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  color: var(--text-muted);
+}
+.legend-dot {
+  width: 8px; height: 3px;
+  border-radius: 2px;
+}
+.chart-wrap { position: relative; height: 130px; }
+
+/* Strip-wide summary at bottom of sidebar */
+.strip-summary {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding: 10px 16px;
+  background: var(--surface2);
+}
+.strip-title {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 7px;
+}
+.strip-bars { display: flex; flex-direction: column; gap: 5px; }
+.sbar-row { display: flex; align-items: center; gap: 6px; }
+.sbar-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  width: 80px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sbar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.sbar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+.sbar-pct {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--text-muted);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* IPC legend panel */
+.legend-panel {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+.legend-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  color: var(--text-muted);
+}
+.leg-swatch {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Ceasefire event marker */
+.event-marker {
+  position: absolute;
+  z-index: 700;
+  pointer-events: none;
+}
+.event-line {
+  width: 1px;
+  background: rgba(100,200,100,0.4);
+  position: relative;
+}
+.event-label-box {
+  background: rgba(30,60,30,0.8);
+  border: 1px solid rgba(100,200,100,0.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-family: var(--mono);
+  color: rgba(150,230,150,0.9);
+  white-space: nowrap;
+}
+
+/* Tooltip card for map hover */
+.map-tooltip {
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.map-tooltip strong { color: var(--text-primary); }
+.map-tooltip .tt-phase {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 3px;
+}
+.map-tooltip .tt-stat {
+  display: flex;
+  gap: 12px;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.map-tooltip .tt-stat span { color: var(--text-primary); }
+
+/* Pulse animation for active famine periods */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(192,57,43,0.3); }
+  50% { border-color: rgba(192,57,43,0.7); }
+}
+.famine-active {
+  animation: border-pulse 2s ease infinite;
+}
+
+/* Warning banner */
+.famine-banner {
+  flex-shrink: 0;
+  background: rgba(192,57,43,0.12);
+  border-bottom: 1px solid rgba(192,57,43,0.25);
+  padding: 5px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  color: #e88;
+  transition: all 0.3s;
+}
+.famine-banner.hidden { display: none; }
+.famine-icon { font-size: 12px; flex-shrink: 0; }
+.famine-banner b { color: #faa; }
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { height: 55vh; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <span class="header-eyebrow">IPC Acute Food Insecurity · Classified Territory</span>
+    <div class="header-title">Gaza Strip — Food Security &amp; Humanitarian Crisis</div>
+    <div class="header-subtitle">Nov 2023 – Dec 2025 · Real OCHA boundaries · Sources: IPC, WFP, WHO, FAO, OCHA ReliefWeb</div>
+  </div>
+  <div class="header-stats">
+    <div class="hstat">
+      <div class="hstat-val danger" id="hstat-pop">2.1M</div>
+      <div class="hstat-label">Total Pop.</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-val danger" id="hstat-phase5">~5%</div>
+      <div class="hstat-label">Phase 5 (Dec '25)</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-val warn" id="hstat-phase3plus">~80%</div>
+      <div class="hstat-label">Phase 3+ (Dec '25)</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-val" style="color:#a0c4ff">Jul–Aug '25</div>
+      <div class="hstat-label">Famine declared</div>
+    </div>
+  </div>
+</div>
+
+<!-- FAMINE BANNER -->
+<div class="famine-banner hidden" id="famineBanner">
+  <span class="famine-icon">⚠</span>
+  <div><b>Famine confirmed (IPC Phase 5)</b> — Famine Review Committee declared famine in Gaza City &amp; North Gaza for Jul–Aug 2025. Very severe hunger rates exceeded 20% famine threshold across the northern strip.</div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <!-- MAP + overlay -->
+  <div style="position:relative;overflow:hidden;">
+    <div id="map"></div>
+    <div class="map-period-overlay" id="mapOverlay">
+      <span class="map-period-tag">Assessment period</span>
+      <div class="map-period-title" id="mapOverlayTitle">Dec 2025 — Post-ceasefire</div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Timeline control -->
+    <div class="timeline-panel">
+      <div class="panel-eyebrow">Timeline — drag to explore</div>
+      <input type="range" class="period-slider" id="periodSlider" min="0" max="6" value="6" oninput="setPeriod(this.value)">
+      <div class="period-ticks" id="periodTicks"></div>
+      <div class="period-current-label" id="periodCurrentLabel">Dec 2025 — Post-ceasefire assessment</div>
+      <div class="period-current-sub" id="periodCurrentSub">Phase 4 Emergency region-wide</div>
+    </div>
+
+    <!-- Layer tabs -->
+    <div class="layer-tabs">
+      <button class="layer-tab active" onclick="setLayer('gov',this)">Governorates</button>
+      <button class="layer-tab" onclick="setLayer('muni',this)">Municipalities</button>
+    </div>
+
+    <!-- Info scroll area -->
+    <div class="info-scroll" id="infoPanel">
+      <div class="welcome-state">
+        <span class="welcome-icon">↙</span>
+        <div class="welcome-text">
+          Click a region on the map to explore<br>food security data, IPC phase trends,<br>malnutrition rates, and aid indicators.
+          <br><br>
+          <span style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em">Scroll timeline above to see how<br>the crisis evolved over time</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Strip-wide mini bars -->
+    <div class="strip-summary" id="stripSummary">
+      <div class="strip-title">Phase 3+ population by governorate (current period)</div>
+      <div class="strip-bars" id="stripBars"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend-panel">
+      <div class="legend-row">
+        <div class="leg-item"><div class="leg-swatch" style="background:#c0392b"></div>Phase 5 — Famine/Catastrophe</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#d4810a"></div>Phase 4 — Emergency</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#1d6da5"></div>Phase 3 — Crisis</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#374151"></div>Not assessed</div>
+      </div>
+    </div>
+  </div><!-- /sidebar -->
+</div><!-- /layout -->
+
+<script>
+// ══════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════
+const GOV_DATA = {
+  "North Gaza": {
+    display: "North Gaza",
+    pop: 402000,
+    area_km2: 61.9,
+    density: 6500,
+    malnutrition_phase: "Critical (AMN Phase 4)",
+    ipc_evidence: "Medium (Level-2)",
+    aid_trucks_day: null,
+    displaced_pct: 92,
+    health_facilities_pct: 12,
+    water_access_pct: 8,
+    periods: [
+      { period:"Nov 2023", phase:5, p5_pct:30, p4_pct:48, p3_pct:15, p3plus_pct:93, pop_analysed:null, context:"Siege begins — near-total access denial" },
+      { period:"Feb 2024", phase:5, p5_pct:50, p4_pct:40, p3_pct:10, p3plus_pct:100, pop_analysed:null, context:"Full blockade, acute famine indicators" },
+      { period:"Jun 2024", phase:5, p5_pct:40, p4_pct:46, p3_pct:10, p3plus_pct:96, pop_analysed:null, context:"Rafah operation begins, displacement" },
+      { period:"Oct 2024", phase:4, p5_pct:20, p4_pct:65, p3_pct:15, p3plus_pct:100, pop_analysed:null, context:"Classified Phase 4, FRC notes conditions similar to famine" },
+      { period:"Apr 2025", phase:5, p5_pct:35, p4_pct:50, p3_pct:15, p3plus_pct:100, pop_analysed:null, context:"Total aid blockade — all crossings closed" },
+      { period:"Aug 2025", phase:5, p5_pct:40, p4_pct:50, p3_pct:10, p3plus_pct:100, pop_analysed:null, context:"Famine confirmed by FRC for northern Gaza" },
+      { period:"Dec 2025", phase:4, p5_pct:5, p4_pct:50, p3_pct:30, p3plus_pct:85, pop_analysed:37700, context:"Post-ceasefire. First formal IPC classification — only 37,700 people assessed" }
+    ],
+    very_severe_hunger_pct: null,
+    note: "First formal IPC classification since conflict began — access denial prevented earlier assessment. The Famine Review Committee assessed conditions as <strong>similar to or worse than Gaza Governorate</strong> during the Aug 2025 famine. Dec 2025 IPC covers only 37,700 people due to ongoing access constraints. AMN Phase 4 (Critical) malnutrition persists.",
+    color:"#b91c1c"
+  },
+  "Gaza City": {
+    display: "Gaza City",
+    pop: 590000,
+    area_km2: 50.0,
+    density: 11800,
+    malnutrition_phase: "Critical (AMN Phase 4)",
+    ipc_evidence: "Reasonable",
+    aid_trucks_day: 3,
+    displaced_pct: 78,
+    health_facilities_pct: 22,
+    water_access_pct: 15,
+    periods: [
+      { period:"Nov 2023", phase:5, p5_pct:32, p4_pct:45, p3_pct:16, p3plus_pct:93, pop_analysed:null, context:"Conflict outbreak — mass displacement north to south" },
+      { period:"Feb 2024", phase:5, p5_pct:52, p4_pct:38, p3_pct:10, p3plus_pct:100, pop_analysed:null, context:"Severe access constraints; IPC monitoring paused" },
+      { period:"Jun 2024", phase:5, p5_pct:38, p4_pct:46, p3_pct:12, p3plus_pct:96, pop_analysed:null, context:"Rafah closure compounds northern starvation" },
+      { period:"Oct 2024", phase:4, p5_pct:18, p4_pct:65, p3_pct:17, p3plus_pct:100, pop_analysed:null, context:"Temporary Phase 4 — brief aid corridor opened" },
+      { period:"Apr 2025", phase:5, p5_pct:22, p4_pct:60, p3_pct:15, p3plus_pct:97, pop_analysed:null, context:"Total aid blockade re-imposed — all crossings sealed" },
+      { period:"Aug 2025", phase:5, p5_pct:30, p4_pct:50, p3_pct:20, p3plus_pct:100, pop_analysed:937604, context:"FAMINE CONFIRMED (Jul 1–Aug 15) — 281,000 in Catastrophe, very severe hunger 36% > 20% threshold" },
+      { period:"Dec 2025", phase:4, p5_pct:5, p4_pct:45, p3_pct:25, p3plus_pct:75, pop_analysed:481600, context:"Downgraded from Famine post-ceasefire. 24,000 still in Catastrophe. AMN Phase 4 malnutrition persists" }
+    ],
+    very_severe_hunger_pct: 36,
+    note: "<strong>Famine confirmed</strong> (IPC Phase 5) for Jul 1–Aug 15, 2025: 30% of 937,604 analysed (281,000 people) in Catastrophe, very severe hunger (MUAC/HHS) at <strong>36%</strong> — well above the 20% famine threshold. Post-ceasefire Dec 2025 analysis shows improvement to Phase 4 (Emergency), but <strong>24,000 remain in Catastrophe</strong>. Acute malnutrition remains Critical (IPC AMN Phase 4).",
+    color:"#991b1b"
+  },
+  "Deir al-Balah": {
+    display: "Deir al-Balah",
+    pop: 302000,
+    area_km2: 94.9,
+    density: 3182,
+    malnutrition_phase: "Serious (AMN Phase 3)",
+    ipc_evidence: "Reasonable",
+    aid_trucks_day: 8,
+    displaced_pct: 65,
+    health_facilities_pct: 35,
+    water_access_pct: 28,
+    periods: [
+      { period:"Nov 2023", phase:4, p5_pct:5, p4_pct:55, p3_pct:20, p3plus_pct:80, pop_analysed:null, context:"Relative displacement destination — severe but not catastrophic" },
+      { period:"Feb 2024", phase:4, p5_pct:20, p4_pct:56, p3_pct:20, p3plus_pct:96, pop_analysed:null, context:"Massive displacement from north drives crisis" },
+      { period:"Jun 2024", phase:4, p5_pct:15, p4_pct:57, p3_pct:20, p3plus_pct:92, pop_analysed:null, context:"Rafah collapse shifts IDP pressure northward" },
+      { period:"Oct 2024", phase:4, p5_pct:10, p4_pct:65, p3_pct:20, p3plus_pct:95, pop_analysed:null, context:"Entire strip Phase 4" },
+      { period:"Apr 2025", phase:4, p5_pct:5, p4_pct:68, p3_pct:20, p3plus_pct:93, pop_analysed:null, context:"Aid blockade — central area critically exposed" },
+      { period:"Aug 2025", phase:4, p5_pct:25, p4_pct:55, p3_pct:20, p3plus_pct:100, pop_analysed:482315, context:"25% in Catastrophe — FRC projected Famine threshold breach by end-Sep 2025. Very severe hunger 33% > threshold" },
+      { period:"Dec 2025", phase:4, p5_pct:5, p4_pct:45, p3_pct:25, p3plus_pct:75, pop_analysed:759000, context:"Post-ceasefire improvement. 38,000 still in Catastrophe out of 759,000 analysed" }
+    ],
+    very_severe_hunger_pct: 33,
+    note: "For Aug 2025: 25% of 482,315 analysed (120,579 people) in Catastrophe; the FRC projected <strong>Famine would be reached by end-Sep 2025</strong> absent a ceasefire. Very severe hunger reached <strong>33%</strong> — above the 20% famine threshold. Dec 2025: 38,000 of 759,000 still in Catastrophe, malnutrition Serious (AMN Phase 3).",
+    color:"#92400e"
+  },
+  "Khan Younis": {
+    display: "Khan Younis",
+    pop: 354000,
+    area_km2: 83.7,
+    density: 4230,
+    malnutrition_phase: "Serious (AMN Phase 3)",
+    ipc_evidence: "Reasonable",
+    aid_trucks_day: 10,
+    displaced_pct: 70,
+    health_facilities_pct: 40,
+    water_access_pct: 30,
+    periods: [
+      { period:"Nov 2023", phase:4, p5_pct:3, p4_pct:52, p3_pct:20, p3plus_pct:75, pop_analysed:null, context:"Initial displacement destination; pressure building" },
+      { period:"Feb 2024", phase:4, p5_pct:15, p4_pct:59, p3_pct:20, p3plus_pct:94, pop_analysed:null, context:"Khan Younis offensive — mass displacement to Rafah" },
+      { period:"Jun 2024", phase:4, p5_pct:12, p4_pct:58, p3_pct:20, p3plus_pct:90, pop_analysed:null, context:"Post-Khan Younis operation, some return" },
+      { period:"Oct 2024", phase:4, p5_pct:8, p4_pct:64, p3_pct:20, p3plus_pct:92, pop_analysed:null, context:"Entire strip Phase 4; highest southern burden" },
+      { period:"Apr 2025", phase:4, p5_pct:10, p4_pct:66, p3_pct:20, p3plus_pct:96, pop_analysed:null, context:"Aid blockade — IDP population swells to triple pre-war" },
+      { period:"Aug 2025", phase:4, p5_pct:20, p4_pct:60, p3_pct:20, p3plus_pct:100, pop_analysed:559300, context:"20% in Catastrophe. Famine projected by end-Sep 2025 absent ceasefire. Very severe hunger 22% > threshold" },
+      { period:"Dec 2025", phase:4, p5_pct:5, p4_pct:50, p3_pct:25, p3plus_pct:80, pop_analysed:797700, context:"40,000 of 797,700 still in Catastrophe. Highest Phase 3+ share among assessed governorates" }
+    ],
+    very_severe_hunger_pct: 22,
+    note: "Aug 2025: 20% of 559,300 analysed (111,860 people) in Catastrophe. FRC projected Famine threshold breach by end-Sep 2025. Very severe hunger at <strong>22%</strong> — just above the 20% threshold. Dec 2025: <strong>40,000</strong> of 797,700 still in Catastrophe; 80% in Phase 3+ — highest share of the four classified governorates.",
+    color:"#b45309"
+  },
+  "Rafah": {
+    display: "Rafah",
+    pop: 200000,
+    area_km2: 74.3,
+    density: 2694,
+    malnutrition_phase: "Unknown — access denied",
+    ipc_evidence: "Insufficient",
+    aid_trucks_day: 0,
+    displaced_pct: null,
+    health_facilities_pct: 5,
+    water_access_pct: 5,
+    periods: [
+      { period:"Nov 2023", phase:4, p5_pct:2, p4_pct:50, p3_pct:18, p3plus_pct:70, pop_analysed:null, context:"Southern refuge — >1.4M IDPs concentrated here" },
+      { period:"Feb 2024", phase:4, p5_pct:12, p4_pct:58, p3_pct:20, p3plus_pct:90, pop_analysed:null, context:"Population peaks at ~1.4M as displacement continues" },
+      { period:"Jun 2024", phase:4, p5_pct:10, p4_pct:58, p3_pct:20, p3plus_pct:88, pop_analysed:null, context:"Rafah ground operation begins May 2024 — mass exodus" },
+      { period:"Oct 2024", phase:4, p5_pct:6, p4_pct:62, p3_pct:20, p3plus_pct:88, pop_analysed:null, context:"Governorate largely depopulated; Rafah crossing sealed" },
+      { period:"Apr 2025", phase:0, p5_pct:0, p4_pct:0, p3_pct:0, p3plus_pct:0, pop_analysed:null, context:"NOT ASSESSED — insufficient data, largely depopulated" },
+      { period:"Aug 2025", phase:0, p5_pct:0, p4_pct:0, p3_pct:0, p3plus_pct:0, pop_analysed:null, context:"NOT ASSESSED — Rafah Crossing closed; ongoing military operation" },
+      { period:"Dec 2025", phase:0, p5_pct:0, p4_pct:0, p3_pct:0, p3plus_pct:0, pop_analysed:null, context:"NOT ASSESSED — Dec 2025 IPC cites insufficient data and largely depopulated status" }
+    ],
+    very_severe_hunger_pct: null,
+    note: "Not formally assessed since Apr 2025. Pre-evacuation conditions were <strong>IPC Phase 4</strong>. Over <strong>1.4 million displaced people</strong> were sheltering here before the May 2024 military operation. Rafah Crossing has remained closed; the Kerem Shalom crossing is the only commercial point of entry. The governorate is considered largely depopulated by IPC assessors.",
+    color:"#4b5563"
+  }
+};
+
+const PERIODS = [
+  { label:"Nov'23", title:"Nov 2023 — Conflict outbreak", sub:"Mass displacement northward to south", famine:false },
+  { label:"Feb'24", title:"Feb 2024 — Escalation & blockade", sub:"Full access restrictions; acute famine indicators emerge", famine:false },
+  { label:"Jun'24", title:"Jun 2024 — Rafah operation begins", sub:"1.4M displaced from Rafah; strip-wide Emergency phase", famine:false },
+  { label:"Oct'24", title:"Oct 2024 — Entire strip Phase 4", sub:"All 5 governorates Emergency or worse", famine:false },
+  { label:"Apr'25", title:"Apr 2025 — Total aid blockade", sub:"All crossings closed; catastrophic conditions projected", famine:false },
+  { label:"Aug'25", title:"Aug 2025 — Famine confirmed", sub:"IPC & FRC declare Famine in northern Gaza", famine:true },
+  { label:"Dec'25", title:"Dec 2025 — Post-ceasefire", sub:"Phase 4 region-wide; 100k+ remain in Catastrophe", famine:false }
+];
+
+// ══════════════════════════════════════════════════
+//  GEOJSON (same as original)
+// ══════════════════════════════════════════════════
+const GOV_GEOJSON = {"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{"governorate":"Deir al-Balah","area_km2":94.89},"geometry":{"type":"Polygon","coordinates":[[[34.32958177356441,31.357678983774797],[34.33267700485221,31.36585373800929],[34.333075043642516,31.370075419658217],[34.331751411116066,31.36963444778702],[34.33012231029679,31.372098405966607],[34.32964767511302,31.371665611249156],[34.32584125298693,31.37508737070274],[34.327301742924405,31.378435648177785],[34.33153941938668,31.38048279300397],[34.33129837098176,31.383026945089412],[34.33116575388401,31.38189639301196],[34.3245806863709,31.38910714959557],[34.32192108925966,31.392048549226402],[34.32259559259841,31.394279523729],[34.32146242978473,31.39554380483293],[34.31075879081822,31.40239704234876],[34.33090802862527,31.419375655744673],[34.3432933400753,31.43100962348709],[34.36037479672342,31.448629555377938],[34.37091228835518,31.45981652436546],[34.37248496902988,31.461007422021982],[34.41252224344493,31.501796042107262],[34.41774052279526,31.497962412682313],[34.423548714196116,31.489857954519184],[34.42075292702766,31.485096305694274],[34.42281291995143,31.483606558874822],[34.42051698179724,31.480425274274282],[34.42583055823465,31.477821045020114],[34.42697050875261,31.478281518776658],[34.43029277297511,31.475373950851832],[34.43369393876118,31.474657695057935],[34.43621274982006,31.47647385226519],[34.43910500008533,31.47535172750304],[34.441945071562955,31.47818422907275],[34.442688987232096,31.477203752770556],[34.44218362735102,31.476732602398137],[34.44587175313801,31.474471341775054],[34.44646550035702,31.475132018334886],[34.44733357420446,31.47466147292201],[34.4458104204295,31.47264333098154],[34.458025691704464,31.462663873550206],[34.459009961856495,31.465442462189255],[34.465236120196316,31.46104897952913],[34.45370766430938,31.45167206202187],[34.44647016442856,31.443809582638643],[34.44176665742753,31.442519243631324],[34.43737605365136,31.439984201706718],[34.432290591065254,31.43228642812382],[34.426818016311856,31.426843706980247],[34.42420705298709,31.426105236510217],[34.42268387438705,31.424184262458247],[34.41405169395745,31.418594184123958],[34.41376744502585,31.41718741559241],[34.41202143784111,31.41575864183733],[34.40940569130532,31.415192612154872],[34.407034080289655,31.412487427264697],[34.40530700462674,31.412626223112884],[34.40222786511239,31.411032347742537],[34.39855732986879,31.40626634212757],[34.39566011142354,31.404616855414076],[34.39315454452376,31.39998003250192],[34.3810587279455,31.3897844150717],[34.38137596216883,31.38810817174885],[34.37996826437317,31.385610387634646],[34.374464384039854,31.3786580778093],[34.37412454458128,31.37433429132659],[34.371980826304366,31.372277074191683],[34.372248492593435,31.369984435750567],[34.37053743517989,31.369072315574833],[34.36772238642172,31.369372236712202],[34.36609523980562,31.365215963947023],[34.3655127987716,31.361575632628384],[34.36865323156827,31.339343616438654],[34.358854562046645,31.34794450089418],[34.359460771657645,31.348360994744418],[34.350295031491534,31.34849353181702],[34.34249404395656,31.347593857182712],[34.340894988263265,31.34847793988213],[34.33989596402215,31.350974305386167],[34.335866141884935,31.348734465614328],[34.32990750139689,31.353946811299643],[34.3331165186726,31.354602645376822],[34.32958177356441,31.357678983774797]]]}},{"id":"1","type":"Feature","properties":{"governorate":"Gaza City","area_km2":50.04},"geometry":{"type":"MultiPolygon","coordinates":[[[[34.413692954966535,31.4760904931206],[34.42547834935021,31.465535386161],[34.41422304991979,31.45580190626156],[34.41182276623923,31.45756426014688],[34.401709590205655,31.45919507047938],[34.39946524769418,31.46235515056253],[34.39966834870686,31.46507688471743],[34.3981932988331,31.466817569882384],[34.398214170716905,31.46833216796444],[34.3999378574161,31.469122209144476],[34.39791577525009,31.469020938604828],[34.395315543926806,31.470395057829098],[34.401743380868794,31.476523382604384],[34.40494147434236,31.474208906248638],[34.40004901240303,31.46917315634798],[34.400858636133,31.469544242397035],[34.401809443925,31.46868887269094],[34.413692954966535,31.4760904931206]]],[[[34.493759819669975,31.486614740061242],[34.4866097285694,31.480405665929062],[34.483396079174405,31.47882373749012],[34.47838871135114,31.472267752036494],[34.474618212625145,31.471336142802617],[34.4685433281163,31.46570853443088],[34.465236120196316,31.46104897952913],[34.459009961856495,31.465442462189255],[34.458025691704464,31.462663873550206],[34.4458104204295,31.47264333098154],[34.44733357420446,31.47466147292201],[34.44646550035702,31.475132018334886],[34.44587175313801,31.474471341775054],[34.44218362735102,31.476732602398137],[34.442688987232096,31.477203752770556],[34.441945071562955,31.47818422907275],[34.43910500008533,31.47535172750304],[34.43621274982006,31.47647385226519],[34.43369393876118,31.474657695057935],[34.43029277297511,31.475373950851832],[34.42697050875261,31.478281518776658],[34.42583055823465,31.477821045020114],[34.42051698179724,31.480425274274282],[34.42281291995143,31.483606558874822],[34.42075292702766,31.485096305694274],[34.423548714196116,31.489857954519184],[34.41774052279526,31.497962412682313],[34.41252224344493,31.501796042107262],[34.42788052572496,31.51891170986097],[34.43023494382664,31.5224321948751],[34.4291212406438,31.524047589013474],[34.43181343551147,31.523723898297302],[34.4342745366774,31.52546575211657],[34.45234638176567,31.54523600167161],[34.46236519775622,31.5397194209477],[34.47578058220486,31.529562767394196],[34.47854854321464,31.528693556534826],[34.4784200404669,31.52720221768736],[34.477234704878775,31.526949956763335],[34.47787191848725,31.526516891287635],[34.47647145190466,31.525155766554448],[34.472156190449326,31.524616173514588],[34.46980602515437,31.523027526392934],[34.47161242715775,31.52265758942968],[34.47758263893342,31.51847757174733],[34.48229834142814,31.517149183051796],[34.481060047645855,31.514954071474044],[34.482057775527096,31.51406372673963],[34.48601553069666,31.5154231106918],[34.48706260263257,31.514668071147184],[34.490177960194465,31.51630508371845],[34.500817532926725,31.507494868650372],[34.50425905070974,31.51205838612893],[34.513129799419495,31.50544733437862],[34.517663655747334,31.50336444499077],[34.51713024838732,31.502756825827905],[34.51831246674355,31.501478829205997],[34.511366641771126,31.499645009260732],[34.493759819669975,31.486614740061242]]]]}},{"id":"2","type":"Feature","properties":{"governorate":"Khan Younis","area_km2":83.74},"geometry":{"type":"MultiPolygon","coordinates":[[[[34.37055303716799,31.309738735715214],[34.369640580091605,31.30917232593855],[34.37182907787904,31.306921662777757],[34.36922024705433,31.305151915560376],[34.370053732820324,31.304401216085544],[34.355601078934676,31.294322612147916],[34.34932736909386,31.298622689155625],[34.357426724720284,31.30388461970755],[34.35466370071226,31.308417248445974],[34.357819208755,31.310517683613668],[34.3573487200642,31.311037133022733],[34.36577344591019,31.31832186717113],[34.37029185808792,31.314089353411706],[34.36814031381619,31.312420690936193],[34.37055303716799,31.309738735715214]]],[[[34.35467645465774,31.333798671939736],[34.36108620780718,31.33350759720749],[34.36081820301965,31.33256406465376],[34.362458782502834,31.33207584413752],[34.36146232295685,31.33104034192964],[34.3658831149215,31.328836197859527],[34.36331122458666,31.326370398868026],[34.36126445858122,31.328120350414157],[34.356969887114715,31.32510610939183],[34.36219672404098,31.322267960499524],[34.35693866859572,31.317517778298118],[34.359212855364625,31.315498590790405],[34.357458213728776,31.31401741879079],[34.35234014371052,31.31785869482819],[34.34926207670357,31.31530632030508],[34.35037510226699,31.313785736618005],[34.34832256517541,31.312081631664295],[34.34909091031723,31.3113473006244],[34.34565893809372,31.30875168133779],[34.34656728242531,31.307917248502648],[34.343867341633675,31.305957120485548],[34.34510030348596,31.30466219707828],[34.34138261947144,31.301346090933308],[34.338210024621944,31.30379223499025],[34.329531978993124,31.29953177068585],[34.328697851828146,31.30116260774617],[34.32762159083891,31.30051045578165],[34.32510972251613,31.303384201406402],[34.33005711935882,31.306633125085057],[34.322791684122514,31.302044777871465],[34.320254211513905,31.305267230944484],[34.31678634777196,31.303435402338042],[34.31572615177141,31.29514198634553],[34.30551477481212,31.29316056696356],[34.29665855243957,31.293471033173724],[34.28642041147761,31.29917614358205],[34.28563163699129,31.294473465842806],[34.28114395472118,31.300792081111677],[34.27730768915808,31.30406855962996],[34.282429105844926,31.310529599841878],[34.280935020178426,31.309018991367598],[34.271254496732475,31.31494730886804],[34.26852629114473,31.312060092874773],[34.25474773264511,31.309585282513645],[34.24465026634653,31.32528894338983],[34.240234407569126,31.330577193282327],[34.241614079474246,31.332724787714376],[34.248562214123126,31.337594224692243],[34.24671546039377,31.340258558983987],[34.24321290984033,31.34387580035858],[34.27692098926278,31.37240318513027],[34.286321759248466,31.382724123315615],[34.29958863057152,31.39429476445942],[34.31075879081822,31.40239704234876],[34.32146242978473,31.39554380483293],[34.32259559259841,31.394279523729],[34.32192108925966,31.392048549226402],[34.33165258342693,31.38099654570734],[34.33099765400243,31.379959749241017],[34.32726671577766,31.378401729457146],[34.32584125298693,31.37508737070274],[34.32964767511302,31.371665611249156],[34.33012231029679,31.372098405966607],[34.331751411116066,31.36963444778702],[34.333075043642516,31.370075419658217],[34.33267700485221,31.36585373800929],[34.32958177356441,31.357678983774797],[34.33317004711172,31.354613585104303],[34.32950455347776,31.353944641005576],[34.335866141884935,31.348734465614328],[34.33989596402215,31.350974305386167],[34.340894988263265,31.34847793988213],[34.34249404395656,31.347593857182712],[34.34477987475391,31.34803631647835],[34.34699305305804,31.348266591133623],[34.359460771657645,31.348360994744418],[34.358854562046645,31.34794450089418],[34.36865323156827,31.339343616438654],[34.3696074210416,31.33063818230231],[34.364448884317206,31.33309126763317],[34.36541237517224,31.335520364215583],[34.361874545541475,31.33605854116807],[34.36210357258782,31.33685625851847],[34.356576159038376,31.337526079432493],[34.35541384898635,31.335265731637733],[34.35467645465774,31.333798671939736]]]]}},{"id":"3","type":"Feature","properties":{"governorate":"North Gaza","area_km2":61.85},"geometry":{"type":"Polygon","coordinates":[[[34.545413867621974,31.557689610604058],[34.557809916092694,31.547830901620934],[34.56761192825663,31.5415148929837],[34.568013481054656,31.53998877407754],[34.565936756181884,31.532817661103294],[34.55959964579503,31.527685585484615],[34.55904055513876,31.52523178904831],[34.55508774222275,31.5220441879173],[34.55456317800683,31.52044082957885],[34.555094248254875,31.518441197460053],[34.55326963440166,31.516918134903673],[34.550853730617824,31.516526034480158],[34.54735674576066,31.512702773020212],[34.539620404433265,31.510090573324234],[34.53510727242205,31.51009128060129],[34.538489238646854,31.509670441578027],[34.53038374829682,31.506104823765195],[34.525351216257725,31.50272147817989],[34.51831246674355,31.501478829205997],[34.51713024838732,31.502756825827905],[34.517663655747334,31.50336444499077],[34.513129799419495,31.50544733437862],[34.50425905070974,31.51205838612893],[34.500817532926725,31.507494868650372],[34.490177960194465,31.51630508371845],[34.48706260263257,31.514668071147184],[34.48601553069666,31.5154231106918],[34.482057775527096,31.51406372673963],[34.481060047645855,31.514954071474044],[34.48229834142814,31.517149183051796],[34.47758263893342,31.51847757174733],[34.47161242715775,31.52265758942968],[34.46980602515437,31.523027526392934],[34.472156190449326,31.524616173514588],[34.47647145190466,31.525155766554448],[34.47787191848725,31.526516891287635],[34.477234704878775,31.526949956763335],[34.4784200404669,31.52720221768736],[34.47854854321464,31.528693556534826],[34.47578058220486,31.529562767394196],[34.46236519775622,31.5397194209477],[34.45234638176567,31.54523600167161],[34.460851122155454,31.555307673022305],[34.47918138373364,31.578765285548783],[34.49144366960096,31.594920413240153],[34.54417656156218,31.558409719937305],[34.545413867621974,31.557689610604058]]]}},{"id":"4","type":"Feature","properties":{"governorate":"Rafah","area_km2":74.25},"geometry":{"type":"Polygon","coordinates":[[[34.31572615177141,31.29514198634553],[34.31678634777196,31.303435402338042],[34.320254211513905,31.305267230944484],[34.322791684122514,31.302044777871465],[34.32510972251613,31.303384201406402],[34.32762159083891,31.30051045578165],[34.328697851828146,31.30116260774617],[34.329531978993124,31.29953177068585],[34.333549875520205,31.301790165969532],[34.343956192503015,31.289639023348474],[34.33409339853106,31.301247781029804],[34.338210024621944,31.30379223499025],[34.34138261947144,31.301346090933308],[34.34510030348596,31.30466219707828],[34.343867341633675,31.305957120485548],[34.34656728242531,31.307917248502648],[34.34565893809372,31.30875168133779],[34.34909091031723,31.3113473006244],[34.34832256517541,31.312081631664295],[34.35037510226699,31.313785736618005],[34.34926207670357,31.31530632030508],[34.35234014371052,31.31785869482819],[34.357458213728776,31.31401741879079],[34.359212855364625,31.315498590790405],[34.35693866859572,31.317517778298118],[34.36219672404098,31.322267960499524],[34.356969887114715,31.32510610939183],[34.36126445858122,31.328120350414157],[34.36331122458666,31.326370398868026],[34.3658831149215,31.328836197859527],[34.36146232295685,31.33104034192964],[34.362458782502834,31.33207584413752],[34.36081820301965,31.33256406465376],[34.36108620780718,31.33350759720749],[34.35468469316169,31.333819553186494],[34.356576159038376,31.337526079432493],[34.36210357258782,31.33685625851847],[34.361874545541475,31.33605854116807],[34.36541237517224,31.335520364215583],[34.364448884317206,31.33309126763317],[34.3696074210416,31.33063818230231],[34.36869616789047,31.33910263488535],[34.37392869439452,31.30581181417612],[34.36892399706818,31.293263828731174],[34.366724762108426,31.289997131742336],[34.34304608104496,31.278416288633903],[34.33669603872732,31.267637320068633],[34.32746551898125,31.258523492948058],[34.319617577878816,31.252917359271127],[34.29332179156577,31.241432429273928],[34.280578803419594,31.229200379612497],[34.26604650005758,31.224372235806413],[34.257437300968185,31.248077622181118],[34.2401880665727,31.295822153890832],[34.23553470344328,31.296877734075395],[34.218739214260935,31.32374090488165],[34.24321290984033,31.34387580035858],[34.248562214123126,31.337594224692243],[34.241614079474246,31.332724787714376],[34.240234407569126,31.330577193282327],[34.24465026634653,31.32528894338983],[34.25474773264511,31.309585282513645],[34.26852629114473,31.312060092874773],[34.271254496732475,31.31494730886804],[34.280935020178426,31.309018991367598],[34.27730768915808,31.30406855962996],[34.28114395472118,31.300792081111677],[34.28563163699129,31.294473465842806],[34.285695353778586,31.294485901440584],[34.28642041147761,31.29917614358205],[34.29665855243957,31.293471033173724],[34.30551477481212,31.29316056696356],[34.31512758802528,31.295016878255986],[34.31572615177141,31.29514198634553]]]}}]};
+
+const MUNI_GEOJSON = {"type":"FeatureCollection","features":[{"id":"0","type":"Feature","properties":{"NAME":"Shokat as Sufi","governorate":"Rafah","area_km2":6.42},"geometry":{"type":"Polygon","coordinates":[[[34.263151112698345,31.25317396223928],[34.27239200304585,31.261798946366614],[34.27841435342438,31.265982752242113],[34.297443356756794,31.273783315317086],[34.30114978337932,31.2662843966147],[34.3034852822838,31.263401822593963],[34.30519577981069,31.264076617754956],[34.30669961027836,31.25915718195105],[34.29884535473103,31.256746114590378],[34.300792453274305,31.252880525958865],[34.29236739516493,31.250972142167406],[34.29130532173994,31.25259201216124],[34.28575017148966,31.250255352756643],[34.28260083202092,31.25393441497],[34.28103155811135,31.247919931814742],[34.27888940206795,31.252110865087484],[34.27998181530396,31.255624327292615],[34.27874997497503,31.25798837331097],[34.276842935859065,31.258425845858564],[34.27440294769001,31.256904110086598],[34.268434639831554,31.237876633457006],[34.26196610572608,31.24787332056583],[34.26630805577131,31.249984276927087],[34.263151112698345,31.25317396223928]]]}},{"id":"1","type":"Feature","properties":{"NAME":"An Naser","governorate":"Rafah","area_km2":4.57},"geometry":{"type":"Polygon","coordinates":[[[34.31512758802528,31.295016878255986],[34.31295415587631,31.28717856671319],[34.30971210634777,31.28155400592094],[34.305002587438295,31.27764503079081],[34.29877610586148,31.274845380231636],[34.295471969043845,31.279884295229923],[34.29289801609512,31.281295945200757],[34.292263196836814,31.28060651523592],[34.28864090579053,31.283953537707177],[34.28555154218544,31.281523858419785],[34.28180104481338,31.28849099302984],[34.285695353778586,31.294485901440584],[34.28642041147761,31.29917614358205],[34.29665855243957,31.293471033173724],[34.30551477481212,31.29316056696356],[34.31512758802528,31.295016878255986]]]}},{"id":"9","type":"Feature","properties":{"NAME":"Rafah","governorate":"Rafah","area_km2":30.28},"geometry":{"type":"Polygon","coordinates":[[[34.24321290984033,31.34387580035858],[34.248562214123126,31.337594224692243],[34.241614079474246,31.332724787714376],[34.240234407569126,31.330577193282327],[34.24465026634653,31.32528894338983],[34.25474773264511,31.309585282513645],[34.26852629114473,31.312060092874773],[34.271254496732475,31.31494730886804],[34.280935020178426,31.309018991367598],[34.27730768915808,31.30406855962996],[34.28114395472118,31.300792081111677],[34.28563163699129,31.294473465842806],[34.28408119665462,31.29112002980119],[34.28180104481338,31.28849099302984],[34.28426082348728,31.28315584317917],[34.28555154218544,31.281523858419785],[34.28864090579053,31.283953537707177],[34.292263196836814,31.28060651523592],[34.29289801609512,31.281295945200757],[34.29490801060165,31.280287955914194],[34.29902687567707,31.274413999369557],[34.27841435342438,31.265982752242113],[34.27122041508386,31.260808305612137],[34.257437300968185,31.248077622181118],[34.2401880665727,31.295822153890832],[34.23553470344328,31.296877734075395],[34.218739214260935,31.32374090488165],[34.24321290984033,31.34387580035858]]]}},{"id":"12","type":"Feature","properties":{"NAME":"Al Qarara","governorate":"Deir al-Balah","area_km2":8.92},"geometry":{"type":"Polygon","coordinates":[[[34.36241311334512,31.37441388548667],[34.35693455144727,31.36239351309118],[34.34947956373741,31.355209742129347],[34.34543249870943,31.354215670630122],[34.338878221978334,31.35457817985757],[34.334679574551664,31.353242295854642],[34.32958177356441,31.357678983774797],[34.33267700485221,31.36585373800929],[34.333075043642516,31.370075419658217],[34.331751411116066,31.36963444778702],[34.33012231029679,31.372098405966607],[34.32964767511302,31.371665611249156],[34.32584125298693,31.37508737070274],[34.327301742924405,31.378435648177785],[34.33153941938668,31.38048279300397],[34.33119971398471,31.3840682231053],[34.33183855281976,31.38530346231384],[34.334026321490875,31.386500793971834],[34.33447164334452,31.38930565175022],[34.342343419933684,31.383192549990607],[34.347048463424564,31.38942422214962],[34.349377811098556,31.388277260382363],[34.352991871699864,31.384859254906466],[34.3581949074253,31.377488313311012],[34.36241311334512,31.37441388548667]]]}},{"id":"14","type":"Feature","properties":{"NAME":"Wadi as Salqa","governorate":"Deir al-Balah","area_km2":4.21},"geometry":{"type":"Polygon","coordinates":[[[34.36241311334512,31.37441388548667],[34.35762258636014,31.3781078083238],[34.351479966992855,31.386693233733418],[34.347048463424564,31.38942422214962],[34.35372998516043,31.399765852968756],[34.35700399501266,31.398857360316473],[34.36125245701826,31.399228149912794],[34.3619803019143,31.399911937312922],[34.36394848076656,31.399343822944864],[34.36638417057615,31.400827507488085],[34.371793725061124,31.398158215106225],[34.36910605589775,31.393488713173404],[34.37361033145409,31.390050617857874],[34.36670869907317,31.38105078694159],[34.365787559846666,31.378626627818313],[34.363028110339215,31.3761836213954],[34.36241311334512,31.37441388548667]]]}},{"id":"15","type":"Feature","properties":{"NAME":"Khan Yunis","governorate":"Khan Younis","area_km2":56.56},"geometry":{"type":"Polygon","coordinates":[[[34.32192108925966,31.392048549226402],[34.33165258342693,31.38099654570734],[34.33099765400243,31.379959749241017],[34.32726671577766,31.378401729457146],[34.32584125298693,31.37508737070274],[34.32964767511302,31.371665611249156],[34.33012231029679,31.372098405966607],[34.331751411116066,31.36963444778702],[34.333075043642516,31.370075419658217],[34.33267700485221,31.36585373800929],[34.32958177356441,31.357678983774797],[34.33317004711172,31.354613585104303],[34.326159091158935,31.35333410188065],[34.325006239838885,31.350931544202307],[34.323045683227186,31.352676501739847],[34.315666491201554,31.346992096476722],[34.31451347363807,31.343949782757154],[34.317869627511726,31.342123786550996],[34.31864762105578,31.33945799926487],[34.31806061719082,31.33853733357001],[34.31869275366105,31.33818813122278],[34.317622603273584,31.337082537424163],[34.32258064625123,31.333646533696214],[34.32122307152109,31.32424350109788],[34.33440938540332,31.31219857696467],[34.32977132880418,31.307110069738567],[34.33005711935882,31.306633125085057],[34.322791684122514,31.302044777871465],[34.320254211513905,31.305267230944484],[34.31678634777196,31.303435402338042],[34.31572615177141,31.29514198634553],[34.30551477481212,31.29316056696356],[34.29665855243957,31.293471033173724],[34.28642041147761,31.29917614358205],[34.28563163699129,31.294473465842806],[34.28114395472118,31.300792081111677],[34.27730768915808,31.30406855962996],[34.282429105844926,31.310529599841878],[34.284963704334515,31.31726038418796],[34.281779534011164,31.318632175472597],[34.276319283715196,31.32463066518159],[34.24671546039377,31.340258558983987],[34.24321290984033,31.34387580035858],[34.27692098926278,31.37240318513027],[34.286321759248466,31.382724123315615],[34.29958863057152,31.39429476445942],[34.31075879081822,31.40239704234876],[34.32146242978473,31.39554380483293],[34.32259559259841,31.394279523729],[34.32192108925966,31.392048549226402]]]}},{"id":"17","type":"Feature","properties":{"NAME":"Deir al Balah","governorate":"Deir al-Balah","area_km2":17.33},"geometry":{"type":"Polygon","coordinates":[[[34.367766507698704,31.414833545167898],[34.36523070995311,31.412529901530487],[34.37990287259958,31.40514604363292],[34.38464183088891,31.401625328688183],[34.37921242807227,31.398036641446907],[34.374385805925264,31.39616569305588],[34.3735331067834,31.3978133984788],[34.36672793459981,31.400943971042675],[34.36401641068348,31.39946974040046],[34.36182083176991,31.40008227941571],[34.361286642151654,31.399386876156083],[34.357892346628745,31.398877013132736],[34.35372998516043,31.399765852968756],[34.342343419933684,31.383192549990607],[34.333861473115974,31.389554086363354],[34.3245806863709,31.38910714959557],[34.32192108925966,31.392048549226402],[34.32259559259841,31.394279523729],[34.32146242978473,31.39554380483293],[34.31075879081822,31.40239704234876],[34.33090802862527,31.419375655744673],[34.3432933400753,31.43100962348709],[34.34486144238022,31.42996073163341],[34.34938957326386,31.430377369648664],[34.356617118383014,31.424189709458208],[34.35896575226475,31.426928050309332],[34.36070631609049,31.425460357413684],[34.359334472210286,31.423975475458565],[34.364491439416504,31.420978181137976],[34.36224841316917,31.418830827879308],[34.367766507698704,31.414833545167898]]]}},{"id":"21","type":"Feature","properties":{"NAME":"An Nuseirat Camp","governorate":"Deir al-Balah","area_km2":9.55},"geometry":{"type":"Polygon","coordinates":[[[34.386218805730564,31.43373576820877],[34.382054764608256,31.43659081184845],[34.38302414804674,31.437629520025922],[34.381088375059285,31.43923330812716],[34.37792104857932,31.438359335757294],[34.37241152038818,31.44159552021836],[34.37054888796956,31.443922725690353],[34.36455676557395,31.445926428809074],[34.36037479672342,31.448629555377938],[34.37091228835518,31.45981652436546],[34.37248496902988,31.461007422021982],[34.377375994406556,31.461573985483735],[34.386488446301264,31.46539094854476],[34.39531667416382,31.465396023149886],[34.39803165492917,31.464584428744494],[34.39860206217147,31.461058213013146],[34.402287538115175,31.45786259673174],[34.40860264915698,31.457652924383524],[34.41377741054996,31.45531452876342],[34.386218805730564,31.43373576820877]]]}},{"id":"26","type":"Feature","properties":{"NAME":"Gaza","governorate":"Gaza City","area_km2":46.42},"geometry":{"type":"Polygon","coordinates":[[[34.51831246674355,31.501478829205997],[34.511366641771126,31.499645009260732],[34.493759819669975,31.486614740061242],[34.4866097285694,31.480405665929062],[34.483396079174405,31.47882373749012],[34.47838871135114,31.472267752036494],[34.474618212625145,31.471336142802617],[34.4685433281163,31.46570853443088],[34.465236120196316,31.46104897952913],[34.459009961856495,31.465442462189255],[34.458025691704464,31.462663873550206],[34.4458104204295,31.47264333098154],[34.44733357420446,31.47466147292201],[34.44646550035702,31.475132018334886],[34.44587175313801,31.474471341775054],[34.44218362735102,31.476732602398137],[34.442688987232096,31.477203752770556],[34.441945071562955,31.47818422907275],[34.43910500008533,31.47535172750304],[34.43621274982006,31.47647385226519],[34.43369393876118,31.474657695057935],[34.43029277297511,31.475373950851832],[34.42697050875261,31.478281518776658],[34.42583055823465,31.477821045020114],[34.42051698179724,31.480425274274282],[34.42281291995143,31.483606558874822],[34.42075292702766,31.485096305694274],[34.423548714196116,31.489857954519184],[34.41774052279526,31.497962412682313],[34.41252224344493,31.501796042107262],[34.42788052572496,31.51891170986097],[34.43023494382664,31.5224321948751],[34.4291212406438,31.524047589013474],[34.43181343551147,31.523723898297302],[34.4342745366774,31.52546575211657],[34.45234638176567,31.54523600167161],[34.46236519775622,31.5397194209477],[34.47578058220486,31.529562767394196],[34.47854854321464,31.528693556534826],[34.4784200404669,31.52720221768736],[34.477234704878775,31.526949956763335],[34.47787191848725,31.526516891287635],[34.47647145190466,31.525155766554448],[34.472156190449326,31.524616173514588],[34.46980602515437,31.523027526392934],[34.47161242715775,31.52265758942968],[34.47758263893342,31.51847757174733],[34.48229834142814,31.517149183051796],[34.481060047645855,31.514954071474044],[34.482057775527096,31.51406372673963],[34.48601553069666,31.5154231106918],[34.48706260263257,31.514668071147184],[34.490177960194465,31.51630508371845],[34.500817532926725,31.507494868650372],[34.50425905070974,31.51205838612893],[34.513129799419495,31.50544733437862],[34.517663655747334,31.50336444499077],[34.51713024838732,31.502756825827905],[34.51831246674355,31.501478829205997]]]}},{"id":"27","type":"Feature","properties":{"NAME":"Jabalya","governorate":"North Gaza","area_km2":17.63},"geometry":{"type":"Polygon","coordinates":[[[34.51866793332183,31.529744295082438],[34.51920104225347,31.529416029403006],[34.51611026817742,31.526790306235874],[34.528565749627724,31.519300390968397],[34.533615644109155,31.512628363897054],[34.532118838233565,31.511531910123104],[34.53510727242205,31.51009128060129],[34.538489238646854,31.509670441578027],[34.53038374829682,31.506104823765195],[34.525351216257725,31.50272147817989],[34.51831246674355,31.501478829205997],[34.51713024838732,31.502756825827905],[34.517663655747334,31.50336444499077],[34.513129799419495,31.50544733437862],[34.50425905070974,31.51205838612893],[34.500817532926725,31.507494868650372],[34.490177960194465,31.51630508371845],[34.48706260263257,31.514668071147184],[34.48601553069666,31.5154231106918],[34.482057775527096,31.51406372673963],[34.481060047645855,31.514954071474044],[34.48229834142814,31.517149183051796],[34.47758263893342,31.51847757174733],[34.47161242715775,31.52265758942968],[34.46980602515437,31.523027526392934],[34.472156190449326,31.524616173514588],[34.47647145190466,31.525155766554448],[34.47787191848725,31.526516891287635],[34.477234704878775,31.526949956763335],[34.4784200404669,31.52720221768736],[34.47854854321464,31.528693556534826],[34.47578058220486,31.529562767394196],[34.46236519775622,31.5397194209477],[34.45234638176567,31.54523600167161],[34.460851122155454,31.555307673022305],[34.476800238895414,31.54288108438721],[34.4803193365346,31.54534812024487],[34.48215763074564,31.54384622177493],[34.486297886094185,31.544942026462415],[34.487780789536856,31.54349677724569],[34.48854827062445,31.543866635379107],[34.489518224630324,31.54316639525462],[34.49285031271142,31.544023704442846],[34.4960662097098,31.542001768163747],[34.494335176123144,31.538762104787114],[34.499622235689436,31.534209530522805],[34.50238634916934,31.536699564125147],[34.5046895195228,31.534474436315588],[34.50810369591375,31.536483862175167],[34.51047018443658,31.53412925593979],[34.51287169942512,31.529363958651036],[34.51500717351164,31.527587936721467],[34.51866793332183,31.529744295082438]]]}},{"id":"29","type":"Feature","properties":{"NAME":"Beit Hanoun","governorate":"North Gaza","area_km2":12.27},"geometry":{"type":"Polygon","coordinates":[[[34.545413867621974,31.557689610604058],[34.538758766622976,31.550536470980745],[34.541961254252875,31.5484965379524],[34.54213247484259,31.54944814278033],[34.5525683078653,31.544990728229624],[34.55450979731535,31.545512293796385],[34.56119854451418,31.542583330396752],[34.560776785230225,31.539095103393738],[34.55840246966501,31.531372889352223],[34.557206559585936,31.53184369895375],[34.55316280900074,31.526134780005524],[34.545017614226,31.520940200963157],[34.5414796294313,31.514926573190124],[34.54358887920052,31.513992057878372],[34.539620404433265,31.510090573324234],[34.53510727242205,31.51009128060129],[34.532118838233565,31.511531910123104],[34.533615644109155,31.512628363897054],[34.52806576582932,31.51974931925736],[34.51611026817742,31.526790306235874],[34.520618664014066,31.531523662491743],[34.523581185539875,31.538909456441132],[34.51857267974995,31.541358472944918],[34.51958554546633,31.54410212344425],[34.516765183984745,31.544520623058233],[34.520062335210206,31.547651897043714],[34.52640706850707,31.548598398627078],[34.529136568430886,31.548109370916713],[34.53265451357939,31.552817565003725],[34.54417656156218,31.558409719937305],[34.545413867621974,31.557689610604058]]]}},{"id":"31","type":"Feature","properties":{"NAME":"Beit Lahiya","governorate":"North Gaza","area_km2":14.65},"geometry":{"type":"Polygon","coordinates":[[[34.51133612475606,31.544679655356187],[34.51958554546633,31.54410212344425],[34.51857267974995,31.541358472944918],[34.523581185539875,31.538909456441132],[34.52027781736999,31.53103732327338],[34.51500717351164,31.527587936721467],[34.51287169942512,31.529363958651036],[34.51047018443658,31.53412925593979],[34.50810369591375,31.536483862175167],[34.5046895195228,31.534474436315588],[34.50238634916934,31.536699564125147],[34.499622235689436,31.534209530522805],[34.494335176123144,31.538762104787114],[34.4960662097098,31.542001768163747],[34.49285031271142,31.544023704442846],[34.489518224630324,31.54316639525462],[34.48854827062445,31.543866635379107],[34.487780789536856,31.54349677724569],[34.486297886094185,31.544942026462415],[34.48215763074564,31.54384622177493],[34.4803193365346,31.54534812024487],[34.476800238895414,31.54288108438721],[34.460851122155454,31.555307673022305],[34.47918138373364,31.578765285548783],[34.48300107244048,31.579498884253635],[34.488307152769934,31.573392415692446],[34.49735122436745,31.567772013393533],[34.49699265403764,31.564002527946123],[34.49890377170251,31.563274348346418],[34.49833845033787,31.56245019884435],[34.502355066219266,31.56082632292831],[34.50201924489831,31.560324882184236],[34.50473335630376,31.55839504143413],[34.50563953080704,31.55962579010113],[34.509921067886324,31.558909596165815],[34.512293450913404,31.557554243220668],[34.51015513995897,31.553439297193687],[34.510693232660515,31.552066713140704],[34.51358744303566,31.551320583580882],[34.51133612475606,31.544679655356187]]]}},{"id":"20","type":"Feature","properties":{"NAME":"Al Bureij Camp","governorate":"Deir al-Balah","area_km2":5.11},"geometry":{"type":"Polygon","coordinates":[[[34.41336558608549,31.444445081076363],[34.41572176379911,31.441143030564927],[34.41511297182573,31.439129465169177],[34.41588348651885,31.438365696936106],[34.41408181961949,31.43288048677749],[34.40692308960668,31.42220842390384],[34.41016643894727,31.420009792122418],[34.40721417784855,31.416825064033446],[34.398103656294325,31.422540040279586],[34.399784962681316,31.424917113596692],[34.39682704342986,31.427172853296867],[34.39373466524006,31.428105589022184],[34.38669930099486,31.4334580636465],[34.40744731533529,31.44961776784202],[34.41336558608549,31.444445081076363]]]}},{"id":"16","type":"Feature","properties":{"NAME":"Al Musaddar","governorate":"Deir al-Balah","area_km2":4.02},"geometry":{"type":"Polygon","coordinates":[[[34.40281617746526,31.4150150180631],[34.403423110846944,31.4135528171709],[34.40202695392876,31.41377824830949],[34.40195612788435,31.412853930581104],[34.399986796326296,31.412663654006504],[34.39935243624451,31.40947094799671],[34.39748062377276,31.408189243263905],[34.398193192813366,31.407893045457747],[34.3974523651641,31.406513822960296],[34.3900707717578,31.407658538988375],[34.39025058218483,31.406288711060824],[34.38464183088891,31.401625328688183],[34.37990287259958,31.40514604363292],[34.36566850044609,31.412231356217784],[34.376266598710636,31.423205563757392],[34.37955109654445,31.421831151299315],[34.38013453029812,31.4202360046311],[34.38268481043652,31.418292701536398],[34.38660483922167,31.41756731284838],[34.38754626744696,31.416298110678866],[34.38989553853953,31.416374725480782],[34.39117946476238,31.41474330327559],[34.393720552786476,31.417626772122343],[34.40048215451494,31.415070916905755],[34.40281617746526,31.4150150180631]]]}}]};
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let currentPeriod = 6;
+let currentLayer  = 'gov';
+let govLayer, muniLayer;
+let miniChart = null;
+let selectedGov = null;
+
+const PHASE_COLORS = { 5:'#c0392b', 4:'#d4810a', 3:'#1d6da5', 0:'#374151' };
+const PHASE_FILL   = { 5:'rgba(192,57,43,0.65)', 4:'rgba(212,129,10,0.6)', 3:'rgba(29,109,165,0.55)', 0:'rgba(55,65,81,0.4)' };
+const PHASE_GLOW   = { 5:'rgba(220,60,40,0.45)', 4:'rgba(220,140,20,0.35)', 3:'rgba(29,109,165,0.3)', 0:'transparent' };
+
+// ══════════════════════════════════════════════════
+//  INIT PERIOD TICKS
+// ══════════════════════════════════════════════════
+function buildTicks() {
+  const el = document.getElementById('periodTicks');
+  el.innerHTML = PERIODS.map((p, i) =>
+    `<div class="period-tick${i===currentPeriod?' active-tick':''}" onclick="setPeriod(${i})">${p.label}</div>`
+  ).join('');
+}
+buildTicks();
+
+// ══════════════════════════════════════════════════
+//  MAP
+// ══════════════════════════════════════════════════
+const map = L.map('map', {
+  center: [31.41, 34.38],
+  zoom: 12,
+  zoomControl: true,
+  attributionControl: true
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution:'&copy; OSM &copy; CARTO',
+  subdomains:'abcd',
+  maxZoom:19
+}).addTo(map);
+
+function getPhase(govName) {
+  const d = GOV_DATA[govName];
+  return d ? (d.periods[currentPeriod]?.phase ?? 0) : 0;
+}
+
+function makeGovStyle(feature) {
+  const p = getPhase(feature.properties.governorate);
+  return {
+    fillColor: PHASE_FILL[p] || PHASE_FILL[0],
+    fillOpacity: 1,
+    color: 'rgba(255,255,255,0.25)',
+    weight: 1.5
+  };
+}
+
+function makeMuniStyle(feature) {
+  const p = getPhase(feature.properties.governorate);
+  return {
+    fillColor: PHASE_FILL[p] || PHASE_FILL[0],
+    fillOpacity: 1,
+    color: 'rgba(255,255,255,0.15)',
+    weight: 0.7
+  };
+}
+
+function highlightGov(e) {
+  e.target.setStyle({ weight:2.5, color:'rgba(255,255,255,0.8)', fillOpacity: 1 });
+  e.target.bringToFront();
+  showTooltip(e);
+}
+
+function resetGov(e) {
+  govLayer.resetStyle(e.target);
+  e.target.closeTooltip();
+}
+
+function highlightMuni(e) {
+  e.target.setStyle({ weight:2, color:'rgba(255,255,255,0.6)', fillOpacity: 1 });
+  e.target.bringToFront();
+}
+
+function resetMuni(e) { muniLayer.resetStyle(e.target); }
+
+function showTooltip(e) {
+  const govName = e.target.feature.properties.governorate;
+  const d = GOV_DATA[govName];
+  if (!d) return;
+  const per = d.periods[currentPeriod];
+  const phase = per.phase;
+  const phaseStr = phaseLabel(phase);
+  const clr = PHASE_COLORS[phase] || '#64748b';
+  const content = `<div class="map-tooltip">
+    <strong>${d.display}</strong>
+    <div class="tt-phase" style="background:${clr}22;color:${clr};border:1px solid ${clr}44;margin-top:4px">${phaseStr}</div>
+    <div class="tt-stat">
+      <div>Pop <span>${(d.pop/1000).toFixed(0)}k</span></div>
+      <div>P3+ <span>${per.p3plus_pct || '—'}%</span></div>
+      <div>P5 <span>${per.p5_pct || '—'}%</span></div>
+    </div>
+    <div style="font-size:9.5px;color:#6b7fa0;margin-top:4px;font-style:italic">${per.context}</div>
+  </div>`;
+  e.target.bindTooltip(content, {
+    sticky:true,
+    direction:'top',
+    offset:[0,-6],
+    className:'',
+    opacity:1
+  }).openTooltip(e.latlng);
+}
+
+// Governorate labels
+const govLabels = [];
+
+function addGovLabels() {
+  govLabels.forEach(m => map.removeLayer(m));
+  govLabels.length = 0;
+  GOV_GEOJSON.features.forEach(f => {
+    const coords = f.geometry.type === 'MultiPolygon'
+      ? f.geometry.coordinates[0][0]
+      : f.geometry.coordinates[0];
+    const lats = coords.map(c=>c[1]);
+    const lons = coords.map(c=>c[0]);
+    const clat = (Math.min(...lats)+Math.max(...lats))/2;
+    const clon = (Math.min(...lons)+Math.max(...lons))/2;
+    const gov  = f.properties.governorate;
+    const phase = getPhase(gov);
+    const clr = phase === 0 ? 'rgba(150,170,200,0.6)' : 'rgba(255,255,255,0.9)';
+    const m = L.marker([clat,clon], {
+      icon: L.divIcon({
+        className:'',
+        html:`<div style="font-size:10.5px;font-weight:700;color:${clr};text-shadow:0 1px 4px rgba(0,0,0,0.95),0 0 10px rgba(0,0,0,0.8);pointer-events:none;white-space:nowrap;text-align:center;font-family:'Inter',sans-serif;letter-spacing:-0.01em;">${gov}</div>`,
+        iconAnchor:[45,8]
+      }),
+      interactive: false
+    });
+    m.addTo(map);
+    govLabels.push(m);
+  });
+}
+
+govLayer = L.geoJSON(GOV_GEOJSON, {
+  style: makeGovStyle,
+  onEachFeature: (feature, layer) => {
+    layer.on({
+      mouseover: highlightGov,
+      mouseout: resetGov,
+      click: (e) => { selectedGov = feature.properties.governorate; showGovInfo(selectedGov); }
+    });
+  }
+}).addTo(map);
+
+muniLayer = L.geoJSON(MUNI_GEOJSON, {
+  style: makeMuniStyle,
+  onEachFeature: (feature, layer) => {
+    layer.on({
+      mouseover: highlightMuni,
+      mouseout: resetMuni,
+      click: () => {
+        const g = feature.properties.governorate;
+        selectedGov = g;
+        showGovInfo(g);
+      }
+    });
+  }
+});
+
+addGovLabels();
+map.fitBounds([[31.22,34.21],[31.60,34.57]]);
+
+// ══════════════════════════════════════════════════
+//  STRIP SUMMARY BARS
+// ══════════════════════════════════════════════════
+function updateStripBars() {
+  const govOrder = ['North Gaza','Gaza City','Deir al-Balah','Khan Younis','Rafah'];
+  const html = govOrder.map(name => {
+    const d = GOV_DATA[name];
+    const per = d.periods[currentPeriod];
+    const pct = per.p3plus_pct || 0;
+    const phase = per.phase;
+    const clr = PHASE_COLORS[phase] || '#374151';
+    return `<div class="sbar-row">
+      <div class="sbar-label">${name === 'Not assessed' ? '—' : name.replace(' Gaza','<br>Gaza')}</div>
+      <div class="sbar-track"><div class="sbar-fill" style="width:${pct}%;background:${clr}"></div></div>
+      <div class="sbar-pct">${pct > 0 ? pct+'%' : 'N/A'}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('stripBars').innerHTML = html;
+}
+updateStripBars();
+
+// ══════════════════════════════════════════════════
+//  PERIOD CONTROL
+// ══════════════════════════════════════════════════
+function setPeriod(idx) {
+  currentPeriod = parseInt(idx);
+  document.getElementById('periodSlider').value = idx;
+  const p = PERIODS[currentPeriod];
+  document.getElementById('periodCurrentLabel').textContent = p.title;
+  document.getElementById('periodCurrentSub').textContent = p.sub;
+  document.getElementById('mapOverlayTitle').textContent = p.title.split('—')[1]?.trim() || p.title;
+
+  // Update ticks
+  document.querySelectorAll('.period-tick').forEach((t,i) => {
+    t.classList.toggle('active-tick', i===currentPeriod);
+  });
+
+  // Famine banner
+  const banner = document.getElementById('famineBanner');
+  banner.classList.toggle('hidden', !p.famine);
+
+  // Refresh map
+  govLayer.setStyle(makeGovStyle);
+  if (currentLayer==='muni') muniLayer.setStyle(makeMuniStyle);
+  addGovLabels();
+  updateStripBars();
+
+  // Refresh info panel if a gov is selected
+  if (selectedGov) showGovInfo(selectedGov);
+}
+
+// ══════════════════════════════════════════════════
+//  LAYER TOGGLE
+// ══════════════════════════════════════════════════
+function setLayer(layer, btn) {
+  currentLayer = layer;
+  document.querySelectorAll('.layer-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (layer==='gov') {
+    if (map.hasLayer(muniLayer)) map.removeLayer(muniLayer);
+    if (!map.hasLayer(govLayer)) govLayer.addTo(map);
+  } else {
+    if (map.hasLayer(govLayer)) map.removeLayer(govLayer);
+    if (!map.hasLayer(muniLayer)) muniLayer.addTo(map);
+  }
+  addGovLabels();
+}
+
+// ══════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════
+function phaseLabel(p) {
+  if (p===5) return 'Phase 5 — Famine / Catastrophe';
+  if (p===4) return 'Phase 4 — Emergency';
+  if (p===3) return 'Phase 3 — Crisis';
+  if (p===2) return 'Phase 2 — Stressed';
+  return 'Not assessed';
+}
+function phasePillStyle(p) {
+  const bg = { 5:'rgba(192,57,43,0.18)', 4:'rgba(212,129,10,0.18)', 3:'rgba(29,109,165,0.18)', 0:'rgba(55,65,81,0.25)' };
+  const clr = { 5:'#e57373', 4:'#f0a050', 3:'#64b5f6', 0:'#8899bb' };
+  return `background:${bg[p]||bg[0]};color:${clr[p]||clr[0]};border:1px solid ${clr[p]||clr[0]}33`;
+}
+
+// ══════════════════════════════════════════════════
+//  INFO PANEL — GOVERNORATE
+// ══════════════════════════════════════════════════
+function showGovInfo(name) {
+  const d = GOV_DATA[name];
+  if (!d) return;
+  const per = d.periods[currentPeriod];
+  const phase = per.phase;
+
+  // Phase distribution stacked bar (p5 + p4 + p3 + p1/2 = 100%)
+  let p5 = per.p5_pct || 0;
+  let p4 = per.p4_pct || 0;
+  let p3 = per.p3_pct || 0;
+  let rest = Math.max(0, 100 - p5 - p4 - p3);
+
+  const stackHtml = phase > 0 ? `
+  <div class="breakdown-section">
+    <div class="breakdown-title">Population by IPC phase — ${per.period}</div>
+    <div class="stack-bar">
+      ${p5>0?`<div class="stack-seg" style="flex:${p5};background:#c0392b" title="Phase 5: ${p5}%"></div>`:''}
+      ${p4>0?`<div class="stack-seg" style="flex:${p4};background:#d4810a" title="Phase 4: ${p4}%"></div>`:''}
+      ${p3>0?`<div class="stack-seg" style="flex:${p3};background:#1d6da5" title="Phase 3: ${p3}%"></div>`:''}
+      ${rest>0?`<div class="stack-seg" style="flex:${rest};background:#374151" title="Phase 1/2: ${rest}%"></div>`:''}
+    </div>
+    <div class="stack-legend">
+      ${p5>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#c0392b"></div>P5 ${p5}%</div>`:''}
+      ${p4>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#d4810a"></div>P4 ${p4}%</div>`:''}
+      ${p3>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#1d6da5"></div>P3 ${p3}%</div>`:''}
+      ${rest>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#374151"></div>P1/2 ${rest}%</div>`:''}
+    </div>
+  </div>` : '';
+
+  // MUAC meter
+  const muacHtml = d.very_severe_hunger_pct != null ? `
+  <div class="muac-section">
+    <div class="muac-header">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Very Severe Hunger (MUAC/HHS)</div>
+        <div class="muac-val">${d.very_severe_hunger_pct}%</div>
+      </div>
+      <div class="muac-threshold-badge">▲ Famine threshold: 20%</div>
+    </div>
+    <div class="meter-track">
+      <div class="meter-fill" style="width:${Math.min(d.very_severe_hunger_pct*2.5, 100)}%;background:linear-gradient(90deg,#d4810a,#c0392b)"></div>
+      <div class="meter-threshold" style="left:50%"></div>
+    </div>
+    <div class="muac-sub">Peak recorded rate (Aug 2025 assessment) — threshold of 20% marks famine level</div>
+  </div>` : '';
+
+  // Aid & infrastructure stats
+  const aidHtml = `
+  <div class="aid-grid">
+    <div class="stat-card">
+      <div class="stat-label">Avg Aid Trucks/Day</div>
+      <div class="stat-value" style="color:${d.aid_trucks_day===0?'#e57373':'var(--text-primary)'}">
+        ${d.aid_trucks_day === null ? '—' : d.aid_trucks_day === 0 ? '0' : d.aid_trucks_day}
+      </div>
+      <div class="stat-unit">${d.aid_trucks_day === 0 ? 'none entering' : d.aid_trucks_day === null ? 'data unavailable' : 'at peak relief'}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Health Facilities</div>
+      <div class="stat-value" style="color:${(d.health_facilities_pct||0)<30?'#e57373':'var(--accent2)'}">
+        ${d.health_facilities_pct != null ? d.health_facilities_pct+'%' : '—'}
+      </div>
+      <div class="stat-unit">functional (est.)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Water Access</div>
+      <div class="stat-value" style="color:${(d.water_access_pct||0)<20?'#e57373':'var(--accent2)'}">
+        ${d.water_access_pct != null ? d.water_access_pct+'%' : '—'}
+      </div>
+      <div class="stat-unit">of pre-war supply</div>
+    </div>
+  </div>`;
+
+  const popAnalysed = per.pop_analysed;
+  const analysedHtml = popAnalysed ? `<div class="stat-unit" style="margin-top:2px;font-size:9.5px;color:var(--text-muted)">${(popAnalysed/1000).toFixed(1)}k analysed (${d.ipc_evidence} evidence)</div>` : '';
+
+  document.getElementById('infoPanel').innerHTML = `
+  <div class="gov-card">
+    <div class="gov-header">
+      <div class="gov-name">${d.display}</div>
+      <div class="gov-meta">Governorate · ${per.period}</div>
+    </div>
+
+    <div class="phase-pill" style="${phasePillStyle(phase)}">
+      <div class="phase-pill-dot"></div>
+      ${phaseLabel(phase)}
+    </div>
+
+    <div class="stat-grid" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="stat-card">
+        <div class="stat-label">Population</div>
+        <div class="stat-value">${(d.pop/1000).toFixed(0)}k</div>
+        <div class="stat-unit">pre-conflict est.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Phase 3+</div>
+        <div class="stat-value" style="color:${per.p3plus_pct>80?'#e57373':per.p3plus_pct>50?'var(--accent2)':'var(--text-primary)'}">
+          ${per.p3plus_pct > 0 ? per.p3plus_pct+'%' : 'N/A'}
+        </div>
+        <div class="stat-unit">crisis or worse</div>
+        ${analysedHtml}
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Phase 5 share</div>
+        <div class="stat-value" style="color:${p5>20?'#e57373':'var(--accent2)'}">
+          ${p5 > 0 ? p5+'%' : per.phase > 0 ? '<1%' : 'N/A'}
+        </div>
+        <div class="stat-unit">catastrophe</div>
+      </div>
+    </div>
+
+    ${stackHtml}
+    ${muacHtml}
+    ${aidHtml}
+
+    <div style="padding:0 0 10px">
+      <div class="context-note">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Context — ${per.period}</div>
+        ${per.context}
+      </div>
+      <div class="context-note" style="border-left-color:rgba(255,255,255,0.1)">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Assessment note</div>
+        ${d.note}
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-header">
+      <div class="chart-title">IPC Phase trend over time</div>
+      <div class="chart-legend">
+        <div class="legend-dot-item"><div class="legend-dot" style="background:#c0392b"></div>Phase 5 %</div>
+        <div class="legend-dot-item"><div class="legend-dot" style="background:#f0a050"></div>Phase 3+ %</div>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="miniChart"></canvas></div>
+  </div>
+  `;
+
+  // Render chart
+  if (miniChart) { miniChart.destroy(); miniChart = null; }
+  const ctx = document.getElementById('miniChart')?.getContext('2d');
+  if (!ctx) return;
+
+  const labels  = d.periods.map(p => p.period);
+  const p5data  = d.periods.map(p => p.p5_pct || 0);
+  const p3pdata = d.periods.map(p => p.p3plus_pct || 0);
+
+  // Highlight current period with annotation
+  miniChart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {
+          label:'Phase 5 %',
+          data: p5data,
+          borderColor:'#c0392b',
+          backgroundColor:'rgba(192,57,43,0.15)',
+          fill:true,
+          tension:0.35,
+          pointRadius: p5data.map((_,i)=>i===currentPeriod?5:2.5),
+          pointBackgroundColor: p5data.map((_,i)=>i===currentPeriod?'#e57373':'#c0392b'),
+          borderWidth:2
+        },
+        {
+          label:'Phase 3+ %',
+          data: p3pdata,
+          borderColor:'#d4810a',
+          backgroundColor:'rgba(212,129,10,0.08)',
+          fill:false,
+          tension:0.35,
+          pointRadius: p3pdata.map((_,i)=>i===currentPeriod?5:2),
+          pointBackgroundColor: p3pdata.map((_,i)=>i===currentPeriod?'#f0a050':'#d4810a'),
+          borderWidth:1.5,
+          borderDash:[5,3]
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(14,20,32,0.95)',
+          borderColor:'rgba(255,255,255,0.1)',
+          borderWidth:1,
+          titleColor:'#f0f4ff',
+          bodyColor:'#8899bb',
+          padding:8,
+          callbacks:{
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%`
+          }
+        },
+        annotation: {}
+      },
+      scales:{
+        x:{ ticks:{color:'#4a5875',font:{size:8},maxRotation:30}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.06)'} },
+        y:{ ticks:{color:'#4a5875',font:{size:8},callback:v=>v+'%'}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.06)'}, min:0, max:110 }
+      },
+      interaction:{ mode:'index', intersect:false }
+    }
+  });
+}
+</script>
+</body>
+</html>
