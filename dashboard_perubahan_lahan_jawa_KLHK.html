@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Perubahan Tata Guna Lahan Pulau Jawa 2000–2022</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -107,6 +109,19 @@
 
   .footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 11px; color: var(--faint); }
   .footer p { margin-bottom: 6px; }
+
+  /* ── Land-cover map ── */
+  .map-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+  .map-year-readout { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; color: var(--blue); min-width: 56px; }
+  .map-opacity-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+  .map-play-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+  .map-play-btn:hover { background: var(--border); }
+  .map-play-btn.playing { background: #c61e1e; color: #fff; border-color: #c61e1e; }
+  .map-year-select { font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+  .map-opacity-row input[type="range"] { width: 110px; }
+  #landcoverMap { height: 480px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; }
+  .map-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); background: rgba(255,255,255,0.7); pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 500; }
+  .map-loading.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -299,10 +314,30 @@
     <div class="movers-row" id="moversRow"><!-- filled by JS --></div>
   </div>
 
+  <div class="section-label">7 — Peta penutupan lahan</div>
+  <div class="section-note">Bergeser mengikuti slider tahun di Bagian 6 di atas. Perbesar (scroll/pinch) untuk melihat pola per kabupaten/kota; peta dasar menampilkan batas &amp; nama kota sebagai referensi. Resolusi citra diturunkan untuk kecepatan muat di web — cocok untuk melihat pola sebaran, bukan analisis piksel-demi-piksel.</div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="map-bar">
+      <div>
+        <div class="card-title">Tutupan lahan — citra klasifikasi KLHK</div>
+        <div class="card-sub" style="margin-bottom:0;">Tahun survei: <span class="map-year-readout" id="mapYearReadout">2022</span></div>
+      </div>
+      <div class="map-opacity-row">
+        <select id="mapYearSelect" class="map-year-select"></select>
+        <button type="button" class="map-play-btn" id="mapPlayBtn" aria-label="Putar animasi tahun">▶ Putar</button>
+        <span>Transparansi</span>
+        <input type="range" id="mapOpacity" min="0" max="100" value="100" step="1">
+      </div>
+    </div>
+    <div id="landcoverMap">
+      <div class="map-loading" id="mapLoading">Memuat citra…</div>
+    </div>
+    <div class="legend" id="landcoverLegend" style="margin-top:10px;"></div>
+  </div>
+
   <div class="footer">
     <p><b>Sumber data lahan:</b> Data klasifikasi penutupan lahan KLHK (Kementerian Lingkungan Hidup dan Kehutanan), Pulau Jawa, 13 tahun survei 2000–2022. Analisis mencakup 119 kabupaten/kota di 6 provinsi: DKI Jakarta, Banten, Jawa Barat, Jawa Tengah, DI Yogyakarta, Jawa Timur.</p>
     <p><b>Sumber periode politik:</b> masa jabatan Presiden RI dan gubernur provinsi dihimpun dari sumber publik (Wikipedia bahasa Indonesia, situs resmi pemerintah provinsi, dan pemberitaan nasional) per Juli 2026. Batas antar-era pada grafik disesuaikan ke tahun survei terdekat, sehingga bisa berbeda beberapa bulan dari tanggal pelantikan sesungguhnya.</p>
-    <p><b>Keterbatasan:</b> lapisan periode kabupaten/kota pada Bagian 6 hanya menampilkan gubernur <i>provinsi</i>, bukan bupati/wali kota masing-masing daerah. Menghimpun riwayat bupati/wali kota yang akurat untuk 119 kabupaten/kota (±500 masa jabatan) berada di luar cakupan pembaruan ini; beri tahu kabupaten/kota mana yang paling penting bagi Anda dan data tersebut dapat ditambahkan secara bertahap dan terverifikasi.</p>
   </div>
 
 </div><!-- /page -->
@@ -1308,6 +1343,7 @@ document.getElementById('citySearch').addEventListener('input', (e) => {
 document.getElementById('yearSlider').addEventListener('input', (e) => {
   currentYearIdx = parseInt(e.target.value, 10);
   renderDonut(currentCity, currentYearIdx);
+  updateLandcoverMap(currentYearIdx);
 });
 document.getElementById('levelSwitch').addEventListener('click', (e) => {
   const btn = e.target.closest('.level-btn');
@@ -1319,6 +1355,129 @@ document.getElementById('levelSwitch').addEventListener('click', (e) => {
 
 updateCity(currentCity);
 setActiveLevelButton();
+
+// ── Land-cover map (Section 7) ──
+// PNGs are nearest-neighbor downsamples of the original KLHK GeoTIFFs
+// (41449x13972 px full res -> ~5181x1746 px for web), so class colors
+// stay pure at boundaries. All 13 years share the identical extent, so
+// one bounds pair works for every layer.
+// Tiled XYZ pyramid per survey year (nearest-neighbor resampled from the
+// source classification rasters, so class colors stay pure at every zoom
+// level). Tiles generated for z6-z12 (~38m/px at z12, native res ~30m/px) —
+// beyond z12 Leaflet upsamples the z12 tiles rather than requesting more.
+// All 13 years share the identical extent, so one bounds pair works for
+// every layer.
+const LANDCOVER_BOUNDS = [[-8.780309581281571, 105.09987373100026], [-5.042965328999984, 116.27018900000019]];
+const LANDCOVER_TILE_DIR = 'landcover_tiles/';
+const LANDCOVER_MAX_NATIVE_ZOOM = 12;
+const LANDCOVER_YEARS_AVAILABLE = new Set([2000, 2003, 2006, 2009, 2011, 2012, 2013, 2014, 2015, 2019, 2020, 2021, 2022]);
+
+const LANDCOVER_LEGEND = [
+  ['#005c2c', 'Hutan Lahan Kering Primer'], ['#38913c', 'Hutan Lahan Kering Sekunder'],
+  ['#005a5a', 'Hutan Mangrove Primer'], ['#4d9696', 'Hutan Mangrove Sekunder'],
+  ['#006e82', 'Hutan Rawa Primer'], ['#6eafbe', 'Hutan Rawa Sekunder'],
+  ['#8cc65a', 'Hutan Tanaman'], ['#e6a0a0', 'Semak Belukar'],
+  ['#e1becd', 'Semak Belukar Rawa'], ['#ffeb00', 'Pertanian Lahan Kering'],
+  ['#dec560', 'Pertanian Lahan Kering Campur'], ['#a8d5f5', 'Sawah'],
+  ['#69aafa', 'Tambak'], ['#afafd2', 'Permukiman Transmigrasi'],
+  ['#fab96e', 'Perkebunan'], ['#c61e1e', 'Permukiman'],
+  ['#d600a0', 'Bandara/Pelabuhan'], ['#f0f0d2', 'Lahan Terbuka'],
+  ['#ff0000', 'Pertambangan'], ['#0070ff', 'Tubuh Air'],
+  ['#a3d8e9', 'Rawa'], ['#bec38c', 'Savana/Padang Rumput'],
+  ['#e1e1e1', 'Awan'], ['#808080', 'Lainnya / Tidak Terklasifikasi']
+];
+
+function renderLandcoverLegend() {
+  const el = document.getElementById('landcoverLegend');
+  el.innerHTML = LANDCOVER_LEGEND.map(([color, label]) =>
+    `<span class="legend-item"><span class="dot" style="background:${color}"></span>${label}</span>`
+  ).join('');
+}
+
+function populateLandcoverYearSelect() {
+  const sel = document.getElementById('mapYearSelect');
+  sel.innerHTML = CITY_YEARS.map((y, i) => `<option value="${i}">${y}</option>`).join('');
+  sel.addEventListener('change', (e) => {
+    const slider = document.getElementById('yearSlider');
+    slider.value = e.target.value;
+    slider.dispatchEvent(new Event('input'));
+  });
+}
+
+let landcoverMap = null;
+let landcoverLayer = null;
+let landcoverPlaying = false;
+let landcoverPlayTimer = null;
+
+function initLandcoverMap() {
+  landcoverMap = L.map('landcoverMap', { minZoom: 6, maxZoom: 13 });
+  landcoverMap.fitBounds(LANDCOVER_BOUNDS);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 20
+  }).addTo(landcoverMap);
+
+  renderLandcoverLegend();
+  populateLandcoverYearSelect();
+  updateLandcoverMap(currentYearIdx);
+
+  document.getElementById('mapOpacity').addEventListener('input', (e) => {
+    if (landcoverLayer) landcoverLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+  });
+
+  document.getElementById('mapPlayBtn').addEventListener('click', toggleLandcoverPlay);
+}
+
+function updateLandcoverMap(yearIdx) {
+  if (!landcoverMap) return;
+  const year = CITY_YEARS[yearIdx];
+  document.getElementById('mapYearReadout').textContent = year;
+  document.getElementById('mapYearSelect').value = yearIdx;
+  if (!LANDCOVER_YEARS_AVAILABLE.has(parseInt(year, 10))) return;
+
+  const loadingEl = document.getElementById('mapLoading');
+  loadingEl.classList.add('show');
+
+  const opacity = parseInt(document.getElementById('mapOpacity').value, 10) / 100;
+  const newLayer = L.tileLayer(LANDCOVER_TILE_DIR + year + '/{z}/{x}/{y}.png', {
+    bounds: LANDCOVER_BOUNDS,
+    maxNativeZoom: LANDCOVER_MAX_NATIVE_ZOOM,
+    minZoom: 6,
+    maxZoom: 13,
+    tileSize: 256,
+    opacity,
+    noWrap: true
+  });
+  newLayer.once('load', () => loadingEl.classList.remove('show'));
+  newLayer.addTo(landcoverMap);
+
+  if (landcoverLayer) landcoverMap.removeLayer(landcoverLayer);
+  landcoverLayer = newLayer;
+}
+
+function toggleLandcoverPlay() {
+  const btn = document.getElementById('mapPlayBtn');
+  landcoverPlaying = !landcoverPlaying;
+  if (landcoverPlaying) {
+    btn.textContent = '⏸ Berhenti';
+    btn.classList.add('playing');
+    landcoverPlayTimer = setInterval(() => {
+      const slider = document.getElementById('yearSlider');
+      let next = parseInt(slider.value, 10) + 1;
+      if (next > parseInt(slider.max, 10)) next = 0;
+      slider.value = next;
+      slider.dispatchEvent(new Event('input'));
+    }, 1200);
+  } else {
+    btn.textContent = '▶ Putar';
+    btn.classList.remove('playing');
+    clearInterval(landcoverPlayTimer);
+  }
+}
+
+initLandcoverMap();
+
 </script>
 </body>
 </html>
