@@ -7,62 +7,80 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/perliedman-leaflet-control-geocoder/3.3.1/Control.Geocoder.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/perliedman-leaflet-control-geocoder/3.3.1/Control.Geocoder.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:        #f7f6f3;
-    --surface:   #ffffff;
-    --border:    #e4e3de;
-    --text:      #0b0b0b;
-    --muted:     #6b6a65;
-    --faint:     #b4b3ae;
-    --blue:      #2a78d6;
-    --green:     #1baf7a;
-    --forest:    #2e7d32;
-    --red:       #e34948;
-    --amber:     #eda100;
+    --bg:        #f5f2e9;
+    --bg-grad:   #efe9d8;
+    --surface:   #fffdf8;
+    --border:    #e2dbc8;
+    --border-strong: #d3c9ae;
+    --text:      #191810;
+    --muted:     #6e6650;
+    --faint:     #a89d80;
+    --blue:      #2f6690;
+    --green:     #1f5c3f;
+    --forest:    #1f5c3f;
+    --red:       #a3402a;
+    --amber:     #b1791f;
     --brown:     #795548;
     --purple:    #7b52ab;
-    --radius:    10px;
+    --radius:    12px;
+    --serif:     "Newsreader", Georgia, "Times New Roman", serif;
+    --sans:      "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono:      "Roboto Mono", ui-monospace, SFMono-Regular, monospace;
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--bg);
+    font-family: var(--sans);
+    background:
+      radial-gradient(ellipse 900px 500px at 8% -10%, rgba(31,92,63,0.06), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(163,64,42,0.05), transparent 55%),
+      var(--bg);
     color: var(--text);
     font-size: 14px;
     line-height: 1.5;
-    padding: 2rem 1rem;
+    padding: 2.5rem 1rem 3rem;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .page { max-width: 1100px; margin: 0 auto; }
+  .page { max-width: 1120px; margin: 0 auto; }
 
-  .header { margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; }
-  .header-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; }
-  .header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); margin-bottom: 4px; }
-  .header p { color: var(--muted); font-size: 13px; }
+  .header { margin-bottom: 2.25rem; border-bottom: 1px solid var(--border-strong); padding-bottom: 1.5rem; position: relative; }
+  .header-eyebrow { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--forest); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .header-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--forest); display: inline-block; box-shadow: 0 0 0 3px rgba(31,92,63,0.15); }
+  .header h1 { font-family: var(--serif); font-size: 34px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); margin-bottom: 10px; line-height: 1.12; }
+  .header p { color: var(--muted); font-size: 13.5px; max-width: 780px; line-height: 1.6; }
 
   .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.75rem; }
   @media (max-width: 700px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
-  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; }
-  .kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
-  .kpi-val { font-size: 24px; font-weight: 600; line-height: 1; color: var(--text); letter-spacing: -0.02em; margin-bottom: 4px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.05rem 1.15rem; transition: border-color .15s, transform .15s, box-shadow .15s; }
+  .kpi:hover { border-color: var(--border-strong); transform: translateY(-1px); box-shadow: 0 6px 16px -8px rgba(25,24,16,0.18); }
+  .kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 7px; font-weight: 500; }
+  .kpi-val { font-family: var(--mono); font-size: 23px; font-weight: 500; line-height: 1; color: var(--text); letter-spacing: -0.01em; margin-bottom: 6px; }
   .kpi-delta { font-size: 11px; font-weight: 500; }
   .neg { color: var(--red); }
   .pos { color: var(--green); }
   .warn { color: var(--amber); }
 
-  .section-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 2rem 0 0.75rem; display: flex; align-items: center; gap: 8px; }
-  .section-label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .section-label { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); margin: 2.75rem 0 0.75rem; display: flex; align-items: center; gap: 10px; }
+  .section-label::before { content: ""; width: 18px; height: 1px; background: var(--forest); flex-shrink: 0; }
+  .section-label::after { content: ""; flex: 1; height: 1px; background: var(--border-strong); }
   .section-note { font-size: 11px; color: var(--muted); margin: -0.5rem 0 0.75rem; }
 
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
   .grid-1 { margin-bottom: 14px; }
   @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; }
-  .card-title { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.15rem 1.3rem; transition: border-color .15s, box-shadow .15s; }
+  .card:hover { border-color: var(--border-strong); box-shadow: 0 8px 22px -14px rgba(25,24,16,0.28); }
+  .card-title { font-family: var(--serif); font-size: 15.5px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
   .card-sub { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
 
   .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; font-size: 11px; color: var(--muted); }
@@ -82,8 +100,8 @@
   .explorer-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem; }
   .explorer-bar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
   .city-select-wrap { position: relative; flex: 1; min-width: 220px; max-width: 360px; }
-  .city-select-wrap input { width: 100%; font-size: 14px; font-family: inherit; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
-  .city-select-wrap input:focus { outline: 2px solid var(--blue); outline-offset: -1px; }
+  .city-select-wrap input { width: 100%; font-size: 14px; font-family: var(--sans); padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); transition: border-color .15s, box-shadow .15s; }
+  .city-select-wrap input:focus { outline: none; border-color: var(--forest); box-shadow: 0 0 0 3px rgba(31,92,63,0.12); }
   .city-rank-chip { font-size: 11px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 5px 11px; }
   .explorer-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
   @media (max-width: 700px) { .explorer-kpi-row { grid-template-columns: repeat(2, 1fr); } }
@@ -103,25 +121,36 @@
   .level-switch { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 2px; gap: 2px; }
   .level-btn { border: none; background: transparent; font: inherit; font-size: 11.5px; font-weight: 600; color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: background .12s, color .12s; }
   .level-btn:hover { color: var(--text); }
-  .level-btn.active { background: var(--surface); color: var(--blue); box-shadow: 0 1px 2px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+  .level-btn.active { background: var(--surface); color: var(--forest); box-shadow: 0 1px 2px rgba(0,0,0,0.06); border: 1px solid var(--border); }
   .level-btn-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
   .level-btn-row .level-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
 
-  .footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 11px; color: var(--faint); }
-  .footer p { margin-bottom: 6px; }
+  .footer { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--border-strong); font-size: 11px; color: var(--faint); }
+  .footer p { margin-bottom: 6px; max-width: 900px; }
 
   /* ── Land-cover map ── */
   .map-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
   .map-year-readout { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; color: var(--blue); min-width: 56px; }
-  .map-opacity-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
-  .map-play-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
-  .map-play-btn:hover { background: var(--border); }
-  .map-play-btn.playing { background: #c61e1e; color: #fff; border-color: #c61e1e; }
-  .map-year-select { font-size: 11px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
-  .map-opacity-row input[type="range"] { width: 110px; }
-  #landcoverMap { height: 480px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; }
+  .map-toolbar { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 5px; }
+  .map-year-select { font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 7px; border: 1px solid transparent; background: var(--surface); color: var(--text); cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  .map-icon-btn { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; font-size: 12px; border-radius: 7px; border: 1px solid transparent; background: var(--surface); color: var(--text); cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background .12s, color .12s; }
+  .map-icon-btn:hover { background: var(--border); }
+  .map-icon-btn.playing { background: var(--forest); color: #fff; }
+  .map-opacity-control { display: flex; align-items: center; gap: 6px; padding: 0 8px 0 4px; color: var(--muted); }
+  .map-opacity-control svg { flex-shrink: 0; opacity: .65; }
+  .map-opacity-control input[type="range"] { width: 90px; accent-color: var(--forest); }
+  #landcoverMap, #landcoverMap2 { height: 480px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; font-family: var(--sans); }
   .map-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); background: rgba(255,255,255,0.7); pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 500; }
   .map-loading.show { opacity: 1; }
+
+  /* ── Location search (geocoder) on land-cover maps ── */
+  .leaflet-control-geocoder { border-radius: 8px !important; border: 1px solid var(--border-strong) !important; box-shadow: 0 4px 14px -6px rgba(25,24,16,0.25) !important; overflow: hidden; background: var(--surface) !important; }
+  .leaflet-control-geocoder-form input { font-family: var(--sans) !important; font-size: 12.5px !important; color: var(--text) !important; }
+  .leaflet-control-geocoder-icon { background-color: var(--surface) !important; }
+  .leaflet-control-geocoder-alternatives { font-family: var(--sans); font-size: 12px; background: var(--surface); border-top: 1px solid var(--border); }
+  .leaflet-control-geocoder-alternatives li:hover { background: var(--bg); }
+  .map-search-pin { background: var(--forest); color: #fff; font-size: 10.5px; font-weight: 600; padding: 3px 8px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+  .boundary-tooltip { font-family: var(--sans) !important; font-size: 11px !important; font-weight: 600 !important; padding: 3px 8px !important; border: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important; }
 </style>
 </head>
 <body>
@@ -159,7 +188,7 @@
 
   <!-- Section 1 -->
   <div class="section-label">1 — Tren penutupan lahan se-Jawa</div>
-  <div class="section-note">Kini menyertakan tahun survei 2019 &amp; 2021, dan angka "Lainnya" pada komposisi (Bagian 5) telah dikoreksi. Lapisan warna = era kepresidenan RI; batas era mengikuti tahun survei terdekat dengan tanggal pelantikan.</div>
+  <div class="section-note">Lapisan warna = era kepresidenan RI; batas era mengikuti tahun survei terdekat dengan tanggal pelantikan.</div>
   <div class="grid-2">
     <div class="card">
       <div class="card-title">Jenis lahan utama 2000–2022</div>
@@ -245,7 +274,6 @@
 
   <!-- Section 5 -->
   <div class="section-label">5 — Komposisi penutupan lahan</div>
-  <div class="section-note">Kategori "Lainnya" telah dikoreksi (sebelumnya kurang terhitung ~254 ribu ha karena Semak Belukar &amp; Lahan Terbuka belum digabungkan sepenuhnya).</div>
   <div class="grid-2">
     <div class="card">
       <div class="card-title">Komposisi tahun 2000</div>
@@ -314,25 +342,56 @@
     <div class="movers-row" id="moversRow"><!-- filled by JS --></div>
   </div>
 
-  <div class="section-label">7 — Peta penutupan lahan</div>
-  <div class="section-note">Bergeser mengikuti slider tahun di Bagian 6 di atas. Perbesar (scroll/pinch) untuk melihat pola per kabupaten/kota; peta dasar menampilkan batas &amp; nama kota sebagai referensi. Resolusi citra diturunkan untuk kecepatan muat di web — cocok untuk melihat pola sebaran, bukan analisis piksel-demi-piksel.</div>
+  <div class="section-label">7 — Peta penutupan lahan · klasifikasi detail</div>
+  <div class="section-note">Gunakan kotak pencarian di pojok kiri atas peta untuk melompat ke lokasi tertentu, atau perbesar (scroll/pinch) untuk melihat pola per kabupaten/kota. Batas administrasi 119 kabupaten/kota ditampilkan di atas citra — arahkan kursor untuk nama wilayah, atau sembunyikan lewat ikon batas di toolbar. Skema klasifikasi KLHK, 24 kelas.</div>
   <div class="card" style="margin-bottom:14px;">
     <div class="map-bar">
       <div>
         <div class="card-title">Tutupan lahan — citra klasifikasi KLHK</div>
         <div class="card-sub" style="margin-bottom:0;">Tahun survei: <span class="map-year-readout" id="mapYearReadout">2022</span></div>
       </div>
-      <div class="map-opacity-row">
-        <select id="mapYearSelect" class="map-year-select"></select>
-        <button type="button" class="map-play-btn" id="mapPlayBtn" aria-label="Putar animasi tahun">▶ Putar</button>
-        <span>Transparansi</span>
-        <input type="range" id="mapOpacity" min="0" max="100" value="100" step="1">
+      <div class="map-toolbar">
+        <select id="mapYearSelect" class="map-year-select" aria-label="Pilih tahun survei"></select>
+        <button type="button" class="map-icon-btn" id="mapPlayBtn" aria-label="Putar animasi tahun" title="Putar animasi tahun">▶</button>
+        <button type="button" class="map-icon-btn active" id="mapBorderBtn" aria-label="Tampilkan/sembunyikan batas kabupaten/kota" title="Tampilkan/sembunyikan batas kabupaten/kota">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3.5L5 1.5L9 3.5L13 1.5V10.5L9 12.5L5 10.5L1 12.5V3.5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M5 1.5V10.5M9 3.5V12.5" stroke="currentColor" stroke-width="1.1" stroke-dasharray="1.5 1.3"/></svg>
+        </button>
+        <div class="map-opacity-control" title="Transparansi lapisan citra">
+          <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="5.5" cy="7" r="4.5" fill="currentColor" opacity="0.5"/><circle cx="8.5" cy="7" r="4.5" fill="currentColor" opacity="0.5"/></svg>
+          <input type="range" id="mapOpacity" min="0" max="100" value="100" step="1" aria-label="Transparansi lapisan citra">
+        </div>
       </div>
     </div>
     <div id="landcoverMap">
       <div class="map-loading" id="mapLoading">Memuat citra…</div>
     </div>
     <div class="legend" id="landcoverLegend" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="section-label">8 — Peta penutupan lahan · klasifikasi ringkas</div>
+  <div class="section-note">Data yang sama, disederhanakan menjadi 9 kelas untuk pembacaan pola yang lebih cepat.</div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="map-bar">
+      <div>
+        <div class="card-title">Tutupan lahan — klasifikasi ringkas</div>
+        <div class="card-sub" style="margin-bottom:0;">Tahun survei: <span class="map-year-readout" id="mapYearReadout2">2022</span></div>
+      </div>
+      <div class="map-toolbar">
+        <select id="mapYearSelect2" class="map-year-select" aria-label="Pilih tahun survei"></select>
+        <button type="button" class="map-icon-btn" id="mapPlayBtn2" aria-label="Putar animasi tahun" title="Putar animasi tahun">▶</button>
+        <button type="button" class="map-icon-btn active" id="mapBorderBtn2" aria-label="Tampilkan/sembunyikan batas kabupaten/kota" title="Tampilkan/sembunyikan batas kabupaten/kota">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3.5L5 1.5L9 3.5L13 1.5V10.5L9 12.5L5 10.5L1 12.5V3.5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M5 1.5V10.5M9 3.5V12.5" stroke="currentColor" stroke-width="1.1" stroke-dasharray="1.5 1.3"/></svg>
+        </button>
+        <div class="map-opacity-control" title="Transparansi lapisan citra">
+          <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="5.5" cy="7" r="4.5" fill="currentColor" opacity="0.5"/><circle cx="8.5" cy="7" r="4.5" fill="currentColor" opacity="0.5"/></svg>
+          <input type="range" id="mapOpacity2" min="0" max="100" value="100" step="1" aria-label="Transparansi lapisan citra">
+        </div>
+      </div>
+    </div>
+    <div id="landcoverMap2">
+      <div class="map-loading" id="mapLoading2">Memuat citra…</div>
+    </div>
+    <div class="legend" id="landcoverLegend2" style="margin-top:10px;"></div>
   </div>
 
   <div class="footer">
@@ -1343,7 +1402,7 @@ document.getElementById('citySearch').addEventListener('input', (e) => {
 document.getElementById('yearSlider').addEventListener('input', (e) => {
   currentYearIdx = parseInt(e.target.value, 10);
   renderDonut(currentCity, currentYearIdx);
-  updateLandcoverMap(currentYearIdx);
+  if (detailExplorer) detailExplorer.update(currentYearIdx);
 });
 document.getElementById('levelSwitch').addEventListener('click', (e) => {
   const btn = e.target.closest('.level-btn');
@@ -1356,23 +1415,18 @@ document.getElementById('levelSwitch').addEventListener('click', (e) => {
 updateCity(currentCity);
 setActiveLevelButton();
 
-// ── Land-cover map (Section 7) ──
-// PNGs are nearest-neighbor downsamples of the original KLHK GeoTIFFs
-// (41449x13972 px full res -> ~5181x1746 px for web), so class colors
-// stay pure at boundaries. All 13 years share the identical extent, so
-// one bounds pair works for every layer.
-// Tiled XYZ pyramid per survey year (nearest-neighbor resampled from the
-// source classification rasters, so class colors stay pure at every zoom
-// level). Tiles generated for z6-z12 (~38m/px at z12, native res ~30m/px) —
+// ── Land-cover maps (Section 7 & 8) ──
+// Tiled XYZ pyramids per survey year, nearest-neighbor resampled from the
+// source classification rasters so class colors stay pure at every zoom
+// level. Tiles generated for z6-z12 (~38m/px at z12, native res ~30m/px) —
 // beyond z12 Leaflet upsamples the z12 tiles rather than requesting more.
-// All 13 years share the identical extent, so one bounds pair works for
-// every layer.
+// All years/schemes share the identical extent, so one bounds pair works
+// for every layer.
 const LANDCOVER_BOUNDS = [[-8.780309581281571, 105.09987373100026], [-5.042965328999984, 116.27018900000019]];
-const LANDCOVER_TILE_DIR = 'landcover_tiles/';
 const LANDCOVER_MAX_NATIVE_ZOOM = 12;
 const LANDCOVER_YEARS_AVAILABLE = new Set([2000, 2003, 2006, 2009, 2011, 2012, 2013, 2014, 2015, 2019, 2020, 2021, 2022]);
 
-const LANDCOVER_LEGEND = [
+const LANDCOVER_LEGEND_DETAIL = [
   ['#005c2c', 'Hutan Lahan Kering Primer'], ['#38913c', 'Hutan Lahan Kering Sekunder'],
   ['#005a5a', 'Hutan Mangrove Primer'], ['#4d9696', 'Hutan Mangrove Sekunder'],
   ['#006e82', 'Hutan Rawa Primer'], ['#6eafbe', 'Hutan Rawa Sekunder'],
@@ -1387,96 +1441,182 @@ const LANDCOVER_LEGEND = [
   ['#e1e1e1', 'Awan'], ['#808080', 'Lainnya / Tidak Terklasifikasi']
 ];
 
-function renderLandcoverLegend() {
-  const el = document.getElementById('landcoverLegend');
-  el.innerHTML = LANDCOVER_LEGEND.map(([color, label]) =>
-    `<span class="legend-item"><span class="dot" style="background:${color}"></span>${label}</span>`
-  ).join('');
-}
+const LANDCOVER_LEGEND_SIMPLE = [
+  ['#a8d5f5', 'Sawah'], ['#38913c', 'Hutan'], ['#8cc65a', 'Hutan Tanaman'],
+  ['#dec560', 'Pertanian Campuran'], ['#c61e1e', 'Permukiman'], ['#ffeb00', 'Tegalan'],
+  ['#fab96e', 'Perkebunan'], ['#69aafa', 'Tambak'], ['#808080', 'Lainnya']
+];
 
-function populateLandcoverYearSelect() {
-  const sel = document.getElementById('mapYearSelect');
-  sel.innerHTML = CITY_YEARS.map((y, i) => `<option value="${i}">${y}</option>`).join('');
-  sel.addEventListener('change', (e) => {
-    const slider = document.getElementById('yearSlider');
-    slider.value = e.target.value;
-    slider.dispatchEvent(new Event('input'));
-  });
-}
-
-let landcoverMap = null;
-let landcoverLayer = null;
-let landcoverPlaying = false;
-let landcoverPlayTimer = null;
-
-function initLandcoverMap() {
-  landcoverMap = L.map('landcoverMap', { minZoom: 6, maxZoom: 13 });
-  landcoverMap.fitBounds(LANDCOVER_BOUNDS);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    subdomains: 'abcd',
-    maxZoom: 20
-  }).addTo(landcoverMap);
-
-  renderLandcoverLegend();
-  populateLandcoverYearSelect();
-  updateLandcoverMap(currentYearIdx);
-
-  document.getElementById('mapOpacity').addEventListener('input', (e) => {
-    if (landcoverLayer) landcoverLayer.setOpacity(parseInt(e.target.value, 10) / 100);
-  });
-
-  document.getElementById('mapPlayBtn').addEventListener('click', toggleLandcoverPlay);
-}
-
-function updateLandcoverMap(yearIdx) {
-  if (!landcoverMap) return;
-  const year = CITY_YEARS[yearIdx];
-  document.getElementById('mapYearReadout').textContent = year;
-  document.getElementById('mapYearSelect').value = yearIdx;
-  if (!LANDCOVER_YEARS_AVAILABLE.has(parseInt(year, 10))) return;
-
-  const loadingEl = document.getElementById('mapLoading');
-  loadingEl.classList.add('show');
-
-  const opacity = parseInt(document.getElementById('mapOpacity').value, 10) / 100;
-  const newLayer = L.tileLayer(LANDCOVER_TILE_DIR + year + '/{z}/{x}/{y}.png', {
-    bounds: LANDCOVER_BOUNDS,
-    maxNativeZoom: LANDCOVER_MAX_NATIVE_ZOOM,
-    minZoom: 6,
-    maxZoom: 13,
-    tileSize: 256,
-    opacity,
-    noWrap: true
-  });
-  newLayer.once('load', () => loadingEl.classList.remove('show'));
-  newLayer.addTo(landcoverMap);
-
-  if (landcoverLayer) landcoverMap.removeLayer(landcoverLayer);
-  landcoverLayer = newLayer;
-}
-
-function toggleLandcoverPlay() {
-  const btn = document.getElementById('mapPlayBtn');
-  landcoverPlaying = !landcoverPlaying;
-  if (landcoverPlaying) {
-    btn.textContent = '⏸ Berhenti';
-    btn.classList.add('playing');
-    landcoverPlayTimer = setInterval(() => {
-      const slider = document.getElementById('yearSlider');
-      let next = parseInt(slider.value, 10) + 1;
-      if (next > parseInt(slider.max, 10)) next = 0;
-      slider.value = next;
-      slider.dispatchEvent(new Event('input'));
-    }, 1200);
-  } else {
-    btn.textContent = '▶ Putar';
-    btn.classList.remove('playing');
-    clearInterval(landcoverPlayTimer);
+const BOUNDARIES_URL = 'data/kabkota_boundaries.geojson';
+let boundariesPromise = null;
+function loadBoundaries() {
+  if (!boundariesPromise) {
+    boundariesPromise = fetch(BOUNDARIES_URL).then(r => {
+      if (!r.ok) throw new Error('gagal memuat batas wilayah');
+      return r.json();
+    });
   }
+  return boundariesPromise;
 }
 
-initLandcoverMap();
+function createLandcoverExplorer(cfg) {
+  const state = { map: null, layer: null, playing: false, timer: null, boundaryLayer: null, boundaryOn: true };
+
+  function renderLegend() {
+    document.getElementById(cfg.legendEl).innerHTML = cfg.legend.map(([color, label]) =>
+      `<span class="legend-item"><span class="dot" style="background:${color}"></span>${label}</span>`
+    ).join('');
+  }
+
+  function populateYearSelect() {
+    const sel = document.getElementById(cfg.selectEl);
+    sel.innerHTML = CITY_YEARS.map((y, i) => `<option value="${i}">${y}</option>`).join('');
+    sel.value = cfg.initialYearIdx;
+    sel.addEventListener('change', (e) => update(parseInt(e.target.value, 10)));
+  }
+
+  function update(yearIdx) {
+    if (!state.map) return;
+    const year = CITY_YEARS[yearIdx];
+    document.getElementById(cfg.readoutEl).textContent = year;
+    document.getElementById(cfg.selectEl).value = yearIdx;
+    if (!LANDCOVER_YEARS_AVAILABLE.has(parseInt(year, 10))) return;
+
+    const loadingEl = document.getElementById(cfg.loadingEl);
+    loadingEl.classList.add('show');
+
+    const opacity = parseInt(document.getElementById(cfg.opacityEl).value, 10) / 100;
+    const newLayer = L.tileLayer(cfg.tileDir + year + '/{z}/{x}/{y}.png', {
+      bounds: LANDCOVER_BOUNDS,
+      maxNativeZoom: LANDCOVER_MAX_NATIVE_ZOOM,
+      minZoom: 6,
+      maxZoom: 13,
+      tileSize: 256,
+      opacity,
+      noWrap: true
+    });
+    newLayer.once('load', () => loadingEl.classList.remove('show'));
+    newLayer.addTo(state.map);
+
+    if (state.layer) state.map.removeLayer(state.layer);
+    state.layer = newLayer;
+  }
+
+  function togglePlay() {
+    const btn = document.getElementById(cfg.playBtnEl);
+    state.playing = !state.playing;
+    if (state.playing) {
+      btn.textContent = '⏸';
+      btn.classList.add('playing');
+      const sel = document.getElementById(cfg.selectEl);
+      state.timer = setInterval(() => {
+        let next = parseInt(sel.value, 10) + 1;
+        if (next >= CITY_YEARS.length) next = 0;
+        update(next);
+      }, 1200);
+    } else {
+      btn.textContent = '▶';
+      btn.classList.remove('playing');
+      clearInterval(state.timer);
+    }
+  }
+
+  function initGeocoder() {
+    if (typeof L.Control.Geocoder === 'undefined') return;
+    const geocoder = L.Control.geocoder({
+      defaultMarkGeocode: false,
+      placeholder: 'Cari lokasi — kota, kabupaten, kecamatan…',
+      errorMessage: 'Lokasi tidak ditemukan',
+      collapsed: false,
+      position: 'topleft',
+      geocoder: L.Control.Geocoder.nominatim({
+        geocodingQueryParams: { countrycodes: 'id', viewbox: '105.0,-5.0,116.3,-8.8', bounded: 0 }
+      })
+    });
+
+    let marker = null;
+    geocoder.on('markgeocode', (e) => {
+      const { center, bbox, name } = e.geocode;
+      if (marker) state.map.removeLayer(marker);
+      marker = L.marker(center, {
+        icon: L.divIcon({ className: 'map-search-pin', html: name.split(',')[0], iconAnchor: [0, 0] })
+      }).addTo(state.map);
+      state.map.fitBounds(bbox.pad ? bbox.pad(0.2) : L.latLngBounds(bbox));
+    });
+
+    geocoder.addTo(state.map);
+  }
+
+  function initBoundaries() {
+    const btn = document.getElementById(cfg.borderBtnEl);
+    if (!btn) return;
+
+    loadBoundaries().then(geojson => {
+      state.boundaryLayer = L.geoJSON(geojson, {
+        style: {
+          color: '#191810',
+          weight: 1,
+          opacity: 0.55,
+          fillOpacity: 0,
+          dashArray: null
+        },
+        onEachFeature: (feature, layer) => {
+          const name = feature.properties.n;
+          layer.bindTooltip(name, { sticky: true, className: 'boundary-tooltip', direction: 'top' });
+          layer.on('mouseover', () => layer.setStyle({ weight: 2.4, opacity: 0.9, color: '#1f5c3f' }));
+          layer.on('mouseout', () => layer.setStyle({ weight: 1, opacity: 0.55, color: '#191810' }));
+        }
+      });
+      if (state.boundaryOn) state.boundaryLayer.addTo(state.map);
+    }).catch(() => { btn.style.display = 'none'; });
+
+    btn.addEventListener('click', () => {
+      state.boundaryOn = !state.boundaryOn;
+      btn.classList.toggle('active', state.boundaryOn);
+      if (!state.boundaryLayer) return;
+      if (state.boundaryOn) state.boundaryLayer.addTo(state.map);
+      else state.map.removeLayer(state.boundaryLayer);
+    });
+  }
+
+  function init() {
+    state.map = L.map(cfg.mapEl, { minZoom: 6, maxZoom: 13 });
+    state.map.fitBounds(LANDCOVER_BOUNDS);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 20
+    }).addTo(state.map);
+
+    renderLegend();
+    populateYearSelect();
+    update(cfg.initialYearIdx);
+    initGeocoder();
+    initBoundaries();
+
+    document.getElementById(cfg.opacityEl).addEventListener('input', (e) => {
+      if (state.layer) state.layer.setOpacity(parseInt(e.target.value, 10) / 100);
+    });
+    document.getElementById(cfg.playBtnEl).addEventListener('click', togglePlay);
+  }
+
+  init();
+  return { update };
+}
+
+let detailExplorer = createLandcoverExplorer({
+  mapEl: 'landcoverMap', loadingEl: 'mapLoading', legendEl: 'landcoverLegend',
+  selectEl: 'mapYearSelect', playBtnEl: 'mapPlayBtn', opacityEl: 'mapOpacity',
+  readoutEl: 'mapYearReadout', tileDir: 'landcover_tiles/', legend: LANDCOVER_LEGEND_DETAIL,
+  initialYearIdx: currentYearIdx, borderBtnEl: 'mapBorderBtn'
+});
+
+let simpleExplorer = createLandcoverExplorer({
+  mapEl: 'landcoverMap2', loadingEl: 'mapLoading2', legendEl: 'landcoverLegend2',
+  selectEl: 'mapYearSelect2', playBtnEl: 'mapPlayBtn2', opacityEl: 'mapOpacity2',
+  readoutEl: 'mapYearReadout2', tileDir: 'landcover_tiles_v2/', legend: LANDCOVER_LEGEND_SIMPLE,
+  initialYearIdx: currentYearIdx, borderBtnEl: 'mapBorderBtn2'
+});
 
 </script>
 </body>
