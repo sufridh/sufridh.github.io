@@ -39,6 +39,7 @@
 
   body {
     font-family: var(--sans);
+    overflow-x: hidden;
     background:
       radial-gradient(ellipse 900px 500px at 8% -10%, rgba(31,92,63,0.06), transparent 60%),
       radial-gradient(ellipse 700px 500px at 100% 0%, rgba(163,64,42,0.05), transparent 55%),
@@ -131,7 +132,7 @@
   /* ── Land-cover map ── */
   .map-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
   .map-year-readout { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; color: var(--blue); min-width: 56px; }
-  .map-toolbar { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 5px; }
+  .map-toolbar { display: flex; align-items: center; gap: 6px; row-gap: 6px; flex-wrap: wrap; max-width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 5px; box-sizing: border-box; }
   .map-year-select { font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 7px; border: 1px solid transparent; background: var(--surface); color: var(--text); cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
   .map-icon-btn { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; font-size: 12px; border-radius: 7px; border: 1px solid transparent; background: var(--surface); color: var(--text); cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background .12s, color .12s; }
   .map-icon-btn:hover { background: var(--border); }
@@ -139,6 +140,9 @@
   .map-opacity-control { display: flex; align-items: center; gap: 6px; padding: 0 8px 0 4px; color: var(--muted); }
   .map-opacity-control svg { flex-shrink: 0; opacity: .65; }
   .map-opacity-control input[type="range"] { width: 90px; accent-color: var(--forest); }
+  .map-opacity-control--ntl { transition: opacity .15s; }
+  .map-opacity-control--ntl input[type="range"] { width: 56px; }
+  .map-opacity-control--ntl:not(.enabled) { opacity: .35; pointer-events: none; }
   #landcoverMap, #landcoverMap2 { height: 480px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; font-family: var(--sans); }
   .map-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); background: rgba(255,255,255,0.7); pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 500; }
   .map-loading.show { opacity: 1; }
@@ -167,6 +171,12 @@
       flex-direction: column;
     }
     .leaflet-control-geocoder-form input { width: 140px !important; }
+    .map-bar { flex-direction: column; align-items: stretch; }
+    .map-toolbar { justify-content: flex-start; }
+    .map-year-select { padding: 6px 6px; font-size: 11px; }
+    .map-opacity-control { padding: 0 4px 0 2px; }
+    .map-opacity-control input[type="range"] { width: 56px; }
+    .map-opacity-control--ntl input[type="range"] { width: 40px; }
   }
   .map-search-pin { background: var(--forest); color: #fff; font-size: 10.5px; font-weight: 600; padding: 3px 8px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
   .boundary-tooltip { font-family: var(--sans) !important; font-size: 11px !important; font-weight: 600 !important; padding: 3px 8px !important; border: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important; }
@@ -449,7 +459,7 @@
   </div>
 
   <div class="section-label" id="sec7">7 — Peta penutupan lahan · klasifikasi detail</div>
-  <div class="section-note">Gunakan kotak pencarian di pojok kiri atas peta untuk melompat ke lokasi tertentu, atau perbesar (scroll/pinch) untuk melihat pola per kabupaten/kota. Batas administrasi 119 kabupaten/kota ditampilkan di atas citra — arahkan kursor untuk nama wilayah, atau sembunyikan lewat ikon batas di toolbar. Skema klasifikasi KLHK, 24 kelas.</div>
+  <div class="section-note">Gunakan kotak pencarian di pojok kiri atas peta untuk melompat ke lokasi tertentu, atau perbesar (scroll/pinch) untuk melihat pola per kabupaten/kota. Batas administrasi 119 kabupaten/kota ditampilkan di atas citra — arahkan kursor untuk nama wilayah, atau sembunyikan lewat ikon batas di toolbar. Skema klasifikasi KLHK, 24 kelas. Ikon kilau di toolbar menampilkan citra lampu malam (NTL) sebagai validasi visual area terbangun, tersedia untuk tahun 2015, 2019–2022.</div>
   <div class="card" style="margin-bottom:14px;">
     <div class="map-bar">
       <div>
@@ -460,6 +470,13 @@
         <select id="mapBasemapSelect" class="map-year-select" aria-label="Pilih peta dasar" title="Peta dasar"></select>
         <select id="mapYearSelect" class="map-year-select" aria-label="Pilih tahun survei"></select>
         <button type="button" class="map-icon-btn" id="mapPlayBtn" aria-label="Putar animasi tahun" title="Putar animasi tahun">▶</button>
+        <button type="button" class="map-icon-btn" id="mapNtlBtn" aria-label="Tampilkan/sembunyikan citra lampu malam (NTL)" title="Validasi built-up — citra lampu malam (NTL)">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" fill="currentColor"/><path d="M7 0.8V2.6M7 11.4V13.2M0.8 7H2.6M11.4 7H13.2M2.47 2.47L3.74 3.74M10.26 10.26L11.53 11.53M11.53 2.47L10.26 3.74M3.74 10.26L2.47 11.53" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+        </button>
+        <div class="map-opacity-control map-opacity-control--ntl" id="mapNtlOpacityWrap" title="Transparansi lapisan NTL">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" fill="currentColor"/><path d="M7 0.8V2.6M7 11.4V13.2M0.8 7H2.6M11.4 7H13.2M2.47 2.47L3.74 3.74M10.26 10.26L11.53 11.53M11.53 2.47L10.26 3.74M3.74 10.26L2.47 11.53" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <input type="range" id="mapNtlOpacity" min="0" max="100" value="85" step="1" aria-label="Transparansi lapisan NTL">
+        </div>
         <button type="button" class="map-icon-btn active" id="mapBorderBtn" aria-label="Tampilkan/sembunyikan batas kabupaten/kota" title="Tampilkan/sembunyikan batas kabupaten/kota">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3.5L5 1.5L9 3.5L13 1.5V10.5L9 12.5L5 10.5L1 12.5V3.5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M5 1.5V10.5M9 3.5V12.5" stroke="currentColor" stroke-width="1.1" stroke-dasharray="1.5 1.3"/></svg>
         </button>
@@ -487,6 +504,13 @@
         <select id="mapBasemapSelect2" class="map-year-select" aria-label="Pilih peta dasar" title="Peta dasar"></select>
         <select id="mapYearSelect2" class="map-year-select" aria-label="Pilih tahun survei"></select>
         <button type="button" class="map-icon-btn" id="mapPlayBtn2" aria-label="Putar animasi tahun" title="Putar animasi tahun">▶</button>
+        <button type="button" class="map-icon-btn" id="mapNtlBtn2" aria-label="Tampilkan/sembunyikan citra lampu malam (NTL)" title="Validasi built-up — citra lampu malam (NTL)">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" fill="currentColor"/><path d="M7 0.8V2.6M7 11.4V13.2M0.8 7H2.6M11.4 7H13.2M2.47 2.47L3.74 3.74M10.26 10.26L11.53 11.53M11.53 2.47L10.26 3.74M3.74 10.26L2.47 11.53" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+        </button>
+        <div class="map-opacity-control map-opacity-control--ntl" id="mapNtlOpacityWrap2" title="Transparansi lapisan NTL">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" fill="currentColor"/><path d="M7 0.8V2.6M7 11.4V13.2M0.8 7H2.6M11.4 7H13.2M2.47 2.47L3.74 3.74M10.26 10.26L11.53 11.53M11.53 2.47L10.26 3.74M3.74 10.26L2.47 11.53" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          <input type="range" id="mapNtlOpacity2" min="0" max="100" value="85" step="1" aria-label="Transparansi lapisan NTL">
+        </div>
         <button type="button" class="map-icon-btn active" id="mapBorderBtn2" aria-label="Tampilkan/sembunyikan batas kabupaten/kota" title="Tampilkan/sembunyikan batas kabupaten/kota">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 3.5L5 1.5L9 3.5L13 1.5V10.5L9 12.5L5 10.5L1 12.5V3.5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M5 1.5V10.5M9 3.5V12.5" stroke="currentColor" stroke-width="1.1" stroke-dasharray="1.5 1.3"/></svg>
         </button>
@@ -1536,6 +1560,15 @@ const LANDCOVER_BOUNDS = [[-8.780309581281571, 105.09987373100026], [-5.04296532
 const LANDCOVER_MAX_NATIVE_ZOOM = 12;
 const LANDCOVER_YEARS_AVAILABLE = new Set([2000, 2003, 2006, 2009, 2011, 2012, 2013, 2014, 2015, 2019, 2020, 2021, 2022]);
 
+// Night-time lights (NTL) tiles — used to visually cross-check KLHK built-up classification.
+// Only a subset of survey years has NTL coverage; tiles sit in their own pane so they always
+// render above the KLHK layer but stay beneath the administrative-boundary layer.
+const NTL_TILE_DIR = 'ntl_tiles/';
+const NTL_MAX_NATIVE_ZOOM = 9;
+const NTL_YEARS_AVAILABLE = new Set([2015, 2019, 2020, 2021, 2022]);
+const NTL_PANE = 'ntlPane';
+const NTL_PANE_Z_INDEX = 350; // between the tile pane (200) and the boundary/overlay pane (400)
+
 const BASEMAPS = [
   {
     id: 'light',
@@ -1596,7 +1629,7 @@ function loadBoundaries() {
 }
 
 function createLandcoverExplorer(cfg) {
-  const state = { map: null, layer: null, playing: false, timer: null, boundaryLayer: null, boundaryOn: true };
+  const state = { map: null, layer: null, playing: false, timer: null, boundaryLayer: null, boundaryOn: true, ntlLayer: null, ntlOn: false };
 
   function renderLegend() {
     document.getElementById(cfg.legendEl).innerHTML = cfg.legend.map(([color, label]) =>
@@ -1636,6 +1669,47 @@ function createLandcoverExplorer(cfg) {
 
     if (state.layer) state.map.removeLayer(state.layer);
     state.layer = newLayer;
+
+    updateNtl(year);
+  }
+
+  function updateNtl(year) {
+    if (!state.map) return;
+    if (state.ntlLayer) { state.map.removeLayer(state.ntlLayer); state.ntlLayer = null; }
+    if (!state.ntlOn) return;
+    if (!NTL_YEARS_AVAILABLE.has(parseInt(year, 10))) return;
+
+    const opacityEl = document.getElementById(cfg.ntlOpacityEl);
+    const ntlOpacity = opacityEl ? parseInt(opacityEl.value, 10) / 100 : 0.85;
+
+    state.ntlLayer = L.tileLayer(NTL_TILE_DIR + year + '/{z}/{x}/{y}.png', {
+      bounds: LANDCOVER_BOUNDS,
+      maxNativeZoom: NTL_MAX_NATIVE_ZOOM,
+      minZoom: 6,
+      maxZoom: 13,
+      tileSize: 256,
+      opacity: ntlOpacity,
+      noWrap: true,
+      pane: NTL_PANE
+    }).addTo(state.map);
+  }
+
+  function initNtlToggle() {
+    const btn = document.getElementById(cfg.ntlBtnEl);
+    const opacityWrap = document.getElementById(cfg.ntlOpacityWrapEl);
+    const opacityEl = document.getElementById(cfg.ntlOpacityEl);
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      state.ntlOn = !state.ntlOn;
+      btn.classList.toggle('active', state.ntlOn);
+      if (opacityWrap) opacityWrap.classList.toggle('enabled', state.ntlOn);
+      updateNtl(CITY_YEARS[parseInt(document.getElementById(cfg.selectEl).value, 10)]);
+    });
+    if (opacityEl) {
+      opacityEl.addEventListener('input', (e) => {
+        if (state.ntlLayer) state.ntlLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+      });
+    }
   }
 
   function togglePlay() {
@@ -1704,7 +1778,13 @@ function createLandcoverExplorer(cfg) {
         }
       });
       if (state.boundaryOn) state.boundaryLayer.addTo(state.map);
-    }).catch(() => { btn.style.display = 'none'; });
+    }).catch((err) => {
+      btn.disabled = true;
+      btn.classList.remove('active');
+      btn.style.opacity = '0.4';
+      btn.title = 'Batas wilayah gagal dimuat (periksa file ' + BOUNDARIES_URL + ')';
+      console.error('Gagal memuat batas kabupaten/kota dari', BOUNDARIES_URL, err);
+    });
 
     btn.addEventListener('click', () => {
       state.boundaryOn = !state.boundaryOn;
@@ -1742,6 +1822,9 @@ function createLandcoverExplorer(cfg) {
   function init() {
     state.map = L.map(cfg.mapEl, { minZoom: 6, maxZoom: 13 });
     state.map.fitBounds(LANDCOVER_BOUNDS);
+    state.map.createPane(NTL_PANE);
+    state.map.getPane(NTL_PANE).style.zIndex = NTL_PANE_Z_INDEX;
+    state.map.getPane(NTL_PANE).style.pointerEvents = 'none';
     setBasemap(0);
     initBasemapSwitcher();
 
@@ -1750,6 +1833,7 @@ function createLandcoverExplorer(cfg) {
     update(cfg.initialYearIdx);
     initGeocoder();
     initBoundaries();
+    initNtlToggle();
 
     document.getElementById(cfg.opacityEl).addEventListener('input', (e) => {
       if (state.layer) state.layer.setOpacity(parseInt(e.target.value, 10) / 100);
@@ -1765,14 +1849,16 @@ let detailExplorer = createLandcoverExplorer({
   mapEl: 'landcoverMap', loadingEl: 'mapLoading', legendEl: 'landcoverLegend',
   selectEl: 'mapYearSelect', playBtnEl: 'mapPlayBtn', opacityEl: 'mapOpacity',
   readoutEl: 'mapYearReadout', tileDir: 'landcover_tiles/', legend: LANDCOVER_LEGEND_DETAIL,
-  initialYearIdx: currentYearIdx, borderBtnEl: 'mapBorderBtn', basemapSelEl: 'mapBasemapSelect'
+  initialYearIdx: currentYearIdx, borderBtnEl: 'mapBorderBtn', basemapSelEl: 'mapBasemapSelect',
+  ntlBtnEl: 'mapNtlBtn', ntlOpacityEl: 'mapNtlOpacity', ntlOpacityWrapEl: 'mapNtlOpacityWrap'
 });
 
 let simpleExplorer = createLandcoverExplorer({
   mapEl: 'landcoverMap2', loadingEl: 'mapLoading2', legendEl: 'landcoverLegend2',
   selectEl: 'mapYearSelect2', playBtnEl: 'mapPlayBtn2', opacityEl: 'mapOpacity2',
   readoutEl: 'mapYearReadout2', tileDir: 'landcover_tiles_v2/', legend: LANDCOVER_LEGEND_SIMPLE,
-  initialYearIdx: currentYearIdx, borderBtnEl: 'mapBorderBtn2', basemapSelEl: 'mapBasemapSelect2'
+  initialYearIdx: currentYearIdx, borderBtnEl: 'mapBorderBtn2', basemapSelEl: 'mapBasemapSelect2',
+  ntlBtnEl: 'mapNtlBtn2', ntlOpacityEl: 'mapNtlOpacity2', ntlOpacityWrapEl: 'mapNtlOpacityWrap2'
 });
 
 </script>
