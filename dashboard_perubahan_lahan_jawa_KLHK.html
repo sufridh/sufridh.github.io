@@ -556,7 +556,7 @@
   </div>
 
   <div class="section-label" id="sec9">9 — Peta kepadatan penduduk</div>
-  <div class="section-note">Kepadatan dihitung dua cara: <b>mentah</b> (penduduk ÷ luas administratif) dan <b>lahan terbangun</b> (penduduk ÷ luas kelas "Permukiman" pada data tutupan lahan KLHK), tersedia untuk sensus 2000, 2010, dan 2020. Untuk sensus 2000 dan 13 wilayah hasil pemekaran, populasi diperkirakan dari data wilayah induknya dan ditandai "†". Arahkan kursor atau klik wilayah pada peta untuk melihat rincian; gunakan kotak "Lompat ke…" untuk mencari kabupaten/kota tertentu. Detail penyesuaian dan batasan data ada di catatan metodologi di bawah peta.</div>
+  <div class="section-note">Kepadatan dihitung dua cara: <b>mentah</b> (penduduk ÷ luas administratif) dan <b>lahan terbangun</b> (penduduk ÷ luas kelas "Permukiman" pada data tutupan lahan KLHK), tersedia untuk sensus 2000, 2010, dan 2020. Untuk sensus 2000 dan 13 wilayah hasil pemekaran, populasi diperkirakan dari data wilayah induknya dan ditandai "*". Arahkan kursor atau klik wilayah pada peta untuk melihat rincian; gunakan kotak "Lompat ke…" untuk mencari kabupaten/kota tertentu. Detail penyesuaian dan batasan data ada di catatan metodologi di bawah peta.</div>
   <div class="card" style="margin-bottom:14px;">
     <div class="map-bar">
       <div>
@@ -606,42 +606,58 @@
     <div class="card-sub" style="margin-bottom:8px;">Sumber data, penyesuaian akibat pemekaran wilayah, dan batasan data</div>
     <ul style="margin:0 0 0 1.1em; padding:0; font-size:12px; line-height:1.85; color:var(--text);">
       <li><b>Data penduduk:</b> Sensus BPS tahun 2000, 2010, dan 2020, untuk 119 kabupaten/kota di Pulau Jawa (DKI Jakarta 6, Banten 8, Jawa Barat 27, Jawa Tengah 35, DI Yogyakarta 5, Jawa Timur 38), memakai batas wilayah yang berlaku saat ini.</li>
-      <li><b>Luas wilayah:</b> dihitung dari peta batas <code>kabkota_boundaries.geojson</code>, peta yang sama dengan yang dipakai untuk peta tutupan lahan di bagian 7–8. Selisihnya dengan angka KLHK rata-rata di bawah 0,3%.</li>
+      <li><b>Luas wilayah:</b> dihitung dari peta batas <code>kabkota_boundaries.geojson</code>, peta yang sama dengan yang digunakan untuk peta tutupan lahan di bagian 7–8. Selisihnya dengan angka KLHK rata-rata di bawah 0,3%.</li>
       <li><b>Luas lahan terbangun:</b> kelas "Permukiman" pada data tutupan lahan KLHK. Tersedia untuk tahun survei 2000, 2011 (dipasangkan dengan sensus 2010, karena KLHK tidak mensurvei persis tahun itu), dan 2020.</li>
       <li>
-        <b>Kenapa sebagian data penduduk perlu disesuaikan:</b> batas kabupaten/kota di Indonesia sering berubah karena pemekaran wilayah — satu daerah pecah jadi dua atau lebih. Data KLHK sudah memakai batas wilayah yang berlaku sekarang untuk semua tahun survei, jadi luas lahan terbangun aman. Yang perlu disesuaikan adalah data penduduk sensus lama, karena dulu masih dicatat memakai batas wilayah lama (belum terpecah).
+        <b>Kenapa sebagian data penduduk perlu disesuaikan:</b> batas kabupaten/kota di Indonesia sering berubah karena pemekaran wilayah — satu daerah pecah jadi dua atau lebih. Data KLHK sudah memakai batas wilayah yang berlaku sekarang untuk semua tahun survei, jadi luas lahan terbangun aman. Yang perlu disesuaikan adalah data penduduk sensus lama: apabila sensus dilakukan <i>sebelum</i> suatu wilayah resmi berdiri sendiri, penduduknya masih tercatat gabung dengan kabupaten/kota induknya — padahal peta batas dan luas lahan yang digunakan di sini sudah menganggapnya terpisah. Angka penduduk gabungan itu perlu "dipecah" terlebih dahulu supaya cocok dengan luas wilayah yang sudah terpisah.
         <div style="margin:8px 0; padding:9px 11px; background:rgba(127,127,127,0.08); border-radius:6px; border:1px solid rgba(127,127,127,0.18);">
-          <b>Cara menghitung perkiraan populasi</b> — contoh Kabupaten Bogor / Kota Depok tahun 2000:
+          <b>Rumus umum</b> — memecah populasi gabungan wilayah induk (A) dan wilayah hasil pemekaran (B) pada sensus lama, memakai data dari sensus yang lebih baru (sensus acuan) saat A dan B sudah tercatat terpisah:
           <div style="margin-top:6px; font-family:monospace; font-size:11.5px; line-height:1.7;">
-            Persentase penduduk Depok tahun 2010 =<br>
-            &nbsp;&nbsp;Penduduk Depok 2010 ÷ Penduduk (Bogor+Depok) 2010<br><br>
-            Perkiraan penduduk Depok tahun 2000 =<br>
-            &nbsp;&nbsp;Penduduk (Bogor+Depok) 2000 × Persentase di atas
+            Persentase penduduk B (sensus acuan) =<br>
+            &nbsp;&nbsp;Penduduk B (sensus acuan) ÷ Penduduk (A+B) (sensus acuan)<br><br>
+            Perkiraan penduduk B (sensus lama) =<br>
+            &nbsp;&nbsp;Penduduk (A+B) (sensus lama) × Persentase penduduk B (sensus acuan)
           </div>
-          Asumsinya: persentase penduduk antar dua wilayah ini tidak banyak berubah dalam rentang waktu tersebut. Semua angka hasil perkiraan ditandai "†".
+          Asumsinya: persentase penduduk antar A dan B tidak banyak berubah dalam rentang waktu tersebut. Semua angka hasil perkiraan ditandai "*".
+          <div style="margin-top:8px; padding-top:8px; border-top:1px dashed rgba(127,127,127,0.3);">
+            <b>Contoh</b> — memperkirakan penduduk Kota Depok tahun 2000, menggunakan Sensus 2010 sebagai acuan (saat Kota Depok sudah tercatat terpisah dari Kabupaten Bogor):
+            <div style="margin-top:6px; font-family:monospace; font-size:11.5px; line-height:1.7;">
+              Persentase penduduk Depok 2010 =<br>
+              &nbsp;&nbsp;Penduduk Depok 2010 ÷ Penduduk (Bogor+Depok) 2010<br><br>
+              Perkiraan penduduk Depok 2000 =<br>
+              &nbsp;&nbsp;Penduduk (Bogor+Depok) 2000 × Persentase penduduk Depok 2010
+            </div>
+          </div>
         </div>
-        Cara ini dipakai untuk dua kasus:
-        <ul style="margin:6px 0 0 1.2em;">
-          <li><b>Baris 2010 — Kabupaten Pangandaran:</b> baru resmi berdiri akhir 2012, jadi Sensus 2010 masih mencatatnya sebagai bagian Kabupaten Ciamis. Populasi gabungan itu dipecah memakai persentase dari Sensus 2020.</li>
-          <li><b>Baris 2000 — 13 dari 119 wilayah:</b> data SP2000 masih mencatat 13 wilayah yang sekarang sudah berdiri sendiri sebagai satu kesatuan dengan kabupaten/kota induknya (sebagian baru dimekarkan setelah 2000, sebagian sudah berdiri sebelum 2000 tapi tetap tercatat gabung). Populasi masing-masing dipecah memakai persentase dari Sensus 2010. Khusus Ciamis/Banjar/Pangandaran dipecah dua tahap: Kota Banjar dipisah dulu memakai persentase 2010, baru sisa Ciamis+Pangandaran dipisah memakai persentase 2020 (karena Pangandaran belum tercatat terpisah bahkan di 2010).</li>
-        </ul>
-        Sembilan pasangan/kelompok wilayah yang disesuaikan:
-        <table style="margin:6px 0 0 0; border-collapse:collapse; font-size:11.5px; width:100%;">
+        Tabel berikut merangkum semua wilayah pemekaran, baris tahun mana saja yang perlu disesuaikan, dan langkah yang diambil untuk masing-masing:
+        <table style="margin:8px 0 0 0; border-collapse:collapse; font-size:11.5px; width:100%;">
+          <thead>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.3);">
+              <th style="text-align:left; padding:4px 8px 4px 0; font-weight:600;">Wilayah pemekaran</th>
+              <th style="text-align:left; padding:4px 8px 4px 0; font-weight:600;">Tahun berdiri sendiri</th>
+              <th style="text-align:left; padding:4px 8px 4px 0; font-weight:600;">Baris yang disesuaikan</th>
+              <th style="text-align:left; padding:4px 0; font-weight:600;">Langkah yang diambil</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Jakarta Utara</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kepulauan Seribu <span style="color:var(--muted,#888);">(berdiri sendiri 2001)</span></td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Bogor</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Depok <span style="color:var(--muted,#888);">(berdiri 1999, sebelum sensus)</span></td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Bandung</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Bandung Barat (2007) &amp; Kota Cimahi (2001)</td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Tasikmalaya</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Tasikmalaya (2001)</td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Ciamis</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Banjar (2002) &amp; Pangandaran (2012) — dua tahap, lihat di atas</td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Bekasi</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Bekasi <span style="color:var(--muted,#888);">(berdiri 1996, sebelum sensus)</span></td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Tangerang</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Tangerang <span style="color:var(--muted,#888);">(berdiri 1993)</span> &amp; Kota Tangerang Selatan (2008)</td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Serang</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Serang (2007) &amp; Kota Cilegon <span style="color:var(--muted,#888);">(berdiri 1999)</span></td></tr>
-            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Malang</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Batu (2001)</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Jakarta Utara ⇄ Kepulauan Seribu</td><td style="padding:4px 8px 4px 0;">2001</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Bogor ⇄ Kota Depok</td><td style="padding:4px 8px 4px 0;">1999 (sebelum sensus)</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Bandung ⇄ Bandung Barat &amp; Kota Cimahi</td><td style="padding:4px 8px 4px 0;">2007 &amp; 2001</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Tasikmalaya ⇄ Kota Tasikmalaya</td><td style="padding:4px 8px 4px 0;">2001</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Ciamis ⇄ Kota Banjar</td><td style="padding:4px 8px 4px 0;">2002</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12); background:rgba(127,127,127,0.05);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Ciamis ⇄ Pangandaran</td><td style="padding:4px 8px 4px 0;">2012</td><td style="padding:4px 8px 4px 0;">2000 &amp; 2010</td><td style="padding:4px 0;">Dua tahap: pisahkan Kota Banjar terlebih dahulu menggunakan persentase 2010, lalu sisa Ciamis+Pangandaran dipisah menggunakan persentase 2020 (karena Pangandaran belum terpisah bahkan di 2010)</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Bekasi ⇄ Kota Bekasi</td><td style="padding:4px 8px 4px 0;">1996 (sebelum sensus)</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Tangerang ⇄ Kota Tangerang</td><td style="padding:4px 8px 4px 0;">1993 (sebelum sensus)</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Tangerang ⇄ Kota Tangerang Selatan</td><td style="padding:4px 8px 4px 0;">2008</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Serang ⇄ Kota Serang</td><td style="padding:4px 8px 4px 0;">2007</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr style="border-bottom:1px solid rgba(127,127,127,0.12);"><td style="padding:4px 8px 4px 0; white-space:nowrap;">Serang ⇄ Kota Cilegon</td><td style="padding:4px 8px 4px 0;">1999 (sebelum sensus)</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
+            <tr><td style="padding:4px 8px 4px 0; white-space:nowrap;">Malang ⇄ Kota Batu</td><td style="padding:4px 8px 4px 0;">2001</td><td style="padding:4px 8px 4px 0;">2000</td><td style="padding:4px 0;">Dipecah menggunakan persentase Sensus 2010</td></tr>
           </tbody>
         </table>
+        <div style="margin-top:6px; font-size:11.5px; color:var(--muted,#888);">Catatan: kolom "baris yang disesuaikan" hanya menunjukkan baris tahun yang penduduknya masih tergabung di sumber data — bukan berarti wilayah itu belum ada. Kota Batu, Kota Serang, dan Kota Tangerang Selatan misalnya sudah berdiri sendiri sebelum Sensus 2010, jadi baris 2010 dan 2020 mereka aman tanpa penyesuaian; yang perlu disesuaikan hanya baris 2000, karena tabel sumber SP2000 tetap mencatatnya gabung dengan kabupaten induk demi keterbandingan dengan seri 1980/1990.</div>
       </li>
       <li><b>Pemekaran lain sudah otomatis sesuai:</b> pemekaran lain (misalnya Kota Tangerang Selatan 2008, Kota Batu 2001, Kota Serang 2007) terjadi sebelum Sensus 2010, jadi baris 2010 dan 2020 tidak perlu penyesuaian tambahan. Penyesuaian di atas hanya berlaku untuk baris 2000 dan untuk Ciamis/Pangandaran pada baris 2010.</li>
-      <li><b>Kepulauan Seribu dikecualikan dari kepadatan lahan terbangun (ditandai "‡"):</b> jumlah penduduknya benar (21.082 jiwa pada 2010, data BPS khusus Kepulauan Seribu, bukan angka DKI Jakarta keseluruhan). Tapi luas kelas "Permukiman" KLHK untuk wilayah ini sangat kecil di semua tahun survei (0,012 km² pada 2000 dan 2011), jauh lebih kecil dari kelas "Lainnya" (1,24 km² pada tahun yang sama) — tanda area terbangun di pulau-pulau kecil ini salah diklasifikasikan oleh KLHK, bukan kepadatan yang sesungguhnya. Jika tetap dipakai, hasilnya kepadatan lahan-terbangun palsu di atas 1,7 juta jiwa/km², sehingga angka ini disembunyikan di semua tahun. Kepadatan mentah (penduduk ÷ luas administratif) tetap ditampilkan karena tidak bergantung pada klasifikasi KLHK.</li>
+      <li><b>Kepulauan Seribu dikecualikan dari kepadatan lahan terbangun (ditandai "**"):</b> jumlah penduduknya benar (21.082 jiwa pada 2010, data BPS khusus Kepulauan Seribu, bukan angka DKI Jakarta keseluruhan). Namun luas kelas "Permukiman" KLHK untuk wilayah ini sangat kecil di semua tahun survei (0,012 km² pada 2000 dan 2011), jauh lebih kecil dari kelas "Lainnya" (1,24 km² pada tahun yang sama) — tanda area terbangun di pulau-pulau kecil ini salah diklasifikasikan oleh KLHK, bukan kepadatan yang sesungguhnya. Jika tetap digunakan, hasilnya kepadatan lahan-terbangun palsu di atas 1,7 juta jiwa/km², sehingga angka ini disembunyikan di semua tahun. Kepadatan mentah (penduduk ÷ luas administratif) tetap ditampilkan karena tidak bergantung pada klasifikasi KLHK.</li>
       <li><b>Kelas warna di peta:</b> batasnya memakai kuantil (7 kelas, jumlah wilayah kurang lebih sama tiap kelas), dihitung ulang setiap kali mode atau tahun diganti — bukan interval tetap — supaya sebaran padat di kota inti tetap terlihat jelas di samping kabupaten yang jarang penduduknya.</li>
       <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah perkiraan area terbangun, bukan batas resmi kawasan permukiman, dan bisa ikut mencakup bangunan non-hunian seperti kawasan industri atau fasilitas umum. Kepadatan "per lahan terbangun" sebaiknya dibaca sebagai gambaran kasar intensitas hunian, bukan angka kepadatan neto yang presisi.</li>
     </ul>
@@ -2135,16 +2151,16 @@ function createDensityMap() {
       panel.innerHTML = '<div class="density-info-empty">Arahkan kursor atau klik salah satu wilayah pada peta untuk melihat rincian kepadatan.</div>';
       return;
     }
-    const builtupTxt = rec.builtupUnreliable ? 'tidak dapat diandalkan ‡' : (rec.builtupDensity === null ? '—' : densityFmtInt(rec.builtupDensity) + ' jiwa/km²');
+    const builtupTxt = rec.builtupUnreliable ? 'tidak dapat diandalkan **' : (rec.builtupDensity === null ? '—' : densityFmtInt(rec.builtupDensity) + ' jiwa/km²');
     const builtupShareTxt = rec.builtupUnreliable ? '—' : rec.builtupShare.toFixed(1) + '%';
     const builtupAreaTxt = rec.builtup.toLocaleString('id-ID') + ' km²';
     let reconFlag = '';
     if (rec.reconciled) {
       if (state.year === 2000) {
         const note = sp2000ReconNote(rec.name);
-        reconFlag = '<div class="density-info-flag">† Estimasi rekonsiliasi pemekaran — sensus 2000: ' + (note || 'lihat catatan metodologi') + '</div>';
+        reconFlag = '<div class="density-info-flag">* Estimasi rekonsiliasi pemekaran — sensus 2000: ' + (note || 'lihat catatan metodologi') + '</div>';
       } else {
-        reconFlag = '<div class="density-info-flag">† Estimasi rekonsiliasi pemekaran Pangandaran/Ciamis 2010 — lihat catatan metodologi</div>';
+        reconFlag = '<div class="density-info-flag">* Estimasi rekonsiliasi pemekaran Pangandaran/Ciamis 2010 — lihat catatan metodologi</div>';
       }
     }
     panel.innerHTML =
@@ -2159,7 +2175,7 @@ function createDensityMap() {
         '<div><div class="density-info-stat-label">Pangsa lahan terbangun</div><div class="density-info-stat-val">' + builtupShareTxt + '</div></div>' +
       '</div>' +
       reconFlag +
-      (rec.builtupUnreliable ? '<div class="density-info-flag">‡ Luas kelas "Permukiman" KLHK untuk wilayah ini tidak dapat diandalkan (kemungkinan besar area terbangun di pulau-pulau kecil salah terklasifikasi sebagai "Lainnya") — kepadatan per lahan terbangun disembunyikan. Lihat catatan metodologi.</div>' : '');
+      (rec.builtupUnreliable ? '<div class="density-info-flag">** Luas kelas "Permukiman" KLHK untuk wilayah ini tidak dapat diandalkan (kemungkinan besar area terbangun di pulau-pulau kecil salah terklasifikasi sebagai "Lainnya") — kepadatan per lahan terbangun disembunyikan. Lihat catatan metodologi.</div>' : '');
   }
 
   function renderRankTables() {
@@ -2173,7 +2189,7 @@ function createDensityMap() {
         const pct = Math.max(6, (r[sortKey] / maxVal) * 60);
         return '<tr data-name="' + r.name.replace(/"/g, '&quot;') + '">' +
           '<td>' + (i + 1) + '</td>' +
-          '<td>' + r.name + (r.reconciled ? ' †' : '') + '<br><span style="color:var(--muted);font-size:10.5px;">' + r.prov + '</span></td>' +
+          '<td>' + r.name + (r.reconciled ? ' *' : '') + '<br><span style="color:var(--muted);font-size:10.5px;">' + r.prov + '</span></td>' +
           '<td class="num"><span class="density-rank-bar" style="width:' + pct + 'px;"></span>' + densityFmtInt(r[sortKey]) + '</td>' +
           '</tr>';
       }).join('');
