@@ -144,6 +144,32 @@
   .map-opacity-control--ntl input[type="range"] { width: 56px; }
   .map-opacity-control--ntl:not(.enabled) { opacity: .35; pointer-events: none; }
   #landcoverMap, #landcoverMap2 { height: 480px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; font-family: var(--sans); }
+  #densityMap { height: 520px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; font-family: var(--sans); }
+  .density-tooltip { font-family: var(--sans) !important; font-size: 11.5px !important; line-height: 1.5 !important; padding: 8px 10px !important; border: none !important; box-shadow: 0 4px 16px -4px rgba(25,24,16,0.35) !important; }
+  .density-tooltip b { font-size: 12.5px; }
+  .mode-toggle { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
+  .mode-btn { font-family: var(--sans); font-size: 11.5px; font-weight: 600; padding: 7px 12px; border-radius: 6px; border: none; background: transparent; color: var(--muted); cursor: pointer; transition: background .12s, color .12s; white-space: nowrap; }
+  .mode-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
+  .mode-btn:hover:not(.active) { color: var(--text); }
+  .density-legend { display: flex; align-items: center; gap: 0; margin-top: 12px; flex-wrap: wrap; }
+  .density-legend-swatch { flex: 1; min-width: 44px; height: 22px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 9.5px; color: rgba(0,0,0,0.72); font-weight: 600; }
+  .density-legend-title { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .density-info-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-top: 12px; min-height: 92px; }
+  .density-info-empty { font-size: 12px; color: var(--muted); }
+  .density-info-name { font-family: var(--serif); font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .density-info-prov { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .density-info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 700px) { .density-info-grid { grid-template-columns: repeat(2, 1fr); } }
+  .density-info-stat-label { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+  .density-info-stat-val { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text); }
+  .density-info-flag { display: inline-block; margin-top: 8px; font-size: 10.5px; color: var(--amber); background: rgba(177,121,31,0.12); border-radius: 5px; padding: 3px 7px; }
+  .density-rank-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
+  .density-rank-table th { text-align: left; font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; padding: 5px 8px; border-bottom: 1px solid var(--border-strong); }
+  .density-rank-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .density-rank-table td.num { font-family: var(--mono); text-align: right; }
+  .density-rank-table tr:hover td { background: var(--bg); cursor: pointer; }
+  .density-rank-bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--amber); vertical-align: middle; margin-right: 6px; }
+  .density-search { font-family: var(--sans); font-size: 12px; padding: 6px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; max-width: 190px; }
   .map-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); background: rgba(255,255,255,0.7); pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 500; }
   .map-loading.show { opacity: 1; }
 
@@ -261,6 +287,7 @@
   <a href="#sec6" class="fab-link" data-target="sec6">6 · Jelajahi kab/kota</a>
   <a href="#sec7" class="fab-link" data-target="sec7">7 · Peta detail</a>
   <a href="#sec8" class="fab-link" data-target="sec8">8 · Peta ringkas</a>
+  <a href="#sec9" class="fab-link" data-target="sec9">9 · Peta kepadatan</a>
   <div class="fab-panel-divider"></div>
   <button type="button" class="fab-action" id="themeToggleBtn">
     <span class="fab-action-icon" id="themeIcon">🌙</span><span id="themeLabel">Mode gelap</span>
@@ -524,6 +551,65 @@
       <div class="map-loading" id="mapLoading2">Memuat citra…</div>
     </div>
     <div class="legend" id="landcoverLegend2" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="section-label" id="sec9">9 — Peta kepadatan penduduk</div>
+  <div class="section-note">Kepadatan dihitung dua cara: <b>mentah</b> (penduduk ÷ luas administratif kabupaten/kota) dan <b>lahan terbangun</b> (penduduk ÷ luas kelas "Permukiman" menurut klasifikasi tutupan lahan KLHK — proksi luas area terbangun/permukiman riil). Arahkan kursor atau klik wilayah pada peta untuk rincian; gunakan kotak "Lompat ke…" untuk mencari kabupaten/kota tertentu. Lihat catatan metodologi di bawah peta, termasuk penyesuaian pemekaran Kabupaten Pangandaran.</div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="map-bar">
+      <div>
+        <div class="card-title">Kepadatan penduduk per kabupaten/kota</div>
+        <div class="card-sub" style="margin-bottom:0;">Tahun sensus: <span class="map-year-readout" id="densityYearReadout">2020</span></div>
+      </div>
+      <div class="map-toolbar">
+        <div class="mode-toggle" id="densityModeToggle">
+          <button type="button" class="mode-btn active" data-mode="raw">Kepadatan mentah</button>
+          <button type="button" class="mode-btn" data-mode="builtup">Per lahan terbangun</button>
+        </div>
+        <select id="densityYearSelect" class="map-year-select" aria-label="Pilih tahun sensus penduduk" title="Tahun sensus penduduk">
+          <option value="2020">Sensus 2020</option>
+          <option value="2010">Sensus 2010</option>
+        </select>
+        <select id="densityJumpSelect" class="density-search" aria-label="Lompat ke kabupaten/kota" title="Lompat ke kabupaten/kota">
+          <option value="">Lompat ke…</option>
+        </select>
+      </div>
+    </div>
+    <div id="densityMap">
+      <div class="map-loading" id="densityMapLoading">Memuat peta kepadatan…</div>
+    </div>
+    <div class="density-legend-title" id="densityLegendTitle" style="margin-top:12px;">Kepadatan mentah (jiwa/km² luas administratif)</div>
+    <div class="density-legend" id="densityLegend"></div>
+    <div class="density-info-panel" id="densityInfoPanel">
+      <div class="density-info-empty">Arahkan kursor atau klik salah satu wilayah pada peta untuk melihat rincian kepadatan.</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:14px;">
+    <div class="card">
+      <div class="card-title">10 kabupaten/kota terpadat — mentah</div>
+      <div class="card-sub" id="densityRankSubRaw">Jiwa per km² luas administratif, sensus 2020</div>
+      <table class="density-rank-table" id="densityRankTableRaw"><thead><tr><th>#</th><th>Wilayah</th><th style="text-align:right;">Jiwa/km²</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-title">10 kabupaten/kota terpadat — lahan terbangun</div>
+      <div class="card-sub" id="densityRankSubBuiltup">Jiwa per km² area permukiman KLHK, sensus 2020</div>
+      <table class="density-rank-table" id="densityRankTableBuiltup"><thead><tr><th>#</th><th>Wilayah</th><th style="text-align:right;">Jiwa/km²</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">Catatan metodologi — peta kepadatan</div>
+    <div class="card-sub" style="margin-bottom:8px;">Sumber, rekonsiliasi pemekaran wilayah, dan batasan data</div>
+    <ul style="margin:0 0 0 1.1em; padding:0; font-size:12px; line-height:1.85; color:var(--text);">
+      <li><b>Populasi:</b> BPS Sensus Penduduk 2010 dan 2020, level kabupaten/kota (119 unit administratif Pulau Jawa per batas 2020: DKI Jakarta 6, Banten 8, Jawa Barat 27, Jawa Tengah 35, DI Yogyakarta 5, Jawa Timur 38).</li>
+      <li><b>Luas administratif:</b> dihitung langsung (luas geodesik ellipsoid WGS84) dari poligon <code>kabkota_boundaries.geojson</code> yang sama dengan batas pada peta tutupan lahan (bagian 7–8) — bukan angka BPS terpisah, sehingga konsisten dengan luas yang tersirat dari data KLHK (selisih rata-rata &lt;0,3%).</li>
+      <li><b>Luas lahan terbangun:</b> kelas "Permukiman" pada klasifikasi tutupan lahan KLHK per kabupaten/kota. Untuk sensus 2020, dipasangkan dengan tahun survei KLHK 2020; untuk sensus 2010, dipasangkan dengan survei KLHK 2011 (tahun survei terdekat yang tersedia — KLHK tidak mensurvei tepat tahun 2010).</li>
+      <li><b>Rekonsiliasi pemekaran — Kabupaten Pangandaran:</b> Pangandaran resmi dimekarkan dari Kabupaten Ciamis pada akhir 2012, sehingga Sensus 2010 hanya mencatat Ciamis sebagai satu wilayah gabungan (kode BPS lama), sementara batas KLHK/geojson dan Sensus 2020 sudah memisahkan keduanya. Untuk baris <b>2010</b> pada peta ini, populasi gabungan Ciamis 2010 dipecah secara proporsional menurut <i>pangsa populasi 2020</i> masing-masing wilayah (estimasi terbaik yang tersedia, ditandai "†" pada peta/tabel). Data 2020 tidak memerlukan penyesuaian karena BPS sudah mempublikasikan Pangandaran sebagai unit terpisah.</li>
+      <li><b>Pemekaran lain</b> (mis. Kota Tangerang Selatan 2008, Kota Batu 2001, Kota Serang 2007) telah terjadi sebelum Sensus 2010, sehingga kedua tahun sensus pada peta ini sudah konsisten dengan 119 unit saat ini tanpa penyesuaian tambahan.</li>
+      <li><b>Kelas warna:</b> ambang batas kuantil (7 kelas, jumlah wilayah relatif sama per kelas), dihitung ulang otomatis setiap kali mode/tahun diganti — bukan interval tetap — supaya sebaran padat di kota-kota inti tetap terbaca di samping kabupaten yang jarang penduduknya.</li>
+      <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah proksi tutupan lahan terbangun (built-up), bukan batas kawasan permukiman resmi/administratif, dan dapat mencakup sebagian infrastruktur non-hunian (mis. kawasan industri, fasilitas umum) — sehingga kepadatan "per lahan terbangun" sebaiknya dibaca sebagai indikator intensitas hunian relatif, bukan angka kepadatan neto yang presisi.</li>
+    </ul>
   </div>
 
   <div class="footer">
@@ -1860,6 +1946,251 @@ let simpleExplorer = createLandcoverExplorer({
   initialYearIdx: currentYearIdx, borderBtnEl: 'mapBorderBtn2', basemapSelEl: 'mapBasemapSelect2',
   ntlBtnEl: 'mapNtlBtn2', ntlOpacityEl: 'mapNtlOpacity2', ntlOpacityWrapEl: 'mapNtlOpacityWrap2'
 });
+
+/* ═══════════════════════ Section 9 — Population density map ═══════════════════════
+   Data sources: BPS Sensus Penduduk 2010 & 2020 (population), geodesic area computed
+   from kabkota_boundaries.geojson (WGS84 ellipsoid), and KLHK "Permukiman" (built-up)
+   land-cover class area from the same CITY_DATA used in sections 5–8. See the
+   methodology card under the map for the Pangandaran pemekaran reconciliation. */
+const DENSITY_DATA = {"PROVS":["Banten","DI Yogyakarta","DKI Jakarta","Jawa Barat","Jawa Tengah","Jawa Timur"],"UNITS":{"Sumedang":[3,1566.55,1093602,1152507,97.219,94.276,99.36],"Kota Semarang":[4,369.85,1555984,1653524,182.544,203.149,213.699],"Sukabumi":[3,4164.47,2341409,2725450,65.722,122.159,127.223],"Tulungagung":[5,1145.06,990158,1089775,94.915,139.324,282.553],"Kota Yogyakarta":[1,32.81,388627,373589,31.677,32.714,32.774],"Kediri":[5,1524.23,1499768,1635294,259.014,272.015,341.212],"Kota Depok":[3,199.97,1738570,2056335,144.539,154.404,157.481],"Mojokerto":[5,984.98,1025443,1119209,98.275,101.239,162.673],"Bantul":[1,512.32,911503,985770,85.488,179.445,176.323],"Lumajang":[5,1798.51,1006458,1119251,72.919,136.893,137.076],"Sragen":[4,994.27,858266,976951,118.334,221.986,258.984],"Rembang":[4,1037.99,591359,645333,40.808,112.461,114.56],"Nganjuk":[5,1288.9,1017030,1103902,160.192,189.564,197.534],"Wonosobo":[4,1011.31,754883,879124,21.894,20.421,65.495],"Ngawi":[5,1396.26,817765,870057,190.92,243.108,246.248],"Kota Salatiga":[4,55.03,170332,192322,35.592,32.744,35.923],"Kota Blitar":[5,33.11,131968,149149,11.164,11.154,15.579],"Karawang":[3,1914.31,2127791,2439085,223.387,269.654,277.968],"Bangkalan":[5,1301.78,906761,1060377,75.054,89.722,89.722],"Grobogan":[4,2023.64,1308696,1453526,193.159,244.01,322.121],"Bandung Barat":[3,1283.31,1510284,1788336,114.073,100.028,103.961],"Kota Kediri":[5,66.96,268507,286796,32.236,33.767,32.456],"Jember":[5,3314.6,2332726,2536729,255.293,372.35,374.998],"Wonogiri":[4,1905.16,928904,1043177,47.902,135.405,215.303],"Kuningan":[3,1192.94,1035589,1167686,78.972,89.569,94.743],"Kota Batu":[5,194.31,190184,213046,18.845,19.345,18.725],"Tasikmalaya":[3,2705.92,1675675,1865203,61.978,53.461,54.497],"Karanganyar":[4,802.73,813196,931963,97.726,131.354,176.37],"Sidoarjo":[5,723.99,1941497,2082801,177.682,212.788,244.498],"Bekasi":[3,1251.49,2630401,3113017,273.894,385.702,387.894],"Temanggung":[4,864.59,708546,790174,102.218,77.482,93.51],"Sleman":[1,573.43,1093110,1125804,229.474,245.574,274.694],"Lamongan":[5,1752.45,1179059,1344165,135.208,148.048,178.769],"Kota Pasuruan":[5,38.82,186262,208006,11.012,15.446,15.631],"Majalengka":[3,1330.01,1166473,1305476,93.327,101.583,103.512],"Pasuruan":[5,1493.26,1512468,1605969,88.179,144.39,144.8],"Kota Tangerang":[0,178.36,1798601,1895486,117.851,140.812,140.924],"Semarang":[4,1019.47,930727,1053094,152.491,175.443,227.901],"Bogor":[3,2991.68,4771932,5427068,358.338,485.473,499.462],"Cianjur":[3,3630.35,2171281,2477560,77.627,99.467,108.109],"Kudus":[4,447.78,777437,849184,91.611,104.775,105.063],"Pemalang":[4,1137.96,1261353,1471489,79.542,126.092,136.688],"Kota Cimahi":[3,42.44,541177,568400,32.854,34.806,34.815],"Kota Sukabumi":[3,48.38,298681,346325,17.668,22.246,23.521],"Sukoharjo":[4,493.48,824238,907587,115.088,162.137,191.938],"Blora":[4,1957.32,829728,884333,80.851,217.629,217.834],"Serang":[0,1469.67,1402818,1622630,109.9,118.732,165.649],"Tuban":[5,1974.09,1118464,1198012,106.893,152.846,165.281],"Kota Surakarta":[4,46.56,499337,522364,45.002,45.922,46.023],"Bondowoso":[5,1554.45,736772,776151,23.166,76.527,77.024],"Indramayu":[3,2076.51,1663737,1834434,223.793,208.625,220.73],"Kota Malang":[5,110.75,820243,843810,53.432,109.051,97.154],"Kota Cirebon":[3,39.77,296389,333303,25.015,25.861,27.842],"Pekalongan":[4,893.32,838621,968821,67.885,91.037,100.746],"Kulon Progo":[1,576.78,388869,436395,57.683,65.588,81.461],"Tangerang":[0,1028.24,2834376,3245619,168.808,276.143,315.605],"Kota Adm. Jakarta Timur":[2,184.69,2693896,3037139,162.437,164.917,165.218],"Subang":[3,2166.47,1465157,1595320,136.33,168.299,170.03],"Madiun":[5,1113.91,662278,744350,144.693,190.756,194.683],"Pandeglang":[0,2770.43,1149610,1272687,59.451,68.076,87.662],"Purbalingga":[4,805.9,848952,998561,90.949,94.907,113.47],"Purwakarta":[3,992.68,852521,997869,74.311,91.353,97.877],"Jombang":[5,1109.08,1202407,1318062,176.85,176.948,186.279],"Cilacap":[4,2323.21,1642107,1944857,238.7,378.962,375.183],"Pangandaran":[3,1129.04,392846,423667,26.556,20.138,20.849],"Pamekasan":[5,794.62,795918,850057,10.615,61.791,63.857],"Garut":[3,3101.35,2404121,2585607,95.289,92.737,98.588],"Kota Bekasi":[3,212.99,2334871,2543676,177.726,189.944,194.403],"Kendal":[4,1008.17,900313,1018505,112.133,113.04,156.388],"Pati":[4,1572.91,1190993,1324188,180.347,242.64,252.799],"Gunungkidul":[1,1475.05,675382,747161,149.114,103.106,116.854],"Ciamis":[3,1595.92,1139658,1229069,68.687,85.706,86.078],"Kota Magelang":[4,18.61,118227,121526,14.294,13.289,14.305],"Malang":[5,3473.07,2446218,2654448,206.031,212.711,233.896],"Magelang":[4,1130.47,1181723,1299859,186.349,111.504,160.712],"Kota Surabaya":[5,335.97,2765487,2874314,215.829,224.351,242.695],"Sampang":[5,1227.62,877772,969694,10.447,14.193,21.989],"Banjarnegara":[4,1145.18,868913,1017767,115.591,104.75,123.101],"Kota Banjar":[3,130.87,175157,200973,12.494,29.981,29.981],"Kota Bandung":[3,166.47,2394873,2444160,136.229,144.897,145.527],"Pacitan":[5,1434.07,540881,586110,9.099,32.741,60.476],"Lebak":[0,3312.99,1204095,1386793,59.877,58.273,108.033],"Kota Tangerang Selatan":[0,164.71,1290322,1354350,102.287,149.361,147.914],"Sumenep":[5,2079.22,1042312,1124436,23.046,29.112,61.761],"Cirebon":[3,1076.84,2067196,2270621,152.789,167.509,188.544],"Kota Tegal":[4,39.08,239599,273825,22.704,23.66,23.469],"Adm. Kep. Seribu":[2,8.39,21082,27749,0.012,0.595,2.421],"Banyumas":[4,1390.73,1554527,1776918,211.49,213.52,234.779],"Kebumen":[4,1335.56,1159926,1350438,98.161,214.298,244.938],"Kota Adm. Jakarta Selatan":[2,144.52,2062232,2226812,138.386,140.52,139.796],"Purworejo":[4,1082.52,695427,769880,159.5,175.592,192.179],"Klaten":[4,701.58,1130047,1260506,211.905,248.622,262.484],"Banyuwangi":[5,3594.15,1556078,1708114,257.729,290.784,289.138],"Kota Adm. Jakarta Barat":[2,125.27,2281945,2434511,113.736,118.907,119.433],"Blitar":[5,1745.47,1116639,1223745,124.221,152.401,194.666],"Kota Adm. Jakarta Pusat":[2,47.9,902973,1056896,47.081,47.319,47.319],"Kota Probolinggo":[5,54.71,217062,239649,16.677,28.076,28.149],"Kota Madiun":[5,36.3,170964,195175,21.297,25.332,25.338],"Kota Mojokerto":[5,20.26,120196,132434,9.488,9.488,13.257],"Gresik":[5,1256.29,1177042,1311215,167.665,168.623,228.66],"Ponorogo":[5,1418.15,855281,949318,186.664,212.111,217.571],"Kota Tasikmalaya":[3,183.56,635464,716155,38.378,39.156,45.095],"Magetan":[5,706.68,620442,670812,92.845,165.029,169.583],"Boyolali":[4,1096.99,930531,1062713,263.16,259.667,339.68],"Kota Cilegon":[0,162.42,374559,434896,56.107,69.654,51.145],"Trenggalek":[5,1250.03,674411,731125,62.748,110.112,117.19],"Bandung":[3,1741.86,3178543,3623790,147.725,214.226,217.031],"Kota Adm. Jakarta Utara":[2,147.1,1645659,1778981,111.888,117.861,116.462],"Jepara":[4,1019.71,1097280,1184947,129.976,189.186,212.863],"Tegal":[4,984.18,1394839,1596996,111.087,131.629,139.612],"Brebes":[4,1743.41,1733869,1978759,130.667,153.468,155.584],"Probolinggo":[5,1724.1,1096244,1152537,72.837,117.826,118.83],"Situbondo":[5,1655.16,647619,685967,58.574,73.613,72.977],"Batang":[4,857.64,706764,801718,98.631,87.422,118.072],"Kota Bogor":[3,111.64,950334,1043070,71.08,78.029,78.508],"Kota Pekalongan":[4,46.54,281434,307150,23.647,26.225,27.555],"Demak":[4,977.83,1055579,1203956,171.398,174.786,178.441],"Bojonegoro":[5,2311.98,1209973,1301635,134.437,251.837,256.613],"Kota Serang":[0,265.72,577785,692101,31.867,49.527,53.563]},"RECON":["Ciamis","Pangandaran"]};
+const DENSITY_PROVS = DENSITY_DATA.PROVS;
+const DENSITY_UNITS = DENSITY_DATA.UNITS; // name -> [provIdx, area_km2, pop2010, pop2020, builtup2011_km2, builtup2020_km2, builtup2022_km2]
+const DENSITY_RECONCILED = new Set(DENSITY_DATA.RECON); // ['Ciamis','Pangandaran'] — 2010 split is an estimate
+
+const DENSITY_COLORS = ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#f03b20','#bd0026'];
+
+function densityRecord(name, year) {
+  const u = DENSITY_UNITS[name];
+  if (!u) return null;
+  const [provIdx, area_km2, pop2010, pop2020] = u;
+  const builtup2011 = u[4], builtup2020 = u[5], builtup2022 = u[6];
+  const pop = year === 2010 ? pop2010 : pop2020;
+  const builtup = year === 2010 ? builtup2011 : builtup2020;
+  const rawDensity = pop / area_km2;
+  const builtupDensity = builtup > 0 ? pop / builtup : null;
+  const builtupShare = (builtup / area_km2) * 100;
+  return {
+    name, prov: DENSITY_PROVS[provIdx], area_km2, pop, builtup, rawDensity, builtupDensity, builtupShare,
+    reconciled: year === 2010 && DENSITY_RECONCILED.has(name)
+  };
+}
+
+function densityQuantileBreaks(values, nClasses) {
+  const sorted = values.slice().sort((a, b) => a - b);
+  const breaks = [];
+  for (let i = 1; i < nClasses; i++) {
+    const idx = Math.floor((i / nClasses) * (sorted.length - 1));
+    breaks.push(sorted[idx]);
+  }
+  return breaks; // nClasses-1 interior breakpoints
+}
+
+function densityColorFor(value, breaks) {
+  for (let i = 0; i < breaks.length; i++) {
+    if (value <= breaks[i]) return DENSITY_COLORS[i];
+  }
+  return DENSITY_COLORS[DENSITY_COLORS.length - 1];
+}
+
+function densityFmtInt(n) {
+  return Math.round(n).toLocaleString('id-ID');
+}
+function densityFmtPop(n) {
+  return Math.round(n).toLocaleString('id-ID');
+}
+
+function createDensityMap() {
+  const state = { map: null, layer: null, mode: 'raw', year: 2020, breaks: [], selectedName: null };
+  const loadingEl = document.getElementById('densityMapLoading');
+
+  function currentValue(rec) {
+    return state.mode === 'raw' ? rec.rawDensity : rec.builtupDensity;
+  }
+
+  function computeAllRecords() {
+    return Object.keys(DENSITY_UNITS).map(n => densityRecord(n, state.year)).filter(Boolean);
+  }
+
+  function renderLegend() {
+    const title = document.getElementById('densityLegendTitle');
+    title.textContent = state.mode === 'raw'
+      ? 'Kepadatan mentah (jiwa/km² luas administratif) — sensus ' + state.year
+      : 'Kepadatan per lahan terbangun (jiwa/km² area permukiman KLHK) — sensus ' + state.year;
+
+    const legendEl = document.getElementById('densityLegend');
+    const b = state.breaks;
+    const labels = [];
+    for (let i = 0; i < DENSITY_COLORS.length; i++) {
+      const lo = i === 0 ? 0 : b[i - 1];
+      const hi = i === DENSITY_COLORS.length - 1 ? null : b[i];
+      const label = hi === null ? '> ' + densityFmtInt(lo) : densityFmtInt(lo) + '–' + densityFmtInt(hi);
+      labels.push('<div class="density-legend-swatch" style="background:' + DENSITY_COLORS[i] + '">' + label + '</div>');
+    }
+    legendEl.innerHTML = labels.join('');
+  }
+
+  function styleFeature(feature) {
+    const name = feature.properties.n;
+    const rec = densityRecord(name, state.year);
+    const val = rec ? currentValue(rec) : null;
+    return {
+      color: '#191810',
+      weight: state.selectedName === name ? 2.6 : 0.7,
+      opacity: state.selectedName === name ? 0.95 : 0.45,
+      fillColor: (val === null || val === undefined) ? '#cfcabb' : densityColorFor(val, state.breaks),
+      fillOpacity: 0.82
+    };
+  }
+
+  function showInfo(rec) {
+    const panel = document.getElementById('densityInfoPanel');
+    if (!rec) {
+      panel.innerHTML = '<div class="density-info-empty">Arahkan kursor atau klik salah satu wilayah pada peta untuk melihat rincian kepadatan.</div>';
+      return;
+    }
+    const builtupTxt = rec.builtupDensity === null ? '—' : densityFmtInt(rec.builtupDensity) + ' jiwa/km²';
+    panel.innerHTML =
+      '<div class="density-info-name">' + rec.name + '</div>' +
+      '<div class="density-info-prov">' + rec.prov + ' · Sensus ' + state.year + '</div>' +
+      '<div class="density-info-grid">' +
+        '<div><div class="density-info-stat-label">Penduduk</div><div class="density-info-stat-val">' + densityFmtPop(rec.pop) + '</div></div>' +
+        '<div><div class="density-info-stat-label">Luas administratif</div><div class="density-info-stat-val">' + rec.area_km2.toLocaleString('id-ID') + ' km²</div></div>' +
+        '<div><div class="density-info-stat-label">Kepadatan mentah</div><div class="density-info-stat-val">' + densityFmtInt(rec.rawDensity) + ' /km²</div></div>' +
+        '<div><div class="density-info-stat-label">Luas lahan terbangun</div><div class="density-info-stat-val">' + rec.builtup.toLocaleString('id-ID') + ' km²</div></div>' +
+        '<div><div class="density-info-stat-label">Kepadatan per lahan terbangun</div><div class="density-info-stat-val">' + builtupTxt + '</div></div>' +
+        '<div><div class="density-info-stat-label">Pangsa lahan terbangun</div><div class="density-info-stat-val">' + rec.builtupShare.toFixed(1) + '%</div></div>' +
+      '</div>' +
+      (rec.reconciled ? '<div class="density-info-flag">† Estimasi rekonsiliasi pemekaran Pangandaran/Ciamis 2010 — lihat catatan metodologi</div>' : '');
+  }
+
+  function renderRankTables() {
+    const recs = computeAllRecords();
+    function fill(tbodyId, sortKey) {
+      const sorted = recs.filter(r => r[sortKey] !== null && r[sortKey] !== undefined)
+        .sort((a, b) => b[sortKey] - a[sortKey]).slice(0, 10);
+      const maxVal = sorted.length ? sorted[0][sortKey] : 1;
+      const tbody = document.querySelector('#' + tbodyId + ' tbody');
+      tbody.innerHTML = sorted.map((r, i) => {
+        const pct = Math.max(6, (r[sortKey] / maxVal) * 60);
+        return '<tr data-name="' + r.name.replace(/"/g, '&quot;') + '">' +
+          '<td>' + (i + 1) + '</td>' +
+          '<td>' + r.name + (r.reconciled ? ' †' : '') + '<br><span style="color:var(--muted);font-size:10.5px;">' + r.prov + '</span></td>' +
+          '<td class="num"><span class="density-rank-bar" style="width:' + pct + 'px;"></span>' + densityFmtInt(r[sortKey]) + '</td>' +
+          '</tr>';
+      }).join('');
+      tbody.querySelectorAll('tr').forEach(tr => {
+        tr.addEventListener('click', () => jumpTo(tr.getAttribute('data-name')));
+      });
+    }
+    fill('densityRankTableRaw', 'rawDensity');
+    fill('densityRankTableBuiltup', 'builtupDensity');
+    document.getElementById('densityRankSubRaw').textContent = 'Jiwa per km² luas administratif, sensus ' + state.year;
+    document.getElementById('densityRankSubBuiltup').textContent = 'Jiwa per km² area permukiman KLHK, sensus ' + state.year;
+  }
+
+  function refresh() {
+    document.getElementById('densityYearReadout').textContent = state.year;
+    const recs = computeAllRecords();
+    const values = recs.map(currentValue).filter(v => v !== null && v !== undefined && isFinite(v));
+    state.breaks = densityQuantileBreaks(values, DENSITY_COLORS.length);
+    renderLegend();
+    renderRankTables();
+    if (state.layer) state.layer.setStyle(f => styleFeature(f));
+    if (state.selectedName) {
+      const rec = densityRecord(state.selectedName, state.year);
+      showInfo(rec);
+    }
+  }
+
+  function jumpTo(name) {
+    const rec = densityRecord(name, state.year);
+    if (!rec || !state.layer) return;
+    state.selectedName = name;
+    showInfo(rec);
+    state.layer.eachLayer(l => {
+      if (l.feature.properties.n === name) {
+        l.setStyle(styleFeature(l.feature));
+        l.bringToFront();
+        if (state.map) {
+          try { state.map.fitBounds(l.getBounds(), { maxZoom: 10, padding: [30, 30] }); } catch (e) {}
+        }
+      } else {
+        l.setStyle(styleFeature(l.feature));
+      }
+    });
+    document.getElementById('densityJumpSelect').value = name;
+  }
+
+  function populateJumpSelect() {
+    const sel = document.getElementById('densityJumpSelect');
+    const names = Object.keys(DENSITY_UNITS).sort();
+    sel.innerHTML = '<option value="">Lompat ke…</option>' + names.map(n => '<option value="' + n + '">' + n + '</option>').join('');
+    sel.addEventListener('change', (e) => { if (e.target.value) jumpTo(e.target.value); });
+  }
+
+  function initModeToggle() {
+    document.querySelectorAll('#densityModeToggle .mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#densityModeToggle .mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.mode = btn.getAttribute('data-mode');
+        refresh();
+      });
+    });
+  }
+
+  function initYearSelect() {
+    document.getElementById('densityYearSelect').addEventListener('change', (e) => {
+      state.year = parseInt(e.target.value, 10);
+      refresh();
+    });
+  }
+
+  function init() {
+    state.map = L.map('densityMap', { minZoom: 6, maxZoom: 13 });
+    state.map.fitBounds(LANDCOVER_BOUNDS);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
+    }).addTo(state.map);
+
+    loadingEl.classList.add('show');
+    loadBoundaries().then(geojson => {
+      loadingEl.classList.remove('show');
+      state.layer = L.geoJSON(geojson, {
+        style: f => styleFeature(f),
+        onEachFeature: (feature, layer) => {
+          const name = feature.properties.n;
+          layer.on('mouseover', () => {
+            const rec = densityRecord(name, state.year);
+            layer.bindTooltip(
+              '<b>' + name + '</b><br>' + (state.mode === 'raw'
+                ? densityFmtInt(rec.rawDensity) + ' jiwa/km² (mentah)'
+                : (rec.builtupDensity === null ? 'tidak ada data lahan terbangun' : densityFmtInt(rec.builtupDensity) + ' jiwa/km² (lahan terbangun)')),
+              { sticky: true, className: 'density-tooltip', direction: 'top' }
+            ).openTooltip();
+            layer.setStyle({ weight: 2, opacity: 0.85 });
+          });
+          layer.on('mouseout', () => { if (state.selectedName !== name) layer.setStyle(styleFeature(feature)); });
+          layer.on('click', () => jumpTo(name));
+        }
+      }).addTo(state.map);
+      refresh();
+    }).catch(err => {
+      loadingEl.textContent = 'Batas wilayah gagal dimuat.';
+      loadingEl.classList.add('show');
+      console.error('Gagal memuat batas kabupaten/kota untuk peta kepadatan', err);
+    });
+
+    populateJumpSelect();
+    initModeToggle();
+    initYearSelect();
+  }
+
+  init();
+  return { refresh };
+}
+
+let densityMapInstance = createDensityMap();
 
 </script>
 
