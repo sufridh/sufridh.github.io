@@ -556,7 +556,7 @@
   </div>
 
   <div class="section-label" id="sec9">9 — Peta kepadatan penduduk</div>
-  <div class="section-note">Kepadatan dihitung dua cara: <b>mentah</b> (penduduk ÷ luas administratif kabupaten/kota) dan <b>lahan terbangun</b> (penduduk ÷ luas kelas "Permukiman" menurut klasifikasi tutupan lahan KLHK — proksi luas area terbangun/permukiman riil), tersedia untuk sensus 2010 dan 2020. Sensus <b>2000</b> kini juga tersedia (kepadatan mentah saja — tidak ada survei tutupan lahan KLHK dari era itu); 13 unit hasil pemekaran direkonstruksi dari total wilayah induknya, ditandai "†". Arahkan kursor atau klik wilayah pada peta untuk rincian; gunakan kotak "Lompat ke…" untuk mencari kabupaten/kota tertentu. Lihat catatan metodologi di bawah peta untuk seluruh rekonsiliasi pemekaran (Kepulauan Seribu, Depok, Bandung Barat/Cimahi, Tasikmalaya, Ciamis/Banjar/Pangandaran, Bekasi, Tangerang/Tangerang Selatan, Serang/Cilegon, Batu) dan pengecualian Kepulauan Seribu dari kepadatan lahan-terbangun.</div>
+  <div class="section-note">Kepadatan dihitung dua cara: <b>mentah</b> (penduduk ÷ luas administratif) dan <b>lahan terbangun</b> (penduduk ÷ luas kelas "Permukiman" pada data tutupan lahan KLHK), tersedia untuk sensus 2000, 2010, dan 2020. Untuk sensus 2000 dan 13 wilayah hasil pemekaran, populasi diperkirakan dari data wilayah induknya dan ditandai "†". Arahkan kursor atau klik wilayah pada peta untuk melihat rincian; gunakan kotak "Lompat ke…" untuk mencari kabupaten/kota tertentu. Detail penyesuaian dan batasan data ada di catatan metodologi di bawah peta.</div>
   <div class="card" style="margin-bottom:14px;">
     <div class="map-bar">
       <div>
@@ -603,29 +603,47 @@
 
   <div class="card" style="margin-bottom:14px;">
     <div class="card-title">Catatan metodologi — peta kepadatan</div>
-    <div class="card-sub" style="margin-bottom:8px;">Sumber, rekonsiliasi pemekaran wilayah, dan batasan data</div>
+    <div class="card-sub" style="margin-bottom:8px;">Sumber data, penyesuaian akibat pemekaran wilayah, dan batasan data</div>
     <ul style="margin:0 0 0 1.1em; padding:0; font-size:12px; line-height:1.85; color:var(--text);">
-      <li><b>Populasi:</b> BPS Sensus Penduduk 2000 (SP2000), 2010, dan 2020, level kabupaten/kota (119 unit administratif Pulau Jawa per batas 2020: DKI Jakarta 6, Banten 8, Jawa Barat 27, Jawa Tengah 35, DI Yogyakarta 5, Jawa Timur 38). Sumber: <code>sp2000_java_kabkota_population.json</code> (seri 1980/1990/2000 berbatas tetap) dan <code>sp_java_kabkota_population.json</code> (SP2010/SP2020 per kode wilayah saat ini).</li>
-      <li><b>Luas administratif:</b> dihitung langsung (luas geodesik ellipsoid WGS84) dari poligon <code>kabkota_boundaries.geojson</code> yang sama dengan batas pada peta tutupan lahan (bagian 7–8) — bukan angka BPS terpisah, sehingga konsisten dengan luas yang tersirat dari data KLHK (selisih rata-rata &lt;0,3%).</li>
-      <li><b>Luas lahan terbangun:</b> kelas "Permukiman" pada klasifikasi tutupan lahan KLHK per kabupaten/kota. Untuk sensus 2020, dipasangkan dengan tahun survei KLHK 2020; untuk sensus 2010, dipasangkan dengan survei KLHK 2011 (tahun survei terdekat yang tersedia — KLHK tidak mensurvei tepat tahun 2010). <b>Tidak ada survei KLHK dari sekitar tahun 2000</b>, sehingga baris sensus 2000 pada peta ini hanya pernah menampilkan kepadatan mentah — mode "per lahan terbangun" dinonaktifkan otomatis saat tahun ini dipilih.</li>
-      <li><b>Rekonsiliasi pemekaran — Kabupaten Pangandaran (baris 2010):</b> Pangandaran resmi dimekarkan dari Kabupaten Ciamis pada akhir 2012, sehingga Sensus 2010 hanya mencatat Ciamis sebagai satu wilayah gabungan (kode BPS lama), sementara batas KLHK/geojson dan Sensus 2020 sudah memisahkan keduanya. Untuk baris <b>2010</b> pada peta ini, populasi gabungan Ciamis 2010 dipecah secara proporsional menurut <i>pangsa populasi 2020</i> masing-masing wilayah (estimasi terbaik yang tersedia, ditandai "†" pada peta/tabel). Data 2020 tidak memerlukan penyesuaian karena BPS sudah mempublikasikan Pangandaran sebagai unit terpisah.</li>
-      <li><b>Rekonsiliasi pemekaran — Sensus 2000 (baris 2000, 13 dari 119 unit):</b> tabel sumber SP2000 memakai definisi wilayah yang dipertahankan tetap sejak sebelum 1980 supaya seri 1980/1990/2000 dapat dibandingkan langsung. Akibatnya 13 unit hari ini tidak tercatat terpisah di SP2000 — baik karena baru dimekarkan setelah Sensus 2000 (mis. Pangandaran 2012, Kota Tangerang Selatan 2008, Kota Batu 2001), maupun karena kotanya sudah berdiri sebelum Sensus 2000 tetapi tetap digabung ke kabupaten induk demi keterbandingan seri waktu tadi (Kota Depok berdiri 1999, Kota Bekasi 1996, Kota Tangerang 1993, Kota Cilegon 1999). Untuk baris <b>2000</b>, populasi gabungan tiap induk dipecah secara proporsional menurut <i>pangsa populasi Sensus 2010</i> masing-masing wilayah pemekaran (dari <code>sp_java_kabkota_population.json</code>, sudah berbatas kini) — kecuali pemisahan Ciamis/Kota Banjar/Pangandaran yang memakai dua tahap: Kota Banjar dipisah dengan pangsa 2010, lalu sisa gabungan Ciamis-Pangandaran dipisah lagi dengan pangsa <i>2020</i>, karena Pangandaran belum tercatat terpisah bahkan pada Sensus 2010. Seluruh unit hasil estimasi ditandai "†" pada peta/tabel/panel info. Kesembilan kelompok rekonsiliasi:
+      <li><b>Data penduduk:</b> Sensus BPS tahun 2000, 2010, dan 2020, untuk 119 kabupaten/kota di Pulau Jawa (DKI Jakarta 6, Banten 8, Jawa Barat 27, Jawa Tengah 35, DI Yogyakarta 5, Jawa Timur 38), memakai batas wilayah yang berlaku saat ini.</li>
+      <li><b>Luas wilayah:</b> dihitung dari peta batas <code>kabkota_boundaries.geojson</code>, peta yang sama dengan yang dipakai untuk peta tutupan lahan di bagian 7–8. Selisihnya dengan angka KLHK rata-rata di bawah 0,3%.</li>
+      <li><b>Luas lahan terbangun:</b> kelas "Permukiman" pada data tutupan lahan KLHK. Tersedia untuk tahun survei 2000, 2011 (dipasangkan dengan sensus 2010, karena KLHK tidak mensurvei persis tahun itu), dan 2020.</li>
+      <li>
+        <b>Kenapa sebagian data penduduk perlu disesuaikan:</b> batas kabupaten/kota di Indonesia sering berubah karena pemekaran wilayah — satu daerah pecah jadi dua atau lebih. Data KLHK sudah memakai batas wilayah yang berlaku sekarang untuk semua tahun survei, jadi luas lahan terbangun aman. Yang perlu disesuaikan adalah data penduduk sensus lama, karena dulu masih dicatat memakai batas wilayah lama (belum terpecah).
+        <div style="margin:8px 0; padding:9px 11px; background:rgba(127,127,127,0.08); border-radius:6px; border:1px solid rgba(127,127,127,0.18);">
+          <b>Cara menghitung perkiraan populasi</b> — contoh Kabupaten Bogor / Kota Depok tahun 2000:
+          <div style="margin-top:6px; font-family:monospace; font-size:11.5px; line-height:1.7;">
+            Persentase penduduk Depok tahun 2010 =<br>
+            &nbsp;&nbsp;Penduduk Depok 2010 ÷ Penduduk (Bogor+Depok) 2010<br><br>
+            Perkiraan penduduk Depok tahun 2000 =<br>
+            &nbsp;&nbsp;Penduduk (Bogor+Depok) 2000 × Persentase di atas
+          </div>
+          Asumsinya: persentase penduduk antar dua wilayah ini tidak banyak berubah dalam rentang waktu tersebut. Semua angka hasil perkiraan ditandai "†".
+        </div>
+        Cara ini dipakai untuk dua kasus:
         <ul style="margin:6px 0 0 1.2em;">
-          <li>Jakarta Utara ⇄ Kepulauan Seribu (kabupaten administrasi berdiri 2001)</li>
-          <li>Bogor ⇄ Kota Depok (kota berdiri 1999, sebelum sensus)</li>
-          <li>Bandung ⇄ Bandung Barat (2007) &amp; Kota Cimahi (2001)</li>
-          <li>Tasikmalaya ⇄ Kota Tasikmalaya (2001)</li>
-          <li>Ciamis ⇄ Kota Banjar (2002) &amp; Pangandaran (2012) — dua tahap, lihat di atas</li>
-          <li>Bekasi ⇄ Kota Bekasi (kota berdiri 1996, sebelum sensus)</li>
-          <li>Tangerang ⇄ Kota Tangerang (berdiri 1993, sebelum sensus) &amp; Kota Tangerang Selatan (2008)</li>
-          <li>Serang ⇄ Kota Serang (2007) &amp; Kota Cilegon (berdiri 1999, sebelum sensus)</li>
-          <li>Malang ⇄ Kota Batu (2001)</li>
+          <li><b>Baris 2010 — Kabupaten Pangandaran:</b> baru resmi berdiri akhir 2012, jadi Sensus 2010 masih mencatatnya sebagai bagian Kabupaten Ciamis. Populasi gabungan itu dipecah memakai persentase dari Sensus 2020.</li>
+          <li><b>Baris 2000 — 13 dari 119 wilayah:</b> data SP2000 masih mencatat 13 wilayah yang sekarang sudah berdiri sendiri sebagai satu kesatuan dengan kabupaten/kota induknya (sebagian baru dimekarkan setelah 2000, sebagian sudah berdiri sebelum 2000 tapi tetap tercatat gabung). Populasi masing-masing dipecah memakai persentase dari Sensus 2010. Khusus Ciamis/Banjar/Pangandaran dipecah dua tahap: Kota Banjar dipisah dulu memakai persentase 2010, baru sisa Ciamis+Pangandaran dipisah memakai persentase 2020 (karena Pangandaran belum tercatat terpisah bahkan di 2010).</li>
         </ul>
+        Sembilan pasangan/kelompok wilayah yang disesuaikan:
+        <table style="margin:6px 0 0 0; border-collapse:collapse; font-size:11.5px; width:100%;">
+          <tbody>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Jakarta Utara</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kepulauan Seribu <span style="color:var(--muted,#888);">(berdiri sendiri 2001)</span></td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Bogor</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Depok <span style="color:var(--muted,#888);">(berdiri 1999, sebelum sensus)</span></td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Bandung</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Bandung Barat (2007) &amp; Kota Cimahi (2001)</td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Tasikmalaya</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Tasikmalaya (2001)</td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Ciamis</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Banjar (2002) &amp; Pangandaran (2012) — dua tahap, lihat di atas</td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Bekasi</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Bekasi <span style="color:var(--muted,#888);">(berdiri 1996, sebelum sensus)</span></td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Tangerang</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Tangerang <span style="color:var(--muted,#888);">(berdiri 1993)</span> &amp; Kota Tangerang Selatan (2008)</td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Serang</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Serang (2007) &amp; Kota Cilegon <span style="color:var(--muted,#888);">(berdiri 1999)</span></td></tr>
+            <tr><td style="padding:2px 8px 2px 0; white-space:nowrap;">Malang</td><td style="padding:2px;">⇄</td><td style="padding:2px 0;">Kota Batu (2001)</td></tr>
+          </tbody>
+        </table>
       </li>
-      <li><b>Pemekaran lain</b> (mis. Kota Tangerang Selatan 2008, Kota Batu 2001, Kota Serang 2007) telah terjadi sebelum Sensus 2010, sehingga baris 2010 dan 2020 pada peta ini sudah konsisten dengan 119 unit saat ini tanpa penyesuaian tambahan — rekonsiliasi hanya diperlukan untuk baris 2000 (di atas) dan Ciamis/Pangandaran pada baris 2010.</li>
-      <li><b>Dikecualikan dari kepadatan lahan-terbangun — Kepulauan Seribu (ditandai "‡"):</b> populasinya benar (21.082 jiwa pada 2010, dari data BPS terpisah untuk Kepulauan Seribu, bukan salah ambil angka DKI Jakarta secara keseluruhan), tetapi luas kelas "Permukiman" KLHK untuk wilayah ini sangat kecil dan tidak masuk akal (0,012 km² pada survei 2011) dibanding kelas "Lainnya" yang jauh lebih besar (1,24 km² pada tahun yang sama) — indikasi kuat bahwa area terbangun di gugusan pulau-pulau kecil ini salah terklasifikasi oleh KLHK, bukan sinyal kepadatan riil. Membagi populasi dengan angka permukiman yang keliru ini sebelumnya menghasilkan kepadatan lahan-terbangun palsu di atas 1,7 juta jiwa/km². Kepadatan mentah (penduduk ÷ luas administratif) untuk Kepulauan Seribu tetap ditampilkan karena tidak bergantung pada klasifikasi KLHK dan tidak bermasalah.</li>
-      <li><b>Kelas warna:</b> ambang batas kuantil (7 kelas, jumlah wilayah relatif sama per kelas), dihitung ulang otomatis setiap kali mode/tahun diganti — bukan interval tetap — supaya sebaran padat di kota-kota inti tetap terbaca di samping kabupaten yang jarang penduduknya.</li>
-      <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah proksi tutupan lahan terbangun (built-up), bukan batas kawasan permukiman resmi/administratif, dan dapat mencakup sebagian infrastruktur non-hunian (mis. kawasan industri, fasilitas umum) — sehingga kepadatan "per lahan terbangun" sebaiknya dibaca sebagai indikator intensitas hunian relatif, bukan angka kepadatan neto yang presisi.</li>
+      <li><b>Pemekaran lain sudah otomatis sesuai:</b> pemekaran lain (misalnya Kota Tangerang Selatan 2008, Kota Batu 2001, Kota Serang 2007) terjadi sebelum Sensus 2010, jadi baris 2010 dan 2020 tidak perlu penyesuaian tambahan. Penyesuaian di atas hanya berlaku untuk baris 2000 dan untuk Ciamis/Pangandaran pada baris 2010.</li>
+      <li><b>Kepulauan Seribu dikecualikan dari kepadatan lahan terbangun (ditandai "‡"):</b> jumlah penduduknya benar (21.082 jiwa pada 2010, data BPS khusus Kepulauan Seribu, bukan angka DKI Jakarta keseluruhan). Tapi luas kelas "Permukiman" KLHK untuk wilayah ini sangat kecil di semua tahun survei (0,012 km² pada 2000 dan 2011), jauh lebih kecil dari kelas "Lainnya" (1,24 km² pada tahun yang sama) — tanda area terbangun di pulau-pulau kecil ini salah diklasifikasikan oleh KLHK, bukan kepadatan yang sesungguhnya. Jika tetap dipakai, hasilnya kepadatan lahan-terbangun palsu di atas 1,7 juta jiwa/km², sehingga angka ini disembunyikan di semua tahun. Kepadatan mentah (penduduk ÷ luas administratif) tetap ditampilkan karena tidak bergantung pada klasifikasi KLHK.</li>
+      <li><b>Kelas warna di peta:</b> batasnya memakai kuantil (7 kelas, jumlah wilayah kurang lebih sama tiap kelas), dihitung ulang setiap kali mode atau tahun diganti — bukan interval tetap — supaya sebaran padat di kota inti tetap terlihat jelas di samping kabupaten yang jarang penduduknya.</li>
+      <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah perkiraan area terbangun, bukan batas resmi kawasan permukiman, dan bisa ikut mencakup bangunan non-hunian seperti kawasan industri atau fasilitas umum. Kepadatan "per lahan terbangun" sebaiknya dibaca sebagai gambaran kasar intensitas hunian, bukan angka kepadatan neto yang presisi.</li>
     </ul>
   </div>
 
@@ -1992,9 +2010,22 @@ const DENSITY_BUILTUP_FLAG = new Set(DENSITY_DATA.BUILTUP_FLAG || []); // units 
    wilayah, used only to derive 2000 split shares — not as a population figure itself here). */
 const SP2000_POP = {"Adm. Kep. Seribu":18220,"Bandung":2520344,"Bandung Barat":1197541,"Bangkalan":797426,"Banjarnegara":833469,"Bantul":777748,"Banyumas":1451420,"Banyuwangi":1469795,"Batang":660785,"Bekasi":1738797,"Blitar":1055865,"Blora":809891,"Bogor":3397853,"Bojonegoro":1156872,"Bondowoso":688277,"Boyolali":893019,"Brebes":1695163,"Ciamis":1030739,"Cianjur":1931840,"Cilacap":1604918,"Cirebon":1911625,"Demak":970942,"Garut":2042386,"Gresik":996608,"Grobogan":1261966,"Gunungkidul":667916,"Indramayu":1585922,"Jember":2166501,"Jepara":968044,"Jombang":1121017,"Karanganyar":756846,"Karawang":1765263,"Kebumen":1162276,"Kediri":1399286,"Kendal":847324,"Klaten":1108141,"Kota Adm. Jakarta Barat":1910470,"Kota Adm. Jakarta Pusat":892750,"Kota Adm. Jakarta Selatan":1792214,"Kota Adm. Jakarta Timur":2348962,"Kota Adm. Jakarta Utara":1422237,"Kota Bandung":2141837,"Kota Banjar":213024,"Kota Batu":172266,"Kota Bekasi":1543441,"Kota Blitar":119395,"Kota Bogor":743478,"Kota Cilegon":306519,"Kota Cimahi":429112,"Kota Cirebon":269186,"Kota Depok":1237948,"Kota Kediri":242211,"Kota Madiun":163953,"Kota Magelang":116000,"Kota Malang":749768,"Kota Mojokerto":109164,"Kota Pasuruan":168164,"Kota Pekalongan":261469,"Kota Probolinggo":192561,"Kota Salatiga":150579,"Kota Semarang":1345065,"Kota Serang":472828,"Kota Sukabumi":252293,"Kota Surabaya":2588816,"Kota Surakarta":488834,"Kota Tangerang":1241066,"Kota Tangerang Selatan":890345,"Kota Tasikmalaya":563576,"Kota Tegal":236260,"Kota Yogyakarta":395604,"Kudus":704137,"Kulon Progo":369912,"Kuningan":980605,"Lamongan":1180084,"Lebak":1027053,"Lumajang":956395,"Madiun":637211,"Magelang":1095538,"Magetan":611547,"Majalengka":1117802,"Malang":2215751,"Mojokerto":904274,"Nganjuk":964175,"Ngawi":806856,"Pacitan":525128,"Pamekasan":688872,"Pandeglang":1010741,"Pangandaran":355301,"Pasuruan":1354116,"Pati":1147175,"Pekalongan":798605,"Pemalang":1258885,"Ponorogo":836012,"Probolinggo":995432,"Purbalingga":784508,"Purwakarta":698353,"Purworejo":703737,"Rembang":556214,"Sampang":748169,"Semarang":829650,"Serang":1147990,"Sidoarjo":1549883,"Situbondo":599941,"Sleman":897962,"Sragen":843309,"Subang":1319264,"Sukabumi":2059920,"Sukoharjo":772357,"Sumedang":967049,"Sumenep":981155,"Tangerang":1955770,"Tasikmalaya":1486112,"Tegal":1379359,"Temanggung":661420,"Trenggalek":645703,"Tuban":1043360,"Tulungagung":923579,"Wonogiri":966460,"Wonosobo":733060};
 const SP2000_RECON = new Set(["Adm. Kep. Seribu","Bandung","Bandung Barat","Bekasi","Bogor","Ciamis","Kota Adm. Jakarta Utara","Kota Banjar","Kota Batu","Kota Bekasi","Kota Cilegon","Kota Cimahi","Kota Depok","Kota Serang","Kota Tangerang","Kota Tangerang Selatan","Kota Tasikmalaya","Malang","Pangandaran","Serang","Tangerang","Tasikmalaya"]); // pemekaran (splits) after or embedded before Sensus 2000 — figure is estimated from a shared parent total, see SP2000_RECON_NOTES
-const SP2000_RECON_NOTES = [{title:"Kota Adm. Jakarta Utara / Kepulauan Seribu",note:"Kepulauan Seribu menjadi kabupaten administrasi tersendiri pada 2001 (sebelumnya kecamatan di Jakarta Utara); SP2000 mencatat keduanya sebagai satu 'Jakarta Utara'.",units:["Kota Adm. Jakarta Utara","Adm. Kep. Seribu"]},{title:"Bogor / Kota Depok",note:"Kota Depok berdiri 1999 (sebelum Sensus 2000) tetapi SP2000 sumber tidak mencatatnya terpisah dari Kabupaten Bogor — konsisten dengan seri data 1980/1990/2000 yang memakai batas tetap untuk keterbandingan antar tahun.",units:["Bogor","Kota Depok"]},{title:"Bandung / Bandung Barat / Kota Cimahi",note:"Kabupaten Bandung Barat dimekarkan dari Kabupaten Bandung pada 2007 dan Kota Cimahi pada 2001, keduanya setelah Sensus 2000.",units:["Bandung","Bandung Barat","Kota Cimahi"]},{title:"Tasikmalaya / Kota Tasikmalaya",note:"Kota Tasikmalaya dimekarkan dari Kabupaten Tasikmalaya pada 2001, setelah Sensus 2000.",units:["Tasikmalaya","Kota Tasikmalaya"]},{title:"Ciamis / Kota Banjar / Pangandaran",note:"Kota Banjar dimekarkan dari Ciamis pada 2002; Pangandaran pada 2012. SP2000 mencatat ketiganya sebagai satu 'Ciamis'. Estimasi dua tahap: (1) pisahkan Kota Banjar memakai pangsa populasi 2010; (2) pisahkan Ciamis-Pangandaran gabungan memakai pangsa populasi 2020 (Pangandaran belum tercatat terpisah bahkan pada Sensus 2010).",units:["Ciamis","Kota Banjar","Pangandaran"]},{title:"Bekasi / Kota Bekasi",note:"Kota Bekasi berdiri 1996 (sebelum Sensus 2000) tetapi tidak tercatat terpisah di SP2000 sumber, dengan alasan yang sama seperti Kota Depok di atas.",units:["Bekasi","Kota Bekasi"]},{title:"Tangerang / Kota Tangerang / Kota Tangerang Selatan",note:"Kota Tangerang telah berdiri sejak 1993 tetapi tidak tercatat terpisah di SP2000 sumber (sama seperti Depok/Bekasi); Kota Tangerang Selatan baru dimekarkan 2008.",units:["Tangerang","Kota Tangerang","Kota Tangerang Selatan"]},{title:"Serang / Kota Serang / Kota Cilegon",note:"Kota Cilegon telah berdiri sejak 1999 tetapi tidak tercatat terpisah di SP2000 sumber; Kota Serang baru dimekarkan 2007.",units:["Serang","Kota Serang","Kota Cilegon"]},{title:"Malang / Kota Batu",note:"Kota Batu dimekarkan dari Kabupaten Malang pada 2001, setelah Sensus 2000.",units:["Malang","Kota Batu"]}];
+const SP2000_RECON_NOTES = [{title:"Kota Adm. Jakarta Utara / Kepulauan Seribu",note:"Kepulauan Seribu menjadi kabupaten administrasi tersendiri pada 2001 (sebelumnya kecamatan di Jakarta Utara); SP2000 mencatat keduanya sebagai satu 'Jakarta Utara'.",units:["Kota Adm. Jakarta Utara","Adm. Kep. Seribu"]},{title:"Bogor / Kota Depok",note:"Kota Depok berdiri 1999 (sebelum Sensus 2000) tetapi SP2000 sumber tidak mencatatnya terpisah dari Kabupaten Bogor — konsisten dengan seri data 1980/1990/2000 yang memakai batas tetap untuk keterbandingan antar tahun.",units:["Bogor","Kota Depok"]},{title:"Bandung / Bandung Barat / Kota Cimahi",note:"Kabupaten Bandung Barat dimekarkan dari Kabupaten Bandung pada 2007 dan Kota Cimahi pada 2001, keduanya setelah Sensus 2000.",units:["Bandung","Bandung Barat","Kota Cimahi"]},{title:"Tasikmalaya / Kota Tasikmalaya",note:"Kota Tasikmalaya dimekarkan dari Kabupaten Tasikmalaya pada 2001, setelah Sensus 2000.",units:["Tasikmalaya","Kota Tasikmalaya"]},{title:"Ciamis / Kota Banjar / Pangandaran",note:"Kota Banjar dimekarkan dari Ciamis pada 2002; Pangandaran pada 2012. SP2000 mencatat ketiganya sebagai satu 'Ciamis'. Estimasi dua tahap: (1) pisahkan Kota Banjar memakai persentase populasi 2010; (2) pisahkan Ciamis-Pangandaran gabungan memakai persentase populasi 2020 (Pangandaran belum tercatat terpisah bahkan pada Sensus 2010).",units:["Ciamis","Kota Banjar","Pangandaran"]},{title:"Bekasi / Kota Bekasi",note:"Kota Bekasi berdiri 1996 (sebelum Sensus 2000) tetapi tidak tercatat terpisah di SP2000 sumber, dengan alasan yang sama seperti Kota Depok di atas.",units:["Bekasi","Kota Bekasi"]},{title:"Tangerang / Kota Tangerang / Kota Tangerang Selatan",note:"Kota Tangerang telah berdiri sejak 1993 tetapi tidak tercatat terpisah di SP2000 sumber (sama seperti Depok/Bekasi); Kota Tangerang Selatan baru dimekarkan 2008.",units:["Tangerang","Kota Tangerang","Kota Tangerang Selatan"]},{title:"Serang / Kota Serang / Kota Cilegon",note:"Kota Cilegon telah berdiri sejak 1999 tetapi tidak tercatat terpisah di SP2000 sumber; Kota Serang baru dimekarkan 2007.",units:["Serang","Kota Serang","Kota Cilegon"]},{title:"Malang / Kota Batu",note:"Kota Batu dimekarkan dari Kabupaten Malang pada 2001, setelah Sensus 2000.",units:["Malang","Kota Batu"]}];
 
 const DENSITY_COLORS = ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#f03b20','#bd0026'];
+
+/* DENSITY_BUILTUP2000 — luas kelas "Permukiman" KLHK untuk tahun survei 2000, diambil
+   langsung dari CITY_DATA (sudah dimuat di bagian 5–8, dalam hektare) lalu dikonversi ke
+   km². KLHK memang mensurvei tahun 2000 (CITY_DATA.years[0] === "2000") — data ini sudah
+   ada di file sejak awal, hanya belum pernah dipakai untuk peta kepadatan bagian 9.
+   Karena tutupan lahan KLHK dipetakan langsung ke 119 batas kabupaten/kota saat ini
+   (bukan tabel sensus lama), tidak perlu rekonsiliasi pemekaran untuk sisi luas ini —
+   rekonsiliasi hanya berlaku untuk sisi populasi (SP2000_POP), lihat catatan metodologi. */
+const DENSITY_BUILTUP2000 = {};
+Object.keys(CITY_DATA.cities).forEach(n => {
+  const perm = CITY_DATA.cities[n]['Permukiman'];
+  if (perm && perm.length) DENSITY_BUILTUP2000[n] = perm[0] / 100;
+});
 
 function densityRecord(name, year) {
   const u = DENSITY_UNITS[name];
@@ -2002,28 +2033,25 @@ function densityRecord(name, year) {
   const [provIdx, area_km2, pop2010, pop2020] = u;
   const builtup2011 = u[4], builtup2020 = u[5], builtup2022 = u[6];
 
+  let pop, builtup, reconciled;
   if (year === 2000) {
-    const pop2000 = SP2000_POP[name];
-    if (pop2000 === undefined) return null; // no SP2000 figure for this unit — see methodology card
-    const rawDensity = pop2000 / area_km2;
-    return {
-      name, prov: DENSITY_PROVS[provIdx], area_km2, pop: pop2000, builtup: null,
-      rawDensity, builtupDensity: null, builtupShare: null,
-      reconciled: SP2000_RECON.has(name),
-      builtupUnreliable: false,
-      noBuiltupYear: true // KLHK land-cover data doesn't reach back to 2000 — builtup density never available for this year
-    };
+    pop = SP2000_POP[name];
+    if (pop === undefined) return null; // no SP2000 figure for this unit — see methodology card
+    builtup = DENSITY_BUILTUP2000[name];
+    reconciled = SP2000_RECON.has(name);
+  } else {
+    pop = year === 2010 ? pop2010 : pop2020;
+    builtup = year === 2010 ? builtup2011 : builtup2020;
+    reconciled = year === 2010 && DENSITY_RECONCILED.has(name);
   }
 
-  const pop = year === 2010 ? pop2010 : pop2020;
-  const builtup = year === 2010 ? builtup2011 : builtup2020;
   const rawDensity = pop / area_km2;
   const builtupUnreliable = DENSITY_BUILTUP_FLAG.has(name);
   const builtupDensity = (builtup > 0 && !builtupUnreliable) ? pop / builtup : null;
   const builtupShare = builtupUnreliable ? null : (builtup / area_km2) * 100;
   return {
     name, prov: DENSITY_PROVS[provIdx], area_km2, pop, builtup, rawDensity, builtupDensity, builtupShare,
-    reconciled: year === 2010 && DENSITY_RECONCILED.has(name),
+    reconciled,
     builtupUnreliable,
     noBuiltupYear: false
   };
@@ -2107,9 +2135,9 @@ function createDensityMap() {
       panel.innerHTML = '<div class="density-info-empty">Arahkan kursor atau klik salah satu wilayah pada peta untuk melihat rincian kepadatan.</div>';
       return;
     }
-    const builtupTxt = rec.noBuiltupYear ? 'tidak tersedia untuk sensus 2000' : (rec.builtupUnreliable ? 'tidak dapat diandalkan ‡' : (rec.builtupDensity === null ? '—' : densityFmtInt(rec.builtupDensity) + ' jiwa/km²'));
-    const builtupShareTxt = rec.noBuiltupYear ? '—' : (rec.builtupUnreliable ? '—' : rec.builtupShare.toFixed(1) + '%');
-    const builtupAreaTxt = rec.noBuiltupYear ? '—' : rec.builtup.toLocaleString('id-ID') + ' km²';
+    const builtupTxt = rec.builtupUnreliable ? 'tidak dapat diandalkan ‡' : (rec.builtupDensity === null ? '—' : densityFmtInt(rec.builtupDensity) + ' jiwa/km²');
+    const builtupShareTxt = rec.builtupUnreliable ? '—' : rec.builtupShare.toFixed(1) + '%';
+    const builtupAreaTxt = rec.builtup.toLocaleString('id-ID') + ' km²';
     let reconFlag = '';
     if (rec.reconciled) {
       if (state.year === 2000) {
@@ -2211,16 +2239,12 @@ function createDensityMap() {
   }
 
   function syncModeToggleAvailability() {
+    // KLHK land-cover data covers all three census years (2000, 2010, 2020), so the
+    // builtup-density mode no longer needs to be disabled for any year.
     const builtupBtn = document.querySelector('#densityModeToggle .mode-btn[data-mode="builtup"]');
     if (!builtupBtn) return;
-    const disable = state.year === 2000;
-    builtupBtn.disabled = disable;
-    builtupBtn.title = disable ? 'Tidak ada survei tutupan lahan KLHK untuk tahun 2000 — hanya kepadatan mentah yang tersedia' : '';
-    if (disable && state.mode === 'builtup') {
-      state.mode = 'raw';
-      document.querySelectorAll('#densityModeToggle .mode-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector('#densityModeToggle .mode-btn[data-mode="raw"]').classList.add('active');
-    }
+    builtupBtn.disabled = false;
+    builtupBtn.title = '';
   }
 
   function initYearSelect() {
