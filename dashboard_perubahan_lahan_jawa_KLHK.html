@@ -556,7 +556,7 @@
   </div>
 
   <div class="section-label" id="sec9">9 — Peta kepadatan penduduk</div>
-  <div class="section-note">Kepadatan dihitung dua cara: <b>mentah</b> (penduduk ÷ luas administratif) dan <b>lahan terbangun</b> (penduduk ÷ luas kelas "Permukiman" pada data tutupan lahan KLHK), tersedia untuk sensus 2000, 2010, dan 2020. Untuk sensus 2000 dan 13 wilayah hasil pemekaran, populasi diperkirakan dari data wilayah induknya dan ditandai "*". Arahkan kursor atau klik wilayah pada peta untuk melihat rincian; gunakan kotak "Lompat ke…" untuk mencari kabupaten/kota tertentu. Detail penyesuaian dan batasan data ada di catatan metodologi di bawah peta.</div>
+  <div class="section-note">Kepadatan dihitung dua cara: <b>Kepadatan Penduduk</b> (penduduk ÷ luas administratif) dan <b>Kepadatan Penduduk Perkotaan</b> (penduduk ÷ luas kelas "Permukiman" pada data tutupan lahan KLHK), tersedia untuk sensus 2000, 2010, dan 2020. Untuk sensus 2000 dan 13 wilayah hasil pemekaran, populasi diperkirakan dari data wilayah induknya dan ditandai "*". Arahkan kursor atau klik wilayah pada peta untuk melihat rincian; gunakan kotak "Lompat ke…" untuk mencari kabupaten/kota tertentu. Detail penyesuaian dan batasan data ada di catatan metodologi di bawah peta.</div>
   <div class="card" style="margin-bottom:14px;">
     <div class="map-bar">
       <div>
@@ -565,8 +565,8 @@
       </div>
       <div class="map-toolbar">
         <div class="mode-toggle" id="densityModeToggle">
-          <button type="button" class="mode-btn active" data-mode="raw">Kepadatan mentah</button>
-          <button type="button" class="mode-btn" data-mode="builtup">Per lahan terbangun</button>
+          <button type="button" class="mode-btn active" data-mode="raw">Kepadatan Penduduk</button>
+          <button type="button" class="mode-btn" data-mode="builtup">Kepadatan Penduduk Perkotaan</button>
         </div>
         <select id="densityYearSelect" class="map-year-select" aria-label="Pilih tahun sensus penduduk" title="Tahun sensus penduduk">
           <option value="2020">Sensus 2020</option>
@@ -581,7 +581,7 @@
     <div id="densityMap">
       <div class="map-loading" id="densityMapLoading">Memuat peta kepadatan…</div>
     </div>
-    <div class="density-legend-title" id="densityLegendTitle" style="margin-top:12px;">Kepadatan mentah (jiwa/km² luas administratif)</div>
+    <div class="density-legend-title" id="densityLegendTitle" style="margin-top:12px;">Kepadatan Penduduk (jiwa/km² luas administratif)</div>
     <div class="density-legend" id="densityLegend"></div>
     <div class="density-info-panel" id="densityInfoPanel">
       <div class="density-info-empty">Arahkan kursor atau klik salah satu wilayah pada peta untuk melihat rincian kepadatan.</div>
@@ -590,12 +590,12 @@
 
   <div class="grid-2" style="margin-bottom:14px;">
     <div class="card">
-      <div class="card-title">10 kabupaten/kota terpadat — mentah</div>
+      <div class="card-title">10 kabupaten/kota terpadat — Kepadatan Penduduk</div>
       <div class="card-sub" id="densityRankSubRaw">Jiwa per km² luas administratif, sensus 2020</div>
       <table class="density-rank-table" id="densityRankTableRaw"><thead><tr><th>#</th><th>Wilayah</th><th style="text-align:right;">Jiwa/km²</th></tr></thead><tbody></tbody></table>
     </div>
     <div class="card">
-      <div class="card-title">10 kabupaten/kota terpadat — lahan terbangun</div>
+      <div class="card-title">10 kabupaten/kota terpadat — Kepadatan Penduduk Perkotaan</div>
       <div class="card-sub" id="densityRankSubBuiltup">Jiwa per km² area permukiman KLHK, sensus 2020</div>
       <table class="density-rank-table" id="densityRankTableBuiltup"><thead><tr><th>#</th><th>Wilayah</th><th style="text-align:right;">Jiwa/km²</th></tr></thead><tbody></tbody></table>
     </div>
@@ -657,9 +657,9 @@
         <div style="margin-top:6px; font-size:11.5px; color:var(--muted,#888);">Catatan: kolom "baris yang disesuaikan" hanya menunjukkan baris tahun yang penduduknya masih tergabung di sumber data — bukan berarti wilayah itu belum ada. Kota Batu, Kota Serang, dan Kota Tangerang Selatan misalnya sudah berdiri sendiri sebelum Sensus 2010, jadi baris 2010 dan 2020 mereka aman tanpa penyesuaian; yang perlu disesuaikan hanya baris 2000, karena tabel sumber SP2000 tetap mencatatnya gabung dengan kabupaten induk demi keterbandingan dengan seri 1980/1990.</div>
       </li>
       <li><b>Pemekaran lain sudah otomatis sesuai:</b> pemekaran lain (misalnya Kota Tangerang Selatan 2008, Kota Batu 2001, Kota Serang 2007) terjadi sebelum Sensus 2010, jadi baris 2010 dan 2020 tidak perlu penyesuaian tambahan. Penyesuaian di atas hanya berlaku untuk baris 2000 dan untuk Ciamis/Pangandaran pada baris 2010.</li>
-      <li><b>Kepulauan Seribu dikecualikan dari kepadatan lahan terbangun (ditandai "**"):</b> jumlah penduduknya benar (21.082 jiwa pada 2010, data BPS khusus Kepulauan Seribu, bukan angka DKI Jakarta keseluruhan). Namun luas kelas "Permukiman" KLHK untuk wilayah ini sangat kecil di semua tahun survei (0,012 km² pada 2000 dan 2011), jauh lebih kecil dari kelas "Lainnya" (1,24 km² pada tahun yang sama) — tanda area terbangun di pulau-pulau kecil ini salah diklasifikasikan oleh KLHK, bukan kepadatan yang sesungguhnya. Jika tetap digunakan, hasilnya kepadatan lahan-terbangun palsu di atas 1,7 juta jiwa/km², sehingga angka ini disembunyikan di semua tahun. Kepadatan mentah (penduduk ÷ luas administratif) tetap ditampilkan karena tidak bergantung pada klasifikasi KLHK.</li>
-      <li><b>Kelas warna di peta:</b> batasnya menggunakan kuantil (7 kelas, jumlah wilayah kurang lebih sama tiap kelas), dihitung sekali dengan menggabungkan data dari ketiga tahun sensus (2000, 2010, 2020) untuk setiap mode (kepadatan mentah / kepadatan lahan terbangun), lalu digunakan tetap di semua tahun untuk mode itu. Jadi warna yang sama selalu menunjukkan rentang kepadatan yang sama, tidak bergantung pada tahun sensus yang dipilih — sehingga perubahan warna antar tahun benar-benar mencerminkan pertumbuhan atau penurunan kepadatan, bukan sekadar klasifikasi ulang. Kelas warna baru dihitung ulang saat mode diganti (mentah ⇄ lahan terbangun), karena kedua mode punya skala nilai yang berbeda.</li>
-      <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah perkiraan area terbangun, bukan batas resmi kawasan permukiman, dan bisa ikut mencakup bangunan non-hunian seperti kawasan industri atau fasilitas umum. Kepadatan "per lahan terbangun" sebaiknya dibaca sebagai gambaran kasar intensitas hunian, bukan angka kepadatan neto yang presisi.</li>
+      <li><b>Kepulauan Seribu dikecualikan dari kepadatan penduduk perkotaan (ditandai "**"):</b> jumlah penduduknya benar (21.082 jiwa pada 2010, data BPS khusus Kepulauan Seribu, bukan angka DKI Jakarta keseluruhan). Namun luas kelas "Permukiman" KLHK untuk wilayah ini sangat kecil di semua tahun survei (0,012 km² pada 2000 dan 2011), jauh lebih kecil dari kelas "Lainnya" (1,24 km² pada tahun yang sama) — tanda area terbangun di pulau-pulau kecil ini salah diklasifikasikan oleh KLHK, bukan kepadatan yang sesungguhnya. Jika tetap digunakan, hasilnya kepadatan lahan-terbangun palsu di atas 1,7 juta jiwa/km², sehingga angka ini disembunyikan di semua tahun. Kepadatan Penduduk (penduduk ÷ luas administratif) tetap ditampilkan karena tidak bergantung pada klasifikasi KLHK.</li>
+      <li><b>Kelas warna di peta:</b> batasnya menggunakan kuantil (7 kelas, jumlah wilayah kurang lebih sama tiap kelas), dihitung sekali dengan menggabungkan data dari ketiga tahun sensus (2000, 2010, 2020) untuk setiap mode (kepadatan penduduk / kepadatan penduduk perkotaan), lalu digunakan tetap di semua tahun untuk mode itu. Jadi warna yang sama selalu menunjukkan rentang kepadatan yang sama, tidak bergantung pada tahun sensus yang dipilih — sehingga perubahan warna antar tahun benar-benar mencerminkan pertumbuhan atau penurunan kepadatan, bukan sekadar klasifikasi ulang. Kelas warna baru dihitung ulang saat mode diganti (Kepadatan Penduduk ⇄ Kepadatan Penduduk Perkotaan), karena kedua mode punya skala nilai yang berbeda.</li>
+      <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah perkiraan area terbangun, bukan batas resmi kawasan permukiman, dan bisa ikut mencakup bangunan non-hunian seperti kawasan industri atau fasilitas umum. Kepadatan Penduduk Perkotaan sebaiknya dibaca sebagai gambaran kasar intensitas hunian, bukan angka kepadatan neto yang presisi.</li>
     </ul>
   </div>
 
@@ -2131,8 +2131,8 @@ function createDensityMap() {
   function renderLegend() {
     const title = document.getElementById('densityLegendTitle');
     title.textContent = state.mode === 'raw'
-      ? 'Kepadatan mentah (jiwa/km² luas administratif) — sensus ' + state.year + ' · kelas warna sama di semua tahun'
-      : 'Kepadatan per lahan terbangun (jiwa/km² area permukiman KLHK) — sensus ' + state.year + ' · kelas warna sama di semua tahun';
+      ? 'Kepadatan Penduduk (jiwa/km² luas administratif) — sensus ' + state.year + ' · kelas warna sama di semua tahun'
+      : 'Kepadatan Penduduk Perkotaan (jiwa/km² area permukiman KLHK) — sensus ' + state.year + ' · kelas warna sama di semua tahun';
 
     const legendEl = document.getElementById('densityLegend');
     const b = state.breaks;
@@ -2188,13 +2188,13 @@ function createDensityMap() {
       '<div class="density-info-grid">' +
         '<div><div class="density-info-stat-label">Penduduk</div><div class="density-info-stat-val">' + densityFmtPop(rec.pop) + '</div></div>' +
         '<div><div class="density-info-stat-label">Luas administratif</div><div class="density-info-stat-val">' + rec.area_km2.toLocaleString('id-ID') + ' km²</div></div>' +
-        '<div><div class="density-info-stat-label">kepadatan penduduk</div><div class="density-info-stat-val">' + densityFmtInt(rec.rawDensity) + ' /km²</div></div>' +
+        '<div><div class="density-info-stat-label">Kepadatan Penduduk</div><div class="density-info-stat-val">' + densityFmtInt(rec.rawDensity) + ' /km²</div></div>' +
         '<div><div class="density-info-stat-label">Luas lahan terbangun</div><div class="density-info-stat-val">' + builtupAreaTxt + '</div></div>' +
-        '<div><div class="density-info-stat-label">kepadatan penduduk perkotaan</div><div class="density-info-stat-val">' + builtupTxt + '</div></div>' +
+        '<div><div class="density-info-stat-label">Kepadatan Penduduk Perkotaan</div><div class="density-info-stat-val">' + builtupTxt + '</div></div>' +
         '<div><div class="density-info-stat-label">Persentase lahan terbangun</div><div class="density-info-stat-val">' + builtupShareTxt + '</div></div>' +
       '</div>' +
       reconFlag +
-      (rec.builtupUnreliable ? '<div class="density-info-flag">** Luas kelas "Permukiman" KLHK untuk wilayah ini tidak dapat diandalkan (kemungkinan besar area terbangun di pulau-pulau kecil salah terklasifikasi sebagai "Lainnya") — kepadatan per lahan terbangun disembunyikan. Lihat catatan metodologi.</div>' : '');
+      (rec.builtupUnreliable ? '<div class="density-info-flag">** Luas kelas "Permukiman" KLHK untuk wilayah ini tidak dapat diandalkan (kemungkinan besar area terbangun di pulau-pulau kecil salah terklasifikasi sebagai "Lainnya") — kepadatan penduduk perkotaan disembunyikan. Lihat catatan metodologi.</div>' : '');
   }
 
   function renderRankTables() {
@@ -2310,8 +2310,8 @@ function createDensityMap() {
             const tooltipTxt = !rec
               ? 'tidak ada data sensus ' + state.year
               : (state.mode === 'raw'
-                ? densityFmtInt(rec.rawDensity) + ' jiwa/km² (mentah)'
-                : (rec.builtupDensity === null ? 'tidak ada data lahan terbangun' : densityFmtInt(rec.builtupDensity) + ' jiwa/km² (lahan terbangun)'));
+                ? densityFmtInt(rec.rawDensity) + ' jiwa/km² (Kepadatan Penduduk)'
+                : (rec.builtupDensity === null ? 'tidak ada data lahan terbangun' : densityFmtInt(rec.builtupDensity) + ' jiwa/km² (Kepadatan Penduduk Perkotaan)'));
             layer.bindTooltip(
               '<b>' + name + '</b><br>' + tooltipTxt,
               { sticky: true, className: 'density-tooltip', direction: 'top' }
