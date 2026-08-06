@@ -658,7 +658,7 @@
       </li>
       <li><b>Pemekaran lain sudah otomatis sesuai:</b> pemekaran lain (misalnya Kota Tangerang Selatan 2008, Kota Batu 2001, Kota Serang 2007) terjadi sebelum Sensus 2010, jadi baris 2010 dan 2020 tidak perlu penyesuaian tambahan. Penyesuaian di atas hanya berlaku untuk baris 2000 dan untuk Ciamis/Pangandaran pada baris 2010.</li>
       <li><b>Kepulauan Seribu dikecualikan dari kepadatan lahan terbangun (ditandai "**"):</b> jumlah penduduknya benar (21.082 jiwa pada 2010, data BPS khusus Kepulauan Seribu, bukan angka DKI Jakarta keseluruhan). Namun luas kelas "Permukiman" KLHK untuk wilayah ini sangat kecil di semua tahun survei (0,012 km² pada 2000 dan 2011), jauh lebih kecil dari kelas "Lainnya" (1,24 km² pada tahun yang sama) — tanda area terbangun di pulau-pulau kecil ini salah diklasifikasikan oleh KLHK, bukan kepadatan yang sesungguhnya. Jika tetap digunakan, hasilnya kepadatan lahan-terbangun palsu di atas 1,7 juta jiwa/km², sehingga angka ini disembunyikan di semua tahun. Kepadatan mentah (penduduk ÷ luas administratif) tetap ditampilkan karena tidak bergantung pada klasifikasi KLHK.</li>
-      <li><b>Kelas warna di peta:</b> batasnya memakai kuantil (7 kelas, jumlah wilayah kurang lebih sama tiap kelas), dihitung ulang setiap kali mode atau tahun diganti — bukan interval tetap — supaya sebaran padat di kota inti tetap terlihat jelas di samping kabupaten yang jarang penduduknya.</li>
+      <li><b>Kelas warna di peta:</b> batasnya menggunakan kuantil (7 kelas, jumlah wilayah kurang lebih sama tiap kelas), dihitung sekali dengan menggabungkan data dari ketiga tahun sensus (2000, 2010, 2020) untuk setiap mode (kepadatan mentah / kepadatan lahan terbangun), lalu digunakan tetap di semua tahun untuk mode itu. Jadi warna yang sama selalu menunjukkan rentang kepadatan yang sama, tidak bergantung pada tahun sensus yang dipilih — sehingga perubahan warna antar tahun benar-benar mencerminkan pertumbuhan atau penurunan kepadatan, bukan sekadar klasifikasi ulang. Kelas warna baru dihitung ulang saat mode diganti (mentah ⇄ lahan terbangun), karena kedua mode punya skala nilai yang berbeda.</li>
       <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah perkiraan area terbangun, bukan batas resmi kawasan permukiman, dan bisa ikut mencakup bangunan non-hunian seperti kawasan industri atau fasilitas umum. Kepadatan "per lahan terbangun" sebaiknya dibaca sebagai gambaran kasar intensitas hunian, bukan angka kepadatan neto yang presisi.</li>
     </ul>
   </div>
@@ -2083,6 +2083,25 @@ function densityQuantileBreaks(values, nClasses) {
   return breaks; // nClasses-1 interior breakpoints
 }
 
+const DENSITY_YEARS = [2000, 2010, 2020];
+
+// Breaks are computed once per mode (raw / builtup), pooling values from all three
+// census years together, so the same color always represents the same density range
+// no matter which year is selected — this keeps growth/decline comparable across years
+// instead of every year getting its own freshly-rescaled classification.
+function densityFixedBreaksForMode(mode) {
+  const values = [];
+  DENSITY_YEARS.forEach(y => {
+    Object.keys(DENSITY_UNITS).forEach(n => {
+      const rec = densityRecord(n, y);
+      if (!rec) return;
+      const v = mode === 'raw' ? rec.rawDensity : rec.builtupDensity;
+      if (v !== null && v !== undefined && isFinite(v)) values.push(v);
+    });
+  });
+  return densityQuantileBreaks(values, DENSITY_COLORS.length);
+}
+
 function densityColorFor(value, breaks) {
   for (let i = 0; i < breaks.length; i++) {
     if (value <= breaks[i]) return DENSITY_COLORS[i];
@@ -2098,7 +2117,7 @@ function densityFmtPop(n) {
 }
 
 function createDensityMap() {
-  const state = { map: null, layer: null, mode: 'raw', year: 2020, breaks: [], selectedName: null };
+  const state = { map: null, layer: null, mode: 'raw', year: 2020, breaks: [], selectedName: null, fixedBreaks: {} };
   const loadingEl = document.getElementById('densityMapLoading');
 
   function currentValue(rec) {
@@ -2112,8 +2131,8 @@ function createDensityMap() {
   function renderLegend() {
     const title = document.getElementById('densityLegendTitle');
     title.textContent = state.mode === 'raw'
-      ? 'Kepadatan mentah (jiwa/km² luas administratif) — sensus ' + state.year
-      : 'Kepadatan per lahan terbangun (jiwa/km² area permukiman KLHK) — sensus ' + state.year;
+      ? 'Kepadatan mentah (jiwa/km² luas administratif) — sensus ' + state.year + ' · kelas warna sama di semua tahun'
+      : 'Kepadatan per lahan terbangun (jiwa/km² area permukiman KLHK) — sensus ' + state.year + ' · kelas warna sama di semua tahun';
 
     const legendEl = document.getElementById('densityLegend');
     const b = state.breaks;
@@ -2205,9 +2224,10 @@ function createDensityMap() {
 
   function refresh() {
     document.getElementById('densityYearReadout').textContent = state.year;
-    const recs = computeAllRecords();
-    const values = recs.map(currentValue).filter(v => v !== null && v !== undefined && isFinite(v));
-    state.breaks = densityQuantileBreaks(values, DENSITY_COLORS.length);
+    if (!state.fixedBreaks[state.mode]) {
+      state.fixedBreaks[state.mode] = densityFixedBreaksForMode(state.mode);
+    }
+    state.breaks = state.fixedBreaks[state.mode];
     renderLegend();
     renderRankTables();
     if (state.layer) state.layer.setStyle(f => styleFeature(f));
