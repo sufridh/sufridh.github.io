@@ -4,62 +4,192 @@
     {
       "type": "Feature",
       "properties": {
-        "nama": "BSD City",
-        "kabupaten": "Tangerang Selatan / Kab. Tangerang",
-        "pengembang": "Sinar Mas Land",
-        "kategori": "Kawasan Terpadu / Kota Mandiri",
-        "luas_ha_perkiraan": 6000,
-        "status_geometri": "PLACEHOLDER - titik pusat publik, belum didigitasi dari citra"
-      },
-      "geometry": { "type": "Point", "coordinates": [106.65222, -6.30056] }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "nama": "Gading Serpong",
-        "kabupaten": "Kab. Tangerang",
-        "pengembang": "Summarecon Agung & Paramount Land",
-        "kategori": "Kawasan Terpadu / Kota Mandiri",
-        "luas_ha_perkiraan": 1500,
-        "status_geometri": "PLACEHOLDER - titik pusat publik, belum didigitasi dari citra"
-      },
-      "geometry": { "type": "Point", "coordinates": [106.628158, -6.245320] }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "nama": "Jababeka",
-        "kabupaten": "Kab. Bekasi",
-        "pengembang": "PT Jababeka Tbk",
-        "kategori": "Kawasan Industri Terpadu",
-        "luas_ha_perkiraan": 5600,
-        "status_geometri": "PLACEHOLDER - titik area Cikarang, belum didigitasi dari citra"
-      },
-      "geometry": { "type": "Point", "coordinates": [107.150, -6.383] }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "nama": "Meikarta",
-        "kabupaten": "Kab. Bekasi",
-        "pengembang": "Lippo Group",
-        "kategori": "Kawasan Terpadu / Superblok",
+        "kategori": "Township / hunian",
+        "pengembang": "Lippo Group (PT Lippo Karawaci Tbk)",
         "luas_ha_perkiraan": 500,
-        "status_geometri": "PLACEHOLDER - titik area Cikarang Pusat, belum didigitasi dari citra"
+        "sumber": "Wikipedia (area, lokasi Cikarang Selatan/Jakarta-Cikampek toll)",
+        "status_geometri": "Perkiraan luasan dari sumber publik (bukan batas hasil digitasi/survei)"
       },
-      "geometry": { "type": "Point", "coordinates": [107.150, -6.367] }
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              107.13189520357423,
+              -6.328043424261137
+            ],
+            [
+              107.15210479642576,
+              -6.328043424261137
+            ],
+            [
+              107.15210479642576,
+              -6.307956575738862
+            ],
+            [
+              107.13189520357423,
+              -6.307956575738862
+            ],
+            [
+              107.13189520357423,
+              -6.328043424261137
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Kota Jababeka",
+        "kategori": "Kawasan industri terpadu",
+        "pengembang": "PT Jababeka Tbk",
+        "luas_ha_perkiraan": 5600,
+        "sumber": "Wikipedia 'Kota Jababeka' (koordinat + luas 5.600 ha)",
+        "status_geometri": "Perkiraan luasan dari sumber publik (bukan batas hasil digitasi/survei)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              107.13614070844575,
+              -6.323614726435267
+            ],
+            [
+              107.20377129155425,
+              -6.323614726435267
+            ],
+            [
+              107.20377129155425,
+              -6.2563912735647325
+            ],
+            [
+              107.13614070844575,
+              -6.2563912735647325
+            ],
+            [
+              107.13614070844575,
+              -6.323614726435267
+            ]
+          ]
+        ]
+      }
     },
     {
       "type": "Feature",
       "properties": {
         "nama": "Kota Deltamas",
-        "kabupaten": "Kab. Bekasi",
-        "pengembang": "Sinar Mas Land & Sojitz",
-        "kategori": "Kawasan Terpadu Industri & Hunian",
-        "luas_ha_perkiraan": 3300,
-        "status_geometri": "PLACEHOLDER - titik area Cikarang Pusat/Tol Cibatu, belum didigitasi dari citra"
+        "kategori": "Township industri-komersial-residensial",
+        "pengembang": "PT Puradelta Lestari Tbk (Sinar Mas Land & Sojitz)",
+        "luas_ha_perkiraan": 3200,
+        "sumber": "Wikipedia 'Kota Deltamas' + situs resmi (Cikarang Pusat, KM37 tol Jakarta-Cikampek)",
+        "status_geometri": "Perkiraan luasan dari sumber publik (bukan batas hasil digitasi/survei)"
       },
-      "geometry": { "type": "Point", "coordinates": [107.217, -6.333] }
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              107.15242838469645,
+              -6.3893460769380725
+            ],
+            [
+              107.20355961530355,
+              -6.3893460769380725
+            ],
+            [
+              107.20355961530355,
+              -6.338529923061928
+            ],
+            [
+              107.15242838469645,
+              -6.338529923061928
+            ],
+            [
+              107.15242838469645,
+              -6.3893460769380725
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "BSD City",
+        "kategori": "Township / kota mandiri",
+        "pengembang": "Sinar Mas Land (PT Bumi Serpong Damai Tbk)",
+        "luas_ha_perkiraan": 6000,
+        "sumber": "Wikipedia 'BSD City' (koordinat + luas total 6.000 ha)",
+        "status_geometri": "Perkiraan luasan dari sumber publik (bukan batas hasil digitasi/survei)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              106.61721713639986,
+              -6.335351442204522
+            ],
+            [
+              106.68722286360014,
+              -6.335351442204522
+            ],
+            [
+              106.68722286360014,
+              -6.265768557795478
+            ],
+            [
+              106.61721713639986,
+              -6.265768557795478
+            ],
+            [
+              106.61721713639986,
+              -6.335351442204522
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Gading Serpong",
+        "kategori": "Township / hunian",
+        "pengembang": "Summarecon Serpong & Paramount Land",
+        "luas_ha_perkiraan": 1500,
+        "sumber": "Wikipedia 'Gading Serpong' (luas 1.500 ha; koordinat perkiraan, Kelapa Dua/Pagedangan)",
+        "status_geometri": "Perkiraan luasan dari sumber publik (bukan batas hasil digitasi/survei)"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              106.61050066740465,
+              -6.2553957211022615
+            ],
+            [
+              106.64549933259535,
+              -6.2553957211022615
+            ],
+            [
+              106.64549933259535,
+              -6.220604278897739
+            ],
+            [
+              106.61050066740465,
+              -6.220604278897739
+            ],
+            [
+              106.61050066740465,
+              -6.2553957211022615
+            ]
+          ]
+        ]
+      }
     }
   ]
 }
