@@ -2,42 +2,356 @@
 <html lang="id">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Geospatial Dashboard - RTRW/RDTR + LULC + Kawasan Khusus</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Bodetabek RDTR/RTRW &middot; Peta Pola Ruang</title>
 <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  html, body { margin: 0; padding: 0; height: 100%; font-family: system-ui, sans-serif; }
-  #map { position: absolute; inset: 0; }
-  #panel {
-    position: absolute; top: 12px; left: 12px; z-index: 1;
-    background: #fff; border-radius: 8px; padding: 14px 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15); font-size: 13px; width: 270px;
+  :root{
+    --bg-app:#0d1116;
+    --panel:#151b23;
+    --panel-raised:#1b2330;
+    --panel-raised-2:#212b3a;
+    --border:#2a3441;
+    --border-soft:#212a35;
+    --text-primary:#e9edf2;
+    --text-secondary:#93a1b0;
+    --text-tertiary:#5b6672;
+    --accent:#33d6c8;
+    --accent-dim:rgba(51,214,200,0.14);
+    --danger:#ff7a7a;
+    --danger-dim:rgba(255,122,122,0.12);
+    --warn:#f2b84b;
+    --radius:10px;
+    --radius-sm:6px;
+    --font-ui:'Inter',system-ui,sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sidebar-w:328px;
   }
-  #panel .title { font-weight: 600; margin-bottom: 8px; }
-  #panel select { width: 100%; margin-bottom: 14px; padding: 4px; }
-  #panel label { display: block; margin-bottom: 4px; }
-  #panel input[type="range"] { width: 100%; margin-bottom: 8px; }
-  #panel .note { font-size: 11px; color: #d90429; margin-top: 6px; }
-  #panel .warn { font-size: 11px; color: #7a5c00; margin-top: 6px; }
-  .maplibregl-popup-content { font-size: 12px; }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;font-family:var(--font-ui);background:var(--bg-app);color:var(--text-primary);}
+  #app{position:absolute;inset:0;display:flex;}
+
+  /* ---------------- Sidebar ---------------- */
+  #sidebar{
+    width:var(--sidebar-w);flex:0 0 auto;height:100%;background:var(--panel);
+    border-right:1px solid var(--border);display:flex;flex-direction:column;
+    z-index:5;transition:transform .28s ease;
+  }
+  #sidebar-scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 18px 18px;}
+  #sidebar-scroll::-webkit-scrollbar{width:8px;}
+  #sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  #sidebar-scroll::-webkit-scrollbar-track{background:transparent;}
+
+  .brand{
+    display:flex;align-items:center;gap:10px;padding:18px 18px 16px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand-mark{
+    width:34px;height:34px;border-radius:8px;background:var(--accent-dim);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+  }
+  .brand-title{font-weight:700;font-size:14.5px;letter-spacing:.01em;line-height:1.25;}
+  .brand-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);letter-spacing:.06em;text-transform:uppercase;margin-top:2px;}
+
+  .section{margin-top:20px;}
+  .section-label{
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--text-tertiary);display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .section-label .count{color:var(--text-tertiary);font-weight:400;}
+
+  .kab-list{display:flex;flex-direction:column;gap:6px;}
+  .kab-item{
+    text-align:left;width:100%;background:var(--panel-raised);border:1px solid var(--border-soft);
+    border-radius:var(--radius-sm);padding:9px 11px;cursor:pointer;color:var(--text-secondary);
+    font-size:12.5px;font-family:var(--font-ui);transition:.15s;line-height:1.35;
+  }
+  .kab-item .kab-name{color:var(--text-primary);font-weight:600;display:block;font-size:12.5px;}
+  .kab-item .kab-period{font-family:var(--font-mono);font-size:10.5px;color:var(--text-tertiary);display:block;margin-top:2px;}
+  .kab-item:hover{border-color:var(--border);background:var(--panel-raised-2);}
+  .kab-item.active{border-color:var(--accent);background:var(--accent-dim);}
+  .kab-item.active .kab-name{color:var(--accent);}
+  .kab-item.active .kab-period{color:var(--accent);opacity:.75;}
+
+  .layer-row{
+    background:var(--panel-raised);border:1px solid var(--border-soft);border-radius:var(--radius-sm);
+    padding:10px 12px 12px;margin-bottom:8px;
+  }
+  .layer-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .layer-name{font-size:12.5px;font-weight:600;color:var(--text-primary);}
+  .layer-hint{font-size:10.5px;color:var(--text-tertiary);margin-top:2px;line-height:1.4;}
+
+  .switch{position:relative;width:34px;height:19px;flex:0 0 auto;cursor:pointer;display:block;}
+  .switch input{opacity:0;width:0;height:0;position:absolute;}
+  .switch .track{
+    position:absolute;inset:0;background:var(--border);border-radius:99px;transition:.18s;
+  }
+  .switch .thumb{
+    position:absolute;top:2px;left:2px;width:15px;height:15px;background:#c7d0d9;border-radius:50%;transition:.18s;
+  }
+  .switch input:checked + .track{background:var(--accent);}
+  .switch input:checked + .track .thumb{transform:translateX(15px);background:#0d1116;}
+
+  .opacity-row{margin-top:10px;}
+  .opacity-row-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-tertiary);font-family:var(--font-mono);margin-bottom:5px;}
+  input[type="range"]{
+    -webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:2px;
+    background:var(--border);outline:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:13px;height:13px;border-radius:50%;
+    background:var(--accent);cursor:pointer;border:2px solid var(--panel-raised);box-shadow:0 0 0 1px var(--accent);
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--panel-raised);
+  }
+
+  .note{
+    display:flex;gap:8px;font-size:10.5px;line-height:1.5;color:var(--text-secondary);
+    background:rgba(242,184,75,.1);border:1px solid rgba(242,184,75,.25);
+    border-radius:var(--radius-sm);padding:9px 10px;margin-top:8px;
+  }
+  .note svg{flex:0 0 auto;margin-top:1px;color:var(--warn);}
+
+  .legend-group{margin-bottom:4px;}
+  .legend-group-title{
+    font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--text-tertiary);margin:12px 0 6px;padding-top:8px;border-top:1px solid var(--border-soft);
+  }
+  .legend-group:first-child .legend-group-title{border-top:none;padding-top:0;margin-top:0;}
+  .legend-item{display:flex;align-items:center;gap:8px;padding:3.5px 0;font-size:11.5px;color:var(--text-secondary);}
+  .legend-swatch{width:12px;height:12px;border-radius:3px;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);}
+
+  .sidebar-footer{
+    padding:14px 18px;border-top:1px solid var(--border);font-size:10.5px;color:var(--text-tertiary);
+    line-height:1.6;
+  }
+
+  /* ---------------- Map area ---------------- */
+  #map-wrap{position:relative;flex:1 1 auto;height:100%;min-width:0;}
+  #map{position:absolute;inset:0;}
+
+  #sidebar-toggle{
+    position:absolute;top:14px;left:14px;z-index:6;display:none;
+    width:38px;height:38px;border-radius:var(--radius-sm);background:var(--panel);
+    border:1px solid var(--border);align-items:center;justify-content:center;cursor:pointer;color:var(--text-primary);
+    box-shadow:0 4px 14px rgba(0,0,0,.35);
+  }
+
+  #basemap-switch{
+    position:absolute;top:14px;right:14px;z-index:4;display:flex;gap:2px;
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px;
+    box-shadow:0 4px 14px rgba(0,0,0,.3);
+  }
+  #basemap-switch button{
+    border:none;background:transparent;color:var(--text-tertiary);width:auto;padding:0 8px;height:26px;border-radius:5px;
+    cursor:pointer;font-size:10px;font-family:var(--font-mono);letter-spacing:.02em;
+  }
+  #basemap-switch button.active{background:var(--accent-dim);color:var(--accent);}
+
+  #reset-view{
+    position:absolute;top:60px;right:14px;z-index:4;
+    background:var(--panel);border:1px solid var(--border);color:var(--text-secondary);
+    width:30px;height:30px;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,.3);
+  }
+  #reset-view:hover{color:var(--accent);border-color:var(--accent);}
+
+  .maplibregl-ctrl-top-right{margin-top:100px;}
+  .maplibregl-ctrl-group{background:var(--panel) !important;border:1px solid var(--border) !important;box-shadow:0 4px 14px rgba(0,0,0,.3) !important;}
+  .maplibregl-ctrl-group button{background:transparent !important;}
+  .maplibregl-ctrl-group button + button{border-top:1px solid var(--border) !important;}
+  .maplibregl-ctrl-icon{filter:invert(1) brightness(1.6);}
+  .maplibregl-ctrl-attrib{background:rgba(21,27,35,.75) !important;color:var(--text-tertiary) !important;font-size:10px !important;}
+  .maplibregl-ctrl-attrib a{color:var(--text-secondary) !important;}
+  .maplibregl-ctrl-scale{
+    background:rgba(21,27,35,.75) !important;border-color:var(--text-tertiary) !important;color:var(--text-secondary) !important;
+    font-family:var(--font-mono) !important;font-size:10px !important;
+  }
+
+  #status-bar{
+    position:absolute;left:0;right:0;bottom:0;z-index:4;height:26px;
+    background:rgba(13,17,22,.85);backdrop-filter:blur(6px);border-top:1px solid var(--border);
+    display:flex;align-items:center;padding:0 12px;gap:18px;
+    font-family:var(--font-mono);font-size:10.5px;color:var(--text-tertiary);
+    pointer-events:none;
+  }
+  #status-bar span{white-space:nowrap;}
+  #status-bar .sep{width:1px;height:12px;background:var(--border);}
+  #status-bar .dim{color:var(--text-tertiary);}
+  #status-bar .val{color:var(--text-secondary);}
+
+  .maplibregl-popup-content{
+    background:var(--panel) !important;color:var(--text-primary) !important;
+    border-radius:var(--radius) !important;padding:0 !important;overflow:hidden;
+    box-shadow:0 12px 32px rgba(0,0,0,.5) !important;border:1px solid var(--border);
+    font-family:var(--font-ui);
+  }
+  .maplibregl-popup-tip{border-top-color:var(--panel) !important;border-bottom-color:var(--panel) !important;}
+  .maplibregl-popup-close-button{color:var(--text-tertiary) !important;font-size:16px !important;padding:4px 8px !important;}
+  .zone-popup{min-width:220px;max-width:280px;}
+  .zone-popup-bar{height:5px;width:100%;}
+  .zone-popup-body{padding:12px 14px 13px;}
+  .zone-popup-title{font-weight:700;font-size:13px;margin-bottom:8px;line-height:1.35;}
+  .zone-popup-row{display:flex;justify-content:space-between;gap:10px;font-size:11px;padding:3px 0;border-top:1px solid var(--border-soft);}
+  .zone-popup-row:first-of-type{border-top:none;}
+  .zone-popup-row .k{color:var(--text-tertiary);}
+  .zone-popup-row .v{color:var(--text-secondary);text-align:right;}
+  .zone-popup-flag{margin-top:8px;font-size:10.5px;color:var(--danger);background:var(--danger-dim);padding:6px 8px;border-radius:5px;line-height:1.4;}
+
+  #loading-overlay{
+    position:absolute;inset:0;z-index:10;background:var(--bg-app);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    transition:opacity .35s ease;
+  }
+  #loading-overlay .spinner{
+    width:26px;height:26px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--accent);
+    animation:spin .8s linear infinite;
+  }
+  #loading-overlay span{font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary);letter-spacing:.06em;text-transform:uppercase;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  #sidebar-backdrop{display:none;}
+
+  @media (max-width: 820px){
+    :root{--sidebar-w:82vw;}
+    #sidebar{position:absolute;top:0;bottom:0;left:0;transform:translateX(-100%);box-shadow:0 0 40px rgba(0,0,0,.5);max-width:340px;}
+    #sidebar.open{transform:translateX(0);}
+    #sidebar-toggle{display:flex;}
+    #sidebar-backdrop{
+      display:none;position:absolute;inset:0;z-index:4;background:rgba(0,0,0,.45);
+    }
+    #sidebar-backdrop.show{display:block;}
+    .maplibregl-ctrl-top-right{margin-top:60px;}
+  }
 </style>
 </head>
 <body>
-<div id="map"></div>
-<div id="panel">
-  <div class="title">Kabupaten / Versi RTRW</div>
-  <select id="kabSelect"></select>
+<div id="app">
 
-  <div class="title">Layer</div>
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#33d6c8" stroke-width="1.8"><path d="M9 20l-5.5-2.2a1 1 0 0 1-.5-.9V4.6a1 1 0 0 1 1.4-.9L9 6m0 14l6-2m-6 2V6m6 12l5.1 2a1 1 0 0 0 1.4-.9V4.6a1 1 0 0 0-1.5-1L15 6m0 12V6m0 0L9 4"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">Peta Pola Ruang Bodetabek</div>
+        <div class="brand-sub">RTRW &middot; RDTR &middot; LULC</div>
+      </div>
+    </div>
 
-  <label><input type="checkbox" id="showRtrw" checked /> RTRW / RDTR Pola Ruang</label>
-  <input type="range" id="rtrwOpacity" min="0.1" max="1" step="0.05" value="0.55" />
+    <div id="sidebar-scroll">
 
-  <label><input type="checkbox" id="showLulc" /> Penggunaan Lahan (LULC 2025)</label>
-  <input type="range" id="lulcOpacity" min="0.1" max="1" step="0.05" value="0.7" />
+      <div class="section">
+        <div class="section-label">Kabupaten / Versi RTRW</div>
+        <div class="kab-list" id="kabList"></div>
+      </div>
 
-  <label><input type="checkbox" id="showKK" checked /> Kawasan Khusus (Meikarta, BSD, dll.)</label>
-  <div class="note">Poligon perkiraan luas dari sumber publik (Wikipedia/situs pengembang), bukan hasil digitasi/survei - lihat properti "sumber" di popup.</div>
+      <div class="section">
+        <div class="section-label">Lapisan Peta</div>
+
+        <div class="layer-row">
+          <div class="layer-row-top">
+            <div>
+              <div class="layer-name">Pola Ruang RTRW/RDTR</div>
+              <div class="layer-hint">Zonasi resmi sesuai Perda/Perkada</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="showRtrw" checked />
+              <span class="track"><span class="thumb"></span></span>
+            </label>
+          </div>
+          <div class="opacity-row">
+            <div class="opacity-row-label"><span>OPASITAS</span><span class="val" id="rtrwOpacityVal">55%</span></div>
+            <input type="range" id="rtrwOpacity" min="0.1" max="1" step="0.05" value="0.55" />
+          </div>
+        </div>
+
+        <div class="layer-row">
+          <div class="layer-row-top">
+            <div>
+              <div class="layer-name">Penggunaan Lahan (LULC 2025)</div>
+              <div class="layer-hint">Esri Sentinel-2, resolusi 10m</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="showLulc" />
+              <span class="track"><span class="thumb"></span></span>
+            </label>
+          </div>
+          <div class="opacity-row">
+            <div class="opacity-row-label"><span>OPASITAS</span><span class="val" id="lulcOpacityVal">70%</span></div>
+            <input type="range" id="lulcOpacity" min="0.1" max="1" step="0.05" value="0.7" />
+          </div>
+        </div>
+
+        <div class="layer-row">
+          <div class="layer-row-top">
+            <div>
+              <div class="layer-name">Kawasan Khusus</div>
+              <div class="layer-hint">Meikarta, BSD, Jababeka, dll.</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="showKK" checked />
+              <span class="track"><span class="thumb"></span></span>
+            </label>
+          </div>
+          <div class="note">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
+            <span>Poligon perkiraan luas dari sumber publik, bukan hasil digitasi/survei. Lihat properti "sumber" pada popup.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Legenda Pola Ruang <span class="count" id="legendCount"></span></div>
+        <div id="legendBody"></div>
+      </div>
+
+    </div>
+
+    <div class="sidebar-footer">
+      Warna zona mengikuti Lampiran VII Permen ATR/BPN No. 14/2021 (Tabel VII.17).
+      Sumber vektor: GISTARU ATR/BPN. Basemap &copy; CARTO / Esri.
+    </div>
+  </aside>
+
+  <div id="sidebar-backdrop"></div>
+
+  <div id="map-wrap">
+    <div id="map"></div>
+
+    <button id="sidebar-toggle" aria-label="Buka panel">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+
+    <div id="basemap-switch">
+      <button data-style="light" class="active">TERANG</button>
+      <button data-style="dark">GELAP</button>
+      <button data-style="sat">CITRA</button>
+    </div>
+    <button id="reset-view" aria-label="Reset tampilan" title="Reset tampilan">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 1 3 6.7M3 12v5h5"/></svg>
+    </button>
+
+    <div id="status-bar">
+      <span class="dim">LON</span> <span class="val" id="stLon">-</span>
+      <span class="sep"></span>
+      <span class="dim">LAT</span> <span class="val" id="stLat">-</span>
+      <span class="sep"></span>
+      <span class="dim">ZOOM</span> <span class="val" id="stZoom">-</span>
+    </div>
+
+    <div id="loading-overlay">
+      <div class="spinner"></div>
+      <span>Memuat peta&hellip;</span>
+    </div>
+  </div>
+
 </div>
 
 <script type="module">
@@ -47,38 +361,37 @@ import { Protocol } from "https://esm.sh/pmtiles@3.2.0";
 // ---------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------
-// Relative to this HTML file, so it works straight from
-// https://sufridh.github.io/botabek/ once tiles/ sits next to index.html.
 const PMTILES_BASE_URL = "./tiles";
-// LULC is pre-tiled to a static XYZ PNG pyramid (z8-14, nearest-neighbor
-// resampled to keep class codes exact) via gdal2tiles - no dynamic COG
-// server needed, so this works directly on GitHub Pages.
 const LULC_TILE_TEMPLATE = "./tiles/lulc_xyz/{z}/{x}/{y}.png";
 
 const KABUPATEN_CONFIG = {
   bogor_2024: {
-    label: "Kab. Bogor - RDTR 2024-2044 (terbaru)",
+    label: "Kab. Bogor",
+    period: "RDTR 2024\u20132044 \u00b7 terbaru",
     file: "rtrw/bogor_2024-2044.pmtiles",
     sourceLayer: "3201_kabupaten_bogor",
     center: [106.8, -6.55],
     zoom: 10,
   },
   bogor_2016: {
-    label: "Kab. Bogor - RTRW 2016-2036 (Perda lama)",
+    label: "Kab. Bogor",
+    period: "RTRW 2016\u20132036 \u00b7 Perda lama",
     file: "rtrw/bogor_2016-2036.pmtiles",
     sourceLayer: "3201_kabupaten_bogor_2016_2036",
     center: [106.8, -6.55],
     zoom: 10,
   },
   bekasi: {
-    label: "Kab. Bekasi - RTRW 2011-2031",
+    label: "Kab. Bekasi",
+    period: "RTRW 2011\u20132031",
     file: "rtrw/bekasi_2011-2031.pmtiles",
     sourceLayer: "3216_kabupaten_bekasi",
     center: [107.1, -6.2],
     zoom: 10,
   },
   tangerang: {
-    label: "Kab. Tangerang - RDTR 2020-2040",
+    label: "Kab. Tangerang",
+    period: "RDTR 2020\u20132040",
     file: "rtrw/tangerang_2020-2040.pmtiles",
     sourceLayer: "3603_kabupaten_tangerang",
     center: [106.55, -6.18],
@@ -86,74 +399,249 @@ const KABUPATEN_CONFIG = {
   },
 };
 
-const ZONE_COLOR_MATCH = [
-  ["Permukiman Perkotaan", "#f4a261"],
-  ["Permukiman Perdesaan", "#f7c59f"],
-  ["Peruntukan Industri", "#9b5de5"],
-  ["Hutan Lindung", "#1b4332"],
-  ["Hutan Produksi", "#2d6a4f"],
-  ["Hutan Konservasi", "#0b3d2e"],
-  ["Perkebunan", "#40916c"],
-  ["Tanaman Pangan", "#a7c957"],
-  ["Lahan Kering", "#c3d941"],
-  ["Lahan Basah", "#52b788"],
-  ["Hortikultura", "#bfd200"],
-  ["Perikanan", "#4cc9f0"],
-  ["Peternakan", "#e9c46a"],
-  ["Pariwisata", "#f72585"],
-  ["Pertambangan", "#6f1d1b"],
-  ["Hankam", "#495057"],
-  ["Transportasi", "#adb5bd"],
-  ["Pembangkitan Tenaga Listrik", "#ffb703"],
-  ["Cagar Alam", "#264653"],
-  ["Taman Nasional", "#2a9d8f"],
-  ["Taman Wisata Alam", "#83c5be"],
-  ["Danau", "#0077b6"],
-  ["Waduk", "#0077b6"],
-  ["Situ", "#00b4d8"],
-  ["Badan Air", "#0096c7"],
-  ["Sempadan", "#48cae4"],
-  ["Jalur Hijau", "#80b918"],
-];
+// ---------------------------------------------------------------------
+// Zone colors - exact values from Lampiran VII, Permen ATR/BPN No. 14/2021
+// (Tabel VII.17 "Ketentuan Simbolisasi Peta Rencana Pola Ruang RDTR
+// Kabupaten/Kota"). A few compound/transitional zone labels that only
+// occur in the source data (e.g. "...yang Direncanakan untuk Industri")
+// are blended between their two constituent official colors - noted
+// inline below.
+//
+// Keyed by the exact NAMOBJ / Pola_Ruang string found in the pmtiles,
+// so matching in MapLibre is an O(1) exact lookup, never a guess.
+// ---------------------------------------------------------------------
+const ZONE_INFO = {
+  // ---- Badan air & perairan (Zona Lindung) ----
+  "Badan Air": { c: "#97DBF2", g: "lindung" },
+  "Danau": { c: "#97DBF2", g: "lindung" },
+  "Sungai": { c: "#97DBF2", g: "lindung" },
+  "Situ": { c: "#97DBF2", g: "lindung" },
+  "Rencana Waduk": { c: "#97DBF2", g: "lindung" },
+  "Sedimen": { c: "#bfe3ee", g: "lindung" },
+  "Kawasan Sekitar Danau atau Waduk": { c: "#05D7D7", g: "lindung" }, // Perlindungan Setempat (PS)
+
+  // ---- Hutan lindung & konservasi (Zona Lindung) ----
+  "Hutan Lindung": { c: "#325F28", g: "lindung" },
+  "Kawasan Hutan Lindung": { c: "#325F28", g: "lindung" },
+  "Kawasan Hutan Lindung/Kawasan Pertambangan dan Energi": { c: "#3e6350", g: "lindung" }, // blended, compound zone
+  "Hutan Lindung yang Direncanakan untuk Industri dan Pergudangan": { c: "#4d2f14", g: "lindung" }, // blended HL\u2192KPI
+  "Enclave Kawasan Hutan": { c: "#6b8f63", g: "lindung" },
+  "Hutan Konservasi": { c: "#4646A5", g: "lindung" }, // Cagar Alam (CA)
+  "Cagar Alam": { c: "#4646A5", g: "lindung" },
+  "Taman Nasional": { c: "#9B87FF", g: "lindung" },
+  "Taman Wisata Alam": { c: "#D2BEFF", g: "lindung" },
+  "Taman Wisata Alam/ Kawasan Pariwisata": { c: "#D2BEFF", g: "lindung" },
+  "Taman Wisata Alam/ Kawasan Permukiman Perdesaan": { c: "#D2BEFF", g: "lindung" },
+  "Taman Wisata Alam/ Kawasan Permukiman Perkotaan": { c: "#D2BEFF", g: "lindung" },
+  "Taman Wisata Alam/ Kawasan Tanaman Pangan": { c: "#D2BEFF", g: "lindung" },
+  "Kawasan Keunikan Bentang Alam": { c: "#B48796", g: "lindung" }, // Lindung Geologi (LGE-2)
+  "Kawasan Perlindungan Setempat": { c: "#05D7D7", g: "lindung" },
+  "Jalur Hijau": { c: "#0F9100", g: "lindung" }, // RTH-8
+  "Taman Kota": { c: "#416900", g: "lindung" }, // RTH-2
+  "TPU": { c: "#5AFF00", g: "lindung" }, // RTH-7 Pemakaman
+  "Sempadan Danau": { c: "#75EB00", g: "lindung" },
+  "Sempadan Sungai": { c: "#69FAFA", g: "lindung" },
+  "Sempadan Pantai": { c: "#120087", g: "lindung" },
+
+  // ---- Hutan produksi (Zona Budi Daya) ----
+  "Kawasan Hutan Produksi Terbatas": { c: "#4B9B37", g: "budidaya" },
+  "Kawasan Hutan Produksi Terbatas/Kawasan Perkebunan": { c: "#7DA537", g: "budidaya" }, // blended
+  "Hutan Produksi Tetap yang Direncanakan untuk Pengembangan Wilayah": { c: "#bec81b", g: "budidaya" }, // blended
+  "Kawasan Hutan Produksi Tetap": { c: "#7DB437", g: "budidaya" },
+
+  // ---- Pertanian, perkebunan, peternakan, perikanan (Zona Budi Daya) ----
+  "Kawasan Tanaman Pangan": { c: "#C8F546", g: "budidaya" }, // P-1
+  "Pertanian Lahan Basah": { c: "#C8F546", g: "budidaya" },
+  "Kawasan Peruntukan Lahan Basah": { c: "#C8F546", g: "budidaya" },
+  "Kawasan Hortikultura": { c: "#E6FF4B", g: "budidaya" }, // P-2
+  "Kawasan Perkebunan": { c: "#AFAF37", g: "budidaya" }, // P-3
+  "Kawasan Peruntukan Perkebunan": { c: "#AFAF37", g: "budidaya" },
+  "Pertanian Lahan Kering": { c: "#AFAF37", g: "budidaya" },
+  "Kawasan Peruntukan Lahan Kering": { c: "#AFAF37", g: "budidaya" },
+  "Tanaman Tahunan": { c: "#AFAF37", g: "budidaya" },
+  "Lahan Peruntukan Agroindustri": { c: "#8c571b", g: "budidaya" }, // blended P-3\u2192KPI
+  "Kawasan Peternakan": { c: "#B9EBB9", g: "budidaya" }, // P-4
+  "Kawasan Perikanan Budi Daya": { c: "#82B9D2", g: "budidaya" }, // IK-2
+  "Perikanan": { c: "#649BD2", g: "budidaya" }, // IK-1
+
+  // ---- Permukiman (Zona Budi Daya) ----
+  "Permukiman Perdesaan": { c: "#FFFF9B", g: "budidaya" }, // R-5
+  "Kawasan Permukiman Perdesaan": { c: "#FFFF9B", g: "budidaya" },
+  "Kawasan Peruntukan Permukiman Perdesaan": { c: "#FFFF9B", g: "budidaya" },
+  "Permukiman Perkotaan": { c: "#FFDC00", g: "budidaya" }, // R-2
+  "Kawasan Permukiman Perkotaan": { c: "#FFDC00", g: "budidaya" },
+  "Permukiman Perkotaan Kepadatan Tinggi": { c: "#FFDC00", g: "budidaya" }, // R-2
+  "Permukiman Perkotaan Kepadatan Sedang": { c: "#FFF005", g: "budidaya" }, // R-3
+  "Permukiman Perkotaan Kepadatan Rendah": { c: "#FFFA4B", g: "budidaya" }, // R-4
+
+  // ---- Industri, pertambangan, energi (Zona Budi Daya) ----
+  "Lahan Peruntukan Industri": { c: "#690000", g: "budidaya" }, // KPI
+  "Kawasan Peruntukan Industri": { c: "#690000", g: "budidaya" },
+  "Pertambangan": { c: "#5F7391", g: "budidaya" }, // MBT (batuan, representatif)
+  "Kawasan Peruntukan Pertambangan Batuan": { c: "#5F7391", g: "budidaya" }, // MBT
+  "Kawasan Pembangkitan Tenaga Listrik": { c: "#00FFCD", g: "budidaya" }, // PTL
+
+  // ---- Pariwisata (Zona Budi Daya) ----
+  "Pariwisata": { c: "#FFA5FF", g: "budidaya" }, // W
+  "Kawasan Pariwisata": { c: "#FFA5FF", g: "budidaya" },
+
+  // ---- Hankam, transportasi, prasarana lain (Zona Budi Daya) ----
+  "Kawasan Khusus Hankam": { c: "#9B00FF", g: "budidaya" }, // HK
+  "Kawasan Pertahanan dan Keamanan": { c: "#9B00FF", g: "budidaya" },
+  "Kawasan Transportasi": { c: "#D73700", g: "budidaya" }, // TR
+  "Limbah B3": { c: "#87001E", g: "budidaya" }, // hazardous, analog to PL-5
+  "Tempat Pengolahan dan Pemrosesan Akhir Sampah": { c: "#D79B37", g: "budidaya" }, // PP
+};
+const FALLBACK_COLOR = "#8a8f96";
+
+const GROUP_LABEL = { lindung: "Zona Lindung", budidaya: "Zona Budi Daya" };
+
+// Zone values actually present in each dataset (drives the per-kabupaten
+// legend). Field used for matching: NAMOBJ where present, else Pola_Ruang
+// (Bogor 2016) - confirmed by decoding the tiles directly.
+const KABUPATEN_ZONES = {
+  bekasi: [
+    "Danau", "Hutan Lindung", "Hutan Lindung yang Direncanakan untuk Industri dan Pergudangan",
+    "Hutan Produksi Tetap yang Direncanakan untuk Pengembangan Wilayah", "Jalur Hijau",
+    "Lahan Peruntukan Agroindustri", "Lahan Peruntukan Industri", "Limbah B3", "Pariwisata",
+    "Perikanan", "Permukiman Perdesaan", "Permukiman Perkotaan", "Pertambangan",
+    "Pertanian Lahan Basah", "Pertanian Lahan Kering", "Sedimen", "Sempadan Danau",
+    "Sempadan Sungai", "Sungai", "TPU", "Taman Kota", "Tanaman Tahunan",
+    "Tempat Pengolahan dan Pemrosesan Akhir Sampah",
+  ],
+  bogor_2024: [
+    "Badan Air", "Cagar Alam", "Kawasan Hortikultura", "Kawasan Hutan Lindung",
+    "Kawasan Hutan Produksi Terbatas", "Kawasan Hutan Produksi Terbatas/Kawasan Perkebunan",
+    "Kawasan Hutan Produksi Tetap", "Kawasan Keunikan Bentang Alam", "Kawasan Pariwisata",
+    "Kawasan Perikanan Budi Daya", "Kawasan Perkebunan", "Kawasan Perlindungan Setempat",
+    "Kawasan Permukiman Perdesaan", "Kawasan Permukiman Perkotaan",
+    "Kawasan Pertahanan dan Keamanan", "Kawasan Peruntukan Industri",
+    "Kawasan Peruntukan Pertambangan Batuan", "Kawasan Peternakan", "Kawasan Tanaman Pangan",
+    "Taman Nasional", "Taman Wisata Alam", "Taman Wisata Alam/ Kawasan Pariwisata",
+    "Taman Wisata Alam/ Kawasan Permukiman Perdesaan",
+    "Taman Wisata Alam/ Kawasan Permukiman Perkotaan", "Taman Wisata Alam/ Kawasan Tanaman Pangan",
+  ],
+  bogor_2016: [
+    "Enclave Kawasan Hutan", "Hutan Konservasi", "Kawasan Hutan Lindung",
+    "Kawasan Hutan Produksi Terbatas", "Kawasan Hutan Produksi Tetap", "Kawasan Khusus Hankam",
+    "Kawasan Peruntukan Industri", "Kawasan Peruntukan Lahan Basah",
+    "Kawasan Peruntukan Lahan Kering", "Kawasan Peruntukan Perkebunan",
+    "Kawasan Peruntukan Permukiman Perdesaan", "Permukiman Perkotaan Kepadatan Rendah",
+    "Permukiman Perkotaan Kepadatan Sedang", "Permukiman Perkotaan Kepadatan Tinggi",
+    "Rencana Waduk", "Situ",
+  ],
+  tangerang: [
+    "Badan Air", "Kawasan Hutan Lindung", "Kawasan Hutan Lindung/Kawasan Pertambangan dan Energi",
+    "Kawasan Pembangkitan Tenaga Listrik", "Kawasan Perikanan Budi Daya",
+    "Kawasan Permukiman Perdesaan", "Kawasan Permukiman Perkotaan", "Kawasan Peruntukan Industri",
+    "Kawasan Peternakan", "Kawasan Sekitar Danau atau Waduk", "Kawasan Tanaman Pangan",
+    "Kawasan Transportasi", "Sempadan Pantai", "Sempadan Sungai",
+  ],
+};
 
 function buildZoneColorExpression() {
-  const zoneField = ["coalesce", ["get", "NAMOBJ"], ["get", "Pola_Ruang"], ""];
-  const expr = ["case"];
-  for (const [needle, color] of ZONE_COLOR_MATCH) {
-    expr.push(["in", needle, zoneField], color);
-  }
-  expr.push("#cccccc");
-  return expr;
+  const input = ["coalesce", ["get", "NAMOBJ"], ["get", "Pola_Ruang"], ""];
+  const pairs = [];
+  for (const [name, info] of Object.entries(ZONE_INFO)) pairs.push(name, info.c);
+  return ["match", input, ...pairs, FALLBACK_COLOR];
 }
+
+// ---------------------------------------------------------------------
+// Basemaps
+// ---------------------------------------------------------------------
+const BASEMAPS = {
+  light: {
+    tiles: ["https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"],
+    attribution: "&copy; CARTO &copy; OpenStreetMap contributors",
+  },
+  dark: {
+    tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+    attribution: "&copy; CARTO &copy; OpenStreetMap contributors",
+  },
+  sat: {
+    tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+    attribution: "Esri, Maxar, Earthstar Geographics",
+  },
+};
 
 // pmtiles:// protocol
 const protocol = new Protocol();
 maplibregl.addProtocol("pmtiles", protocol.tile);
 
 let activeKabupaten = "bekasi";
+let activeBasemap = "light";
 let rtrwOpacity = 0.55;
 let lulcOpacity = 0.7;
 
+function baseStyle(basemapId) {
+  const bm = BASEMAPS[basemapId];
+  return {
+    version: 8,
+    sources: { basemap: { type: "raster", tiles: bm.tiles, tileSize: 256, attribution: bm.attribution } },
+    layers: [{ id: "basemap", type: "raster", source: "basemap" }],
+  };
+}
+
 const map = new maplibregl.Map({
   container: "map",
-  style: {
-    version: 8,
-    sources: {
-      basemap: {
-        type: "raster",
-        tiles: ["https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png"],
-        tileSize: 256,
-        attribution: "&copy; CARTO &copy; OpenStreetMap contributors",
-      },
-    },
-    layers: [{ id: "basemap", type: "raster", source: "basemap" }],
-  },
+  style: baseStyle(activeBasemap),
   center: KABUPATEN_CONFIG[activeKabupaten].center,
   zoom: KABUPATEN_CONFIG[activeKabupaten].zoom,
+  attributionControl: false,
 });
 map.addControl(new maplibregl.NavigationControl(), "top-right");
+map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
 
-map.on("load", () => setupLayers(activeKabupaten));
+map.on("load", () => {
+  setupLayers(activeKabupaten);
+  const overlay = document.getElementById("loading-overlay");
+  overlay.style.opacity = "0";
+  setTimeout(() => overlay.remove(), 400);
+});
+
+map.on("mousemove", (e) => {
+  document.getElementById("stLon").textContent = e.lngLat.lng.toFixed(4);
+  document.getElementById("stLat").textContent = e.lngLat.lat.toFixed(4);
+});
+map.on("move", () => {
+  document.getElementById("stZoom").textContent = map.getZoom().toFixed(2);
+});
+
+function zonePopupHTML(color, title, rows, flag) {
+  const rowsHTML = rows
+    .filter((r) => r[1])
+    .map((r) => `<div class="zone-popup-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`)
+    .join("");
+  return `<div class="zone-popup">
+    <div class="zone-popup-bar" style="background:${color}"></div>
+    <div class="zone-popup-body">
+      <div class="zone-popup-title">${title}</div>
+      ${rowsHTML}
+      ${flag ? `<div class="zone-popup-flag">${flag}</div>` : ""}
+    </div>
+  </div>`;
+}
+
+function bindRtrwInteractions() {
+  map.on("mouseenter", "rtrw-fill", () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", "rtrw-fill", () => (map.getCanvas().style.cursor = ""));
+  map.on("click", "rtrw-fill", (e) => {
+    const f = e.features?.[0];
+    if (!f) return;
+    const zoneName = f.properties?.NAMOBJ ?? f.properties?.Pola_Ruang ?? "\u2013";
+    const color = (ZONE_INFO[zoneName] && ZONE_INFO[zoneName].c) || FALLBACK_COLOR;
+    new maplibregl.Popup({ closeButton: true, maxWidth: "300px" })
+      .setLngLat(e.lngLat)
+      .setHTML(
+        zonePopupHTML(color, zoneName, [
+          ["Kecamatan", f.properties?.WADMKC],
+          ["Dasar hukum", f.properties?.NOTHPR ?? f.properties?.Penetapan],
+        ])
+      )
+      .addTo(map);
+  });
+}
 
 function setupLayers(kab) {
   const cfg = KABUPATEN_CONFIG[kab];
@@ -166,27 +654,17 @@ function setupLayers(kab) {
       source: "rtrw",
       "source-layer": cfg.sourceLayer,
       paint: { "fill-color": buildZoneColorExpression(), "fill-opacity": rtrwOpacity },
+      layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
     });
     map.addLayer({
       id: "rtrw-outline",
       type: "line",
       source: "rtrw",
       "source-layer": cfg.sourceLayer,
-      paint: { "line-color": "#333333", "line-width": 0.4, "line-opacity": 0.5 },
+      paint: { "line-color": "#0d1116", "line-width": 0.4, "line-opacity": 0.45 },
+      layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
     });
-    map.on("click", "rtrw-fill", (e) => {
-      const f = e.features?.[0];
-      if (!f) return;
-      const zoneName = f.properties?.NAMOBJ ?? f.properties?.Pola_Ruang ?? "-";
-      new maplibregl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(
-          `<strong>${zoneName}</strong><br/>
-           Kecamatan: ${f.properties?.WADMKC ?? "-"}<br/>
-           Dasar hukum: ${f.properties?.NOTHPR ?? f.properties?.Penetapan ?? "-"}`
-        )
-        .addTo(map);
-    });
+    bindRtrwInteractions();
   }
 
   if (!map.getSource("lulc")) {
@@ -202,7 +680,7 @@ function setupLayers(kab) {
       id: "lulc-layer",
       type: "raster",
       source: "lulc",
-      layout: { visibility: "none" },
+      layout: { visibility: document.getElementById("showLulc").checked ? "visible" : "none" },
       paint: { "raster-opacity": lulcOpacity },
     });
   }
@@ -212,16 +690,40 @@ function setupLayers(kab) {
       type: "vector",
       url: `pmtiles://${PMTILES_BASE_URL}/kawasan_khusus/kawasan_khusus.pmtiles`,
     });
+    // Digitized development boundaries (polygons: CitraRaya, Gading Serpong, Kota Deltamas,
+    // Kota Jababeka, Meikarta, Sentul City, Summarecon Bekasi + the two schematic-ellipse
+    // features still without real data: BSD City, Meikarta izin lokasi resmi)
+    map.addLayer({
+      id: "kawasan-khusus-fill",
+      type: "fill",
+      source: "kawasan-khusus",
+      "source-layer": "kawasan_khusus",
+      filter: ["==", ["geometry-type"], "Polygon"],
+      layout: { visibility: document.getElementById("showKK").checked ? "visible" : "none" },
+      paint: { "fill-color": "#33d6c8", "fill-opacity": 0.18 },
+    });
+    map.addLayer({
+      id: "kawasan-khusus-outline",
+      type: "line",
+      source: "kawasan-khusus",
+      "source-layer": "kawasan_khusus",
+      filter: ["==", ["geometry-type"], "Polygon"],
+      layout: { visibility: document.getElementById("showKK").checked ? "visible" : "none" },
+      paint: { "line-color": "#33d6c8", "line-width": 1.4 },
+    });
+    // Villa point objects (Diva_Bogor_villa) + any other point features
     map.addLayer({
       id: "kawasan-khusus-point",
       type: "circle",
       source: "kawasan-khusus",
       "source-layer": "kawasan_khusus",
+      filter: ["==", ["geometry-type"], "Point"],
+      layout: { visibility: document.getElementById("showKK").checked ? "visible" : "none" },
       paint: {
-        "circle-radius": 7,
-        "circle-color": "#e63946",
-        "circle-stroke-width": 2,
-        "circle-stroke-color": "#ffffff",
+        "circle-radius": 4,
+        "circle-color": "#f2b134",
+        "circle-stroke-width": 1.2,
+        "circle-stroke-color": "#0d1116",
       },
     });
     map.addLayer({
@@ -229,29 +731,43 @@ function setupLayers(kab) {
       type: "symbol",
       source: "kawasan-khusus",
       "source-layer": "kawasan_khusus",
+      filter: ["==", ["geometry-type"], "Polygon"],
       layout: {
+        visibility: document.getElementById("showKK").checked ? "visible" : "none",
         "text-field": ["get", "nama"],
-        "text-size": 12,
-        "text-offset": [0, 1.2],
+        "text-size": 11,
+        "text-offset": [0, 1.3],
         "text-anchor": "top",
       },
-      paint: { "text-color": "#e63946", "text-halo-color": "#fff", "text-halo-width": 1.5 },
+      paint: { "text-color": "#33d6c8", "text-halo-color": "#0d1116", "text-halo-width": 1.4 },
     });
-    map.on("click", "kawasan-khusus-point", (e) => {
-      const f = e.features?.[0];
-      if (!f) return;
-      new maplibregl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(
-          `<strong>${f.properties?.nama}</strong><br/>
-           ${f.properties?.kategori}<br/>
-           Pengembang: ${f.properties?.pengembang}<br/>
-           Perkiraan luas: ${f.properties?.luas_ha_perkiraan} ha<br/>
-           Sumber: ${f.properties?.sumber}<br/>
-           <em style="color:#d90429">${f.properties?.status_geometri}</em>`
-        )
-        .addTo(map);
-    });
+
+    const kkInteractiveLayers = ["kawasan-khusus-fill", "kawasan-khusus-point"];
+    for (const layerId of kkInteractiveLayers) {
+      map.on("mouseenter", layerId, () => (map.getCanvas().style.cursor = "pointer"));
+      map.on("mouseleave", layerId, () => (map.getCanvas().style.cursor = ""));
+      map.on("click", layerId, (e) => {
+        const f = e.features?.[0];
+        if (!f) return;
+        const color = layerId === "kawasan-khusus-point" ? "#f2b134" : "#33d6c8";
+        new maplibregl.Popup({ closeButton: true, maxWidth: "300px" })
+          .setLngLat(e.lngLat)
+          .setHTML(
+            zonePopupHTML(
+              color,
+              f.properties?.nama ?? "\u2013",
+              [
+                ["Kategori", f.properties?.kategori],
+                ["Pengembang", f.properties?.pengembang],
+                ["Perkiraan luas", f.properties?.luas_ha_perkiraan ? `${f.properties.luas_ha_perkiraan} ha` : null],
+                ["Sumber", f.properties?.sumber],
+              ],
+              f.properties?.status_geometri
+            )
+          )
+          .addTo(map);
+      });
+    }
   }
 }
 
@@ -263,39 +779,94 @@ function switchKabupaten(kab) {
     map.removeLayer("rtrw-fill");
     map.removeSource("rtrw");
   }
+  const beforeId = map.getLayer("kawasan-khusus-fill") ? "kawasan-khusus-fill" : undefined;
   map.addSource("rtrw", { type: "vector", url: `pmtiles://${PMTILES_BASE_URL}/${cfg.file}` });
-  map.addLayer({
-    id: "rtrw-fill",
-    type: "fill",
-    source: "rtrw",
-    "source-layer": cfg.sourceLayer,
-    paint: { "fill-color": buildZoneColorExpression(), "fill-opacity": rtrwOpacity },
-  });
-  map.addLayer({
-    id: "rtrw-outline",
-    type: "line",
-    source: "rtrw",
-    "source-layer": cfg.sourceLayer,
-    paint: { "line-color": "#333333", "line-width": 0.4, "line-opacity": 0.5 },
-  });
-  map.flyTo({ center: cfg.center, zoom: cfg.zoom });
+  map.addLayer(
+    {
+      id: "rtrw-fill",
+      type: "fill",
+      source: "rtrw",
+      "source-layer": cfg.sourceLayer,
+      paint: { "fill-color": buildZoneColorExpression(), "fill-opacity": rtrwOpacity },
+      layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
+    },
+    beforeId
+  );
+  map.addLayer(
+    {
+      id: "rtrw-outline",
+      type: "line",
+      source: "rtrw",
+      "source-layer": cfg.sourceLayer,
+      paint: { "line-color": "#0d1116", "line-width": 0.4, "line-opacity": 0.45 },
+      layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
+    },
+    beforeId
+  );
+  bindRtrwInteractions();
+  map.flyTo({ center: cfg.center, zoom: cfg.zoom, essential: true });
+  renderKabList();
+  renderLegend();
 }
+
+// ---------------------------------------------------------------------
+// Sidebar: wilayah list
+// ---------------------------------------------------------------------
+const kabList = document.getElementById("kabList");
+function renderKabList() {
+  kabList.innerHTML = "";
+  for (const [id, cfg] of Object.entries(KABUPATEN_CONFIG)) {
+    const btn = document.createElement("button");
+    btn.className = "kab-item" + (id === activeKabupaten ? " active" : "");
+    btn.innerHTML = `<span class="kab-name">${cfg.label}</span><span class="kab-period">${cfg.period}</span>`;
+    btn.addEventListener("click", () => {
+      if (id !== activeKabupaten) switchKabupaten(id);
+    });
+    kabList.appendChild(btn);
+  }
+}
+renderKabList();
+
+// ---------------------------------------------------------------------
+// Sidebar: legend (grouped Lindung / Budi Daya, per active kabupaten)
+// ---------------------------------------------------------------------
+const legendBody = document.getElementById("legendBody");
+const legendCount = document.getElementById("legendCount");
+function renderLegend() {
+  const values = KABUPATEN_ZONES[activeKabupaten] || [];
+  legendCount.textContent = `\u00b7 ${values.length}`;
+  const groups = { lindung: [], budidaya: [] };
+  for (const v of values) {
+    const info = ZONE_INFO[v];
+    if (!info) continue;
+    groups[info.g].push({ label: v, color: info.c });
+  }
+  legendBody.innerHTML = "";
+  for (const g of ["lindung", "budidaya"]) {
+    if (!groups[g].length) continue;
+    const wrap = document.createElement("div");
+    wrap.className = "legend-group";
+    const title = document.createElement("div");
+    title.className = "legend-group-title";
+    title.textContent = GROUP_LABEL[g];
+    wrap.appendChild(title);
+    for (const item of groups[g]) {
+      const row = document.createElement("div");
+      row.className = "legend-item";
+      row.innerHTML = `<span class="legend-swatch" style="background:${item.color}"></span><span>${item.label}</span>`;
+      wrap.appendChild(row);
+    }
+    legendBody.appendChild(wrap);
+  }
+}
+renderLegend();
 
 // ---------------------------------------------------------------------
 // Controls
 // ---------------------------------------------------------------------
-const kabSelect = document.getElementById("kabSelect");
-for (const [id, cfg] of Object.entries(KABUPATEN_CONFIG)) {
-  const opt = document.createElement("option");
-  opt.value = id;
-  opt.textContent = cfg.label;
-  if (id === activeKabupaten) opt.selected = true;
-  kabSelect.appendChild(opt);
-}
-kabSelect.addEventListener("change", (e) => switchKabupaten(e.target.value));
-
 const showRtrw = document.getElementById("showRtrw");
 const rtrwOpacityInput = document.getElementById("rtrwOpacity");
+const rtrwOpacityVal = document.getElementById("rtrwOpacityVal");
 function applyRtrwState() {
   if (!map.getLayer("rtrw-fill")) return;
   const vis = showRtrw.checked ? "visible" : "none";
@@ -306,11 +877,13 @@ function applyRtrwState() {
 showRtrw.addEventListener("change", applyRtrwState);
 rtrwOpacityInput.addEventListener("input", (e) => {
   rtrwOpacity = parseFloat(e.target.value);
+  rtrwOpacityVal.textContent = `${Math.round(rtrwOpacity * 100)}%`;
   applyRtrwState();
 });
 
 const showLulc = document.getElementById("showLulc");
 const lulcOpacityInput = document.getElementById("lulcOpacity");
+const lulcOpacityVal = document.getElementById("lulcOpacityVal");
 function applyLulcState() {
   if (!map.getLayer("lulc-layer")) return;
   map.setLayoutProperty("lulc-layer", "visibility", showLulc.checked ? "visible" : "none");
@@ -319,15 +892,47 @@ function applyLulcState() {
 showLulc.addEventListener("change", applyLulcState);
 lulcOpacityInput.addEventListener("input", (e) => {
   lulcOpacity = parseFloat(e.target.value);
+  lulcOpacityVal.textContent = `${Math.round(lulcOpacity * 100)}%`;
   applyLulcState();
 });
 
 const showKK = document.getElementById("showKK");
 showKK.addEventListener("change", () => {
-  if (!map.getLayer("kawasan-khusus-point")) return;
+  if (!map.getLayer("kawasan-khusus-fill")) return;
   const vis = showKK.checked ? "visible" : "none";
-  map.setLayoutProperty("kawasan-khusus-point", "visibility", vis);
-  map.setLayoutProperty("kawasan-khusus-label", "visibility", vis);
+  for (const layerId of ["kawasan-khusus-fill", "kawasan-khusus-outline", "kawasan-khusus-point", "kawasan-khusus-label"]) {
+    map.setLayoutProperty(layerId, "visibility", vis);
+  }
+});
+
+// Basemap switch
+document.querySelectorAll("#basemap-switch button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const id = btn.dataset.style;
+    if (id === activeBasemap) return;
+    activeBasemap = id;
+    document.querySelectorAll("#basemap-switch button").forEach((b) => b.classList.toggle("active", b === btn));
+    map.setStyle(baseStyle(id));
+    map.once("styledata", () => setupLayers(activeKabupaten));
+  });
+});
+
+// Reset view
+document.getElementById("reset-view").addEventListener("click", () => {
+  const cfg = KABUPATEN_CONFIG[activeKabupaten];
+  map.flyTo({ center: cfg.center, zoom: cfg.zoom, essential: true });
+});
+
+// Mobile sidebar toggle
+const sidebar = document.getElementById("sidebar");
+const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+document.getElementById("sidebar-toggle").addEventListener("click", () => {
+  sidebar.classList.add("open");
+  sidebarBackdrop.classList.add("show");
+});
+sidebarBackdrop.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  sidebarBackdrop.classList.remove("show");
 });
 </script>
 </body>
