@@ -290,6 +290,7 @@
   <a href="#sec7" class="fab-link" data-target="sec7">7 · Peta detail</a>
   <a href="#sec8" class="fab-link" data-target="sec8">8 · Peta ringkas</a>
   <a href="#sec9" class="fab-link" data-target="sec9">9 · Peta kepadatan</a>
+  <a href="#sec10" class="fab-link" data-target="sec10">10 · LPP vs LPAP</a>
   <div class="fab-panel-divider"></div>
   <button type="button" class="fab-action" id="themeToggleBtn">
     <span class="fab-action-icon" id="themeIcon">🌙</span><span id="themeLabel">Mode gelap</span>
@@ -661,6 +662,53 @@
       <li><b>Kelas warna di peta:</b> batasnya menggunakan kuantil (7 kelas, jumlah wilayah kurang lebih sama tiap kelas), dihitung sekali dengan menggabungkan data dari ketiga tahun sensus (2000, 2010, 2020) untuk setiap mode (kepadatan penduduk / kepadatan penduduk perkotaan), lalu digunakan tetap di semua tahun untuk mode itu. Jadi warna yang sama selalu menunjukkan rentang kepadatan yang sama, tidak bergantung pada tahun sensus yang dipilih — sehingga perubahan warna antar tahun benar-benar mencerminkan pertumbuhan atau penurunan kepadatan, bukan sekadar klasifikasi ulang. Kelas warna baru dihitung ulang saat mode diganti (Kepadatan Penduduk ⇄ Kepadatan Penduduk Perkotaan), karena kedua mode punya skala nilai yang berbeda.</li>
       <li><b>Keterbatasan:</b> luas "Permukiman" KLHK adalah perkiraan area terbangun, bukan batas resmi kawasan permukiman, dan bisa ikut mencakup bangunan non-hunian seperti kawasan industri atau fasilitas umum. Kepadatan Penduduk Perkotaan sebaiknya dibaca sebagai gambaran kasar intensitas hunian, bukan angka kepadatan neto yang presisi.</li>
     </ul>
+  </div>
+
+  <div class="section-label" id="sec10">10 — Laju pertumbuhan penduduk vs. permukiman (LPP &amp; LPAP)</div>
+  <div class="section-note">
+    <b>LPP</b> (Laju Pertumbuhan Penduduk) dan <b>LPAP</b> (Laju Pertumbuhan Area Permukiman) dihitung sebagai laju
+    pertumbuhan majemuk tahunan (CAGR): <code>((nilai akhir ÷ nilai awal)^(1/jumlah tahun) − 1) × 100%</code>, memakai
+    data penduduk sensus BPS (2000, 2010, 2020 — sama seperti bagian 9) dan luas kelas "Permukiman" KLHK pada tahun
+    survei terdekat (2000, 2011, 2020). Pilih rentang waktu di bawah, lalu arahkan kursor ke titik untuk melihat rincian
+    tiap kabupaten/kota. <b>Adm. Kep. Seribu dikecualikan dari grafik ini</b> — sama seperti pada peta kepadatan di
+    bagian 9, luas kelas "Permukiman" KLHK di wilayah ini sangat kecil dan tidak dapat diandalkan di semua tahun survei
+    (indikasi salah klasifikasi lahan di pulau-pulau kecil), sehingga LPAP-nya akan tampil sebagai lonjakan ekstrem yang
+    tidak mencerminkan pertumbuhan permukiman sesungguhnya.
+  </div>
+  <div class="card" style="margin-bottom:14px;">
+    <div class="map-bar">
+      <div>
+        <div class="card-title">LPP (%/tahun) vs. LPAP (%/tahun) per kabupaten/kota</div>
+        <div class="card-sub" id="lppLpapSub" style="margin-bottom:0;">Sumbu Y = laju pertumbuhan penduduk · Sumbu X = laju pertumbuhan area permukiman · 2000–2020</div>
+      </div>
+      <div class="mode-toggle" id="lppLpapPeriodToggle">
+        <button type="button" class="mode-btn" data-period="2000-2010">2000–2010</button>
+        <button type="button" class="mode-btn" data-period="2010-2020">2010–2020</button>
+        <button type="button" class="mode-btn active" data-period="2000-2020">2000–2020</button>
+      </div>
+    </div>
+    <div class="legend" id="lppLpapLegend"></div>
+    <div style="position:relative;height:460px">
+      <canvas id="cLppLpap" role="img" aria-label="Diagram sebar laju pertumbuhan penduduk vs laju pertumbuhan area permukiman per kabupaten/kota"></canvas>
+    </div>
+    <div class="gov-note" id="lppLpapQuadrantNote">
+      <b>Cara membaca:</b> kanan-atas = penduduk &amp; permukiman sama-sama tumbuh cepat (urbanisasi aktif); kanan-bawah =
+      permukiman meluas meski penduduk stagnan/menyusut (kemungkinan alih fungsi lahan tanpa diikuti pertambahan penduduk,
+      atau permukiman sekunder/komuter); kiri-atas = penduduk bertambah tanpa banyak perluasan permukiman tercatat
+      (pemadatan/vertikal, atau keterbatasan data tutupan lahan); kiri-bawah = keduanya melambat atau menyusut.
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:14px;">
+    <div class="card">
+      <div class="card-title">10 kabupaten/kota — LPAP tertinggi</div>
+      <div class="card-sub" id="lppLpapRankSubHigh">Laju pertumbuhan area permukiman (%/tahun), 2000–2020</div>
+      <table class="density-rank-table" id="lppLpapRankTableHigh"><thead><tr><th>#</th><th>Wilayah</th><th style="text-align:right;">LPAP %/th</th><th style="text-align:right;">LPP %/th</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-title">10 kabupaten/kota — LPP tertinggi</div>
+      <div class="card-sub" id="lppLpapRankSubPop">Laju pertumbuhan penduduk (%/tahun), 2000–2020</div>
+      <table class="density-rank-table" id="lppLpapRankTablePop"><thead><tr><th>#</th><th>Wilayah</th><th style="text-align:right;">LPP %/th</th><th style="text-align:right;">LPAP %/th</th></tr></thead><tbody></tbody></table>
+    </div>
   </div>
 
   <div class="footer">
@@ -2340,6 +2388,170 @@ function createDensityMap() {
 }
 
 let densityMapInstance = createDensityMap();
+
+/* ═══════════════════════ Section 10 — LPP vs LPAP scatter ═══════════════════════
+   LPP (Laju Pertumbuhan Penduduk) and LPAP (Laju Pertumbuhan Area Permukiman), both
+   expressed as annual CAGR (%), reusing the same population figures (SP2000_POP,
+   DENSITY_UNITS pop2010/pop2020) and KLHK "Permukiman" built-up-area figures
+   (DENSITY_BUILTUP2000, and DENSITY_UNITS builtup2011/builtup2020) already loaded
+   for the Section 9 density map. Adm. Kep. Seribu is excluded here for the same
+   reason it's excluded from "Kepadatan Penduduk Perkotaan" in Section 9: its KLHK
+   "Permukiman" class is implausibly small in every survey year (small-island
+   misclassification), which would otherwise produce a fake extreme LPAP outlier. */
+const LPP_LPAP_PERIODS = {
+  '2000-2010': { y0: 2000, y1: 2010, years: 10, label: '2000–2010' },
+  '2010-2020': { y0: 2010, y1: 2020, years: 10, label: '2010–2020' },
+  '2000-2020': { y0: 2000, y1: 2020, years: 20, label: '2000–2020' }
+};
+const LPP_LPAP_PROV_COLORS = {
+  'Banten': '#2f6690', 'DI Yogyakarta': '#7b52ab', 'DKI Jakarta': '#a3402a',
+  'Jawa Barat': '#b1791f', 'Jawa Tengah': '#1f5c3f', 'Jawa Timur': '#795548'
+};
+
+function lppLpapPopForYear(name, year) {
+  if (year === 2000) return SP2000_POP[name];
+  const u = DENSITY_UNITS[name];
+  if (!u) return undefined;
+  return year === 2010 ? u[2] : u[3];
+}
+function lppLpapBuiltupForYear(name, year) {
+  if (year === 2000) return DENSITY_BUILTUP2000[name];
+  const u = DENSITY_UNITS[name];
+  if (!u) return undefined;
+  return year === 2010 ? u[4] : u[5]; // u[4] = survei KLHK 2011 (dipasangkan sensus 2010), u[5] = survei 2020
+}
+function lppLpapCagr(v0, v1, years) {
+  if (!(v0 > 0) || !(v1 > 0) || !years) return null;
+  return (Math.pow(v1 / v0, 1 / years) - 1) * 100;
+}
+
+function computeLppLpapData(periodKey) {
+  const p = LPP_LPAP_PERIODS[periodKey];
+  const out = [];
+  Object.keys(DENSITY_UNITS).forEach(name => {
+    if (DENSITY_BUILTUP_FLAG.has(name)) return; // exclude Adm. Kep. Seribu — see methodology note above
+    const pop0 = lppLpapPopForYear(name, p.y0);
+    const pop1 = lppLpapPopForYear(name, p.y1);
+    const bu0 = lppLpapBuiltupForYear(name, p.y0);
+    const bu1 = lppLpapBuiltupForYear(name, p.y1);
+    if (pop0 === undefined || pop1 === undefined) return;
+    const lpp = lppLpapCagr(pop0, pop1, p.years);
+    const lpap = lppLpapCagr(bu0, bu1, p.years);
+    if (lpp === null || lpap === null) return;
+    const reconciled = (p.y0 === 2000 && SP2000_RECON.has(name)) ||
+      ((p.y0 === 2010 || p.y1 === 2010) && DENSITY_RECONCILED.has(name));
+    out.push({ name, prov: DENSITY_PROVS[DENSITY_UNITS[name][0]], lpp, lpap, reconciled });
+  });
+  return out;
+}
+
+const lppLpapQuadrantPlugin = {
+  id: 'lppLpapQuadrant',
+  afterDraw(chart) {
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea) return;
+    const xZero = scales.x.getPixelForValue(0);
+    const yZero = scales.y.getPixelForValue(0);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(110,102,80,0.35)';
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 1;
+    if (xZero >= chartArea.left && xZero <= chartArea.right) {
+      ctx.beginPath(); ctx.moveTo(xZero, chartArea.top); ctx.lineTo(xZero, chartArea.bottom); ctx.stroke();
+    }
+    if (yZero >= chartArea.top && yZero <= chartArea.bottom) {
+      ctx.beginPath(); ctx.moveTo(chartArea.left, yZero); ctx.lineTo(chartArea.right, yZero); ctx.stroke();
+    }
+    ctx.restore();
+  }
+};
+
+function renderLppLpapLegend() {
+  const el = document.getElementById('lppLpapLegend');
+  el.innerHTML = Object.keys(LPP_LPAP_PROV_COLORS).map(prov =>
+    '<span class="legend-item"><span class="dot" style="background:' + LPP_LPAP_PROV_COLORS[prov] + '"></span>' + prov + '</span>'
+  ).join('');
+}
+
+function fmtPct1(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
+
+function renderLppLpapRankTables(data, periodLabel) {
+  function fill(tbodyId, sortKey, otherKey, otherLabel) {
+    const sorted = data.slice().sort((a, b) => b[sortKey] - a[sortKey]).slice(0, 10);
+    const tbody = document.querySelector('#' + tbodyId + ' tbody');
+    tbody.innerHTML = sorted.map((r, i) =>
+      '<tr>' +
+        '<td>' + (i + 1) + '</td>' +
+        '<td>' + r.name + (r.reconciled ? ' *' : '') + '<br><span style="color:var(--muted);font-size:10.5px;">' + r.prov + '</span></td>' +
+        '<td class="num">' + fmtPct1(r[sortKey]) + '</td>' +
+        '<td class="num" style="color:var(--muted);">' + fmtPct1(r[otherKey]) + '</td>' +
+      '</tr>'
+    ).join('');
+  }
+  fill('lppLpapRankTableHigh', 'lpap', 'lpp');
+  fill('lppLpapRankTablePop', 'lpp', 'lpap');
+  document.getElementById('lppLpapRankSubHigh').textContent = 'Laju pertumbuhan area permukiman (%/tahun), ' + periodLabel;
+  document.getElementById('lppLpapRankSubPop').textContent = 'Laju pertumbuhan penduduk (%/tahun), ' + periodLabel;
+}
+
+let lppLpapChart = null;
+function renderLppLpapChart(periodKey) {
+  const p = LPP_LPAP_PERIODS[periodKey];
+  const data = computeLppLpapData(periodKey);
+  document.getElementById('lppLpapSub').textContent =
+    'Sumbu Y = laju pertumbuhan penduduk · Sumbu X = laju pertumbuhan area permukiman · ' + p.label +
+    ' · ' + data.length + ' kabupaten/kota (Adm. Kep. Seribu dikecualikan)';
+
+  const datasetsByProv = {};
+  Object.keys(LPP_LPAP_PROV_COLORS).forEach(prov => { datasetsByProv[prov] = []; });
+  data.forEach(d => { datasetsByProv[d.prov].push({ x: d.lpap, y: d.lpp, name: d.name, reconciled: d.reconciled }); });
+
+  const datasets = Object.keys(LPP_LPAP_PROV_COLORS).map(prov => ({
+    label: prov,
+    data: datasetsByProv[prov],
+    backgroundColor: LPP_LPAP_PROV_COLORS[prov] + 'b3',
+    borderColor: LPP_LPAP_PROV_COLORS[prov],
+    borderWidth: 1,
+    pointRadius: 4,
+    pointHoverRadius: 6
+  }));
+
+  if (lppLpapChart) lppLpapChart.destroy();
+  lppLpapChart = new Chart(document.getElementById('cLppLpap'), {
+    type: 'scatter',
+    plugins: [lppLpapQuadrantPlugin],
+    options: {
+      ...BASE,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const d = ctx.raw;
+              return d.name + (d.reconciled ? ' *' : '') + ': LPP ' + fmtPct1(d.y) + '/th, LPAP ' + fmtPct1(d.x) + '/th';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: GRID }, ticks: { color: TICK, font: { size: 10 } }, title: { display: true, text: 'LPAP — Laju Pertumbuhan Area Permukiman (%/tahun)', color: TICK, font: { size: 10 } } },
+        y: { grid: { color: GRID }, ticks: { color: TICK, font: { size: 10 } }, title: { display: true, text: 'LPP — Laju Pertumbuhan Penduduk (%/tahun)', color: TICK, font: { size: 10 } } }
+      }
+    },
+    data: { datasets }
+  });
+
+  renderLppLpapRankTables(data, p.label);
+}
+
+renderLppLpapLegend();
+renderLppLpapChart('2000-2020');
+document.getElementById('lppLpapPeriodToggle').addEventListener('click', function (e) {
+  const btn = e.target.closest('.mode-btn');
+  if (!btn) return;
+  this.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+  renderLppLpapChart(btn.getAttribute('data-period'));
+});
 
 </script>
 
