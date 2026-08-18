@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "BSD City",
+        "kabupaten": "Tangerang Selatan / Kab. Tangerang",
+        "pengembang": "Sinar Mas Land",
+        "kategori": "Kawasan Terpadu / Kota Mandiri",
+        "luas_ha_perkiraan": 6000,
+        "status_geometri": "PLACEHOLDER - titik pusat publik, belum didigitasi dari citra"
+      },
+      "geometry": { "type": "Point", "coordinates": [106.65222, -6.30056] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Gading Serpong",
+        "kabupaten": "Kab. Tangerang",
+        "pengembang": "Summarecon Agung & Paramount Land",
+        "kategori": "Kawasan Terpadu / Kota Mandiri",
+        "luas_ha_perkiraan": 1500,
+        "status_geometri": "PLACEHOLDER - titik pusat publik, belum didigitasi dari citra"
+      },
+      "geometry": { "type": "Point", "coordinates": [106.628158, -6.245320] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Jababeka",
+        "kabupaten": "Kab. Bekasi",
+        "pengembang": "PT Jababeka Tbk",
+        "kategori": "Kawasan Industri Terpadu",
+        "luas_ha_perkiraan": 5600,
+        "status_geometri": "PLACEHOLDER - titik area Cikarang, belum didigitasi dari citra"
+      },
+      "geometry": { "type": "Point", "coordinates": [107.150, -6.383] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Meikarta",
+        "kabupaten": "Kab. Bekasi",
+        "pengembang": "Lippo Group",
+        "kategori": "Kawasan Terpadu / Superblok",
+        "luas_ha_perkiraan": 500,
+        "status_geometri": "PLACEHOLDER - titik area Cikarang Pusat, belum didigitasi dari citra"
+      },
+      "geometry": { "type": "Point", "coordinates": [107.150, -6.367] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nama": "Kota Deltamas",
+        "kabupaten": "Kab. Bekasi",
+        "pengembang": "Sinar Mas Land & Sojitz",
+        "kategori": "Kawasan Terpadu Industri & Hunian",
+        "luas_ha_perkiraan": 3300,
+        "status_geometri": "PLACEHOLDER - titik area Cikarang Pusat/Tol Cibatu, belum didigitasi dari citra"
+      },
+      "geometry": { "type": "Point", "coordinates": [107.217, -6.333] }
+    }
+  ]
+}
