@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Bodetabek RDTR/RTRW &middot; Peta Pola Ruang</title>
+<title>Bodetabek RTRW &middot; Peta Pola Ruang</title>
 <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -241,7 +241,7 @@
       </div>
       <div>
         <div class="brand-title">Peta Pola Ruang Bodetabek</div>
-        <div class="brand-sub">RTRW &middot; RDTR &middot; LULC</div>
+        <div class="brand-sub">RTRW &middot; LULC</div>
       </div>
     </div>
 
@@ -258,7 +258,7 @@
         <div class="layer-row">
           <div class="layer-row-top">
             <div>
-              <div class="layer-name">Pola Ruang RTRW/RDTR</div>
+              <div class="layer-name">Pola Ruang RTRW</div>
               <div class="layer-hint">Zonasi resmi sesuai Perda/Perkada</div>
             </div>
             <label class="switch">
@@ -367,7 +367,7 @@ const LULC_TILE_TEMPLATE = "./tiles/lulc_xyz/{z}/{x}/{y}.png";
 const KABUPATEN_CONFIG = {
   bogor_2024: {
     label: "Kab. Bogor",
-    period: "RDTR 2024\u20132044 \u00b7 terbaru",
+    period: "RTRW 2024\u20132044 \u00b7 terbaru",
     file: "rtrw/bogor_2024-2044.pmtiles",
     sourceLayer: "3201_kabupaten_bogor",
     center: [106.8, -6.55],
@@ -391,7 +391,7 @@ const KABUPATEN_CONFIG = {
   },
   tangerang: {
     label: "Kab. Tangerang",
-    period: "RDTR 2020\u20132040",
+    period: "RTRW 2020\u20132040",
     file: "rtrw/tangerang_2020-2040.pmtiles",
     sourceLayer: "3603_kabupaten_tangerang",
     center: [106.55, -6.18],
@@ -401,11 +401,11 @@ const KABUPATEN_CONFIG = {
 
 // ---------------------------------------------------------------------
 // Zone colors - exact values from Lampiran VII, Permen ATR/BPN No. 14/2021
-// (Tabel VII.17 "Ketentuan Simbolisasi Peta Rencana Pola Ruang RDTR
-// Kabupaten/Kota"). A few compound/transitional zone labels that only
-// occur in the source data (e.g. "...yang Direncanakan untuk Industri")
-// are blended between their two constituent official colors - noted
-// inline below.
+// (Tabel VII.17), the standard pola ruang color reference used for this
+// RTRW data. A few compound/transitional zone labels that only occur in
+// the source data (e.g. "...yang Direncanakan untuk Industri") are
+// blended between their two constituent official colors - noted inline
+// below.
 //
 // Keyed by the exact NAMOBJ / Pola_Ruang string found in the pmtiles,
 // so matching in MapLibre is an O(1) exact lookup, never a guess.
@@ -656,14 +656,6 @@ function setupLayers(kab) {
       paint: { "fill-color": buildZoneColorExpression(), "fill-opacity": rtrwOpacity },
       layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
     });
-    map.addLayer({
-      id: "rtrw-outline",
-      type: "line",
-      source: "rtrw",
-      "source-layer": cfg.sourceLayer,
-      paint: { "line-color": "#0d1116", "line-width": 0.4, "line-opacity": 0.45 },
-      layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
-    });
     bindRtrwInteractions();
   }
 
@@ -775,7 +767,6 @@ function switchKabupaten(kab) {
   activeKabupaten = kab;
   const cfg = KABUPATEN_CONFIG[kab];
   if (map.getSource("rtrw")) {
-    map.removeLayer("rtrw-outline");
     map.removeLayer("rtrw-fill");
     map.removeSource("rtrw");
   }
@@ -788,17 +779,6 @@ function switchKabupaten(kab) {
       source: "rtrw",
       "source-layer": cfg.sourceLayer,
       paint: { "fill-color": buildZoneColorExpression(), "fill-opacity": rtrwOpacity },
-      layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
-    },
-    beforeId
-  );
-  map.addLayer(
-    {
-      id: "rtrw-outline",
-      type: "line",
-      source: "rtrw",
-      "source-layer": cfg.sourceLayer,
-      paint: { "line-color": "#0d1116", "line-width": 0.4, "line-opacity": 0.45 },
       layout: { visibility: document.getElementById("showRtrw").checked ? "visible" : "none" },
     },
     beforeId
@@ -871,7 +851,6 @@ function applyRtrwState() {
   if (!map.getLayer("rtrw-fill")) return;
   const vis = showRtrw.checked ? "visible" : "none";
   map.setLayoutProperty("rtrw-fill", "visibility", vis);
-  map.setLayoutProperty("rtrw-outline", "visibility", vis);
   map.setPaintProperty("rtrw-fill", "fill-opacity", rtrwOpacity);
 }
 showRtrw.addEventListener("change", applyRtrwState);

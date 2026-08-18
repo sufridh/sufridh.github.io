@@ -1,4 +1,4 @@
-# Geospatial Dashboard - RTRW/RDTR + LULC + Kawasan Khusus
+# Geospatial Dashboard - RTRW + LULC + Kawasan Khusus
 
 Static site, deployable as-is to GitHub Pages (e.g. `sufridh.github.io/botabek/`).
 No build step - `index.html` loads MapLibre GL + pmtiles from CDN and reads
@@ -8,7 +8,7 @@ everything else via relative paths into `tiles/`.
 botabek/
 ├── index.html                     Dashboard (vanilla JS, MapLibre GL + pmtiles via CDN)
 ├── tiles/
-│   ├── rtrw/                      Vector pola ruang, pmtiles (RTRW/RDTR)
+│   ├── rtrw/                      Vector pola ruang, pmtiles (RTRW)
 │   ├── kawasan_khusus/
 │   │   └── kawasan_khusus.pmtiles Approximate footprints for 5 named developments
 │   └── lulc_xyz/{z}/{x}/{y}.png   Static XYZ raster pyramid, z8-14 (LULC 2025)
@@ -75,8 +75,8 @@ footprints described below.
 
 ### Original ellipse-footprint method (still applies to the 2 unreplaced features)
 
-None of the source RTRW/RDTR GeoPackages contain named private developments
-- RTRW/RDTR maps zoning classification, not developer/brand names. The
+None of the source RTRW GeoPackages contain named private developments
+- RTRW maps zoning classification, not developer/brand names. The
 remaining ellipse footprints are oriented along each development's main
 access corridor (toll road / boulevard bearing) and sized to its publicly
 reported land area, centered on real coordinates (Google Places) rather
@@ -116,7 +116,7 @@ against.
 `bogor_2024-2044.pmtiles` and `bogor_2016-2036.pmtiles` are the same
 kabupaten at two different planning periods, kept as separate layers
 (not merged) so you can toggle between them in the dashboard to see
-what changed between the 2016 Perda and the 2024 RDTR. Field schemas
+what changed between the 2016 Perda and the 2024 RTRW. Field schemas
 differ: 2024-2044 uses the GISTARU-standard `NAMOBJ` field, 2016-2036
 uses `Pola_Ruang`/`Kode_Zona` instead. `index.html` handles both via a
 `coalesce()` in the color expression.
