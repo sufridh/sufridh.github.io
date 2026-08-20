@@ -251,6 +251,104 @@ aside{
 .chip.active{background:var(--teal);border-color:var(--teal);color:#fff;}
 .chip:hover:not(.active){border-color:var(--brass);}
 
+/* filter groups: collapsible checklists for kabupaten/kota, kecamatan, desa */
+.filter-group{margin-top:10px;border:1px solid var(--line-strong);border-radius:4px;overflow:hidden;background:var(--paper);}
+.filter-group-toggle{
+  width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;
+  padding:9px 10px;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:12px;
+  color:var(--navy);
+  text-align:left;
+}
+.filter-group-toggle:hover{background:var(--sand);}
+.filter-group-toggle .fg-label{display:flex;align-items:center;gap:8px;}
+.filter-group-toggle .fg-count{
+  font-family:var(--font-mono);
+  font-size:10px;
+  color:var(--teal);
+  opacity:.85;
+  white-space:nowrap;
+}
+.filter-group-toggle .fg-chevron{
+  width:13px;height:13px;flex:none;
+  transition:transform .2s ease;
+  color:var(--brass);
+}
+.filter-group.open .fg-chevron{transform:rotate(180deg);}
+.filter-group-body{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .22s ease;
+  border-top:1px solid var(--line);
+}
+.filter-group.open .filter-group-body{max-height:290px;}
+.fg-inner{padding:10px;}
+.fg-actions{display:flex;gap:6px;margin-bottom:8px;}
+.fg-actions input{
+  flex:1;
+  padding:6px 8px;
+  font-family:var(--font-body);
+  font-size:11.5px;
+  border:1px solid var(--line-strong);
+  border-radius:3px;
+  background:var(--paper-dim);
+  color:var(--ink);
+  outline:none;
+  min-width:0;
+}
+.fg-actions input:focus{border-color:var(--brass);}
+.fg-btn{
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:.03em;
+  padding:6px 8px;
+  border:1px solid var(--line-strong);
+  border-radius:3px;
+  background:var(--paper);
+  color:var(--navy);
+  cursor:pointer;
+  white-space:nowrap;
+}
+.fg-btn:hover{border-color:var(--brass);color:var(--brass);}
+.fg-list{max-height:190px;overflow-y:auto;border-top:1px dashed var(--line);}
+.fg-item{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 4px;
+  font-size:11.5px;
+  cursor:pointer;
+  border-bottom:1px solid var(--line);
+  user-select:none;
+}
+.fg-item:last-child{border-bottom:none;}
+.fg-item:hover{background:var(--paper-dim);}
+.fg-item .fg-box{
+  width:13px;height:13px;flex:none;
+  border:1px solid var(--line-strong);
+  border-radius:2px;
+  background:var(--paper);
+  position:relative;
+}
+.fg-item.on .fg-box{background:var(--teal);border-color:var(--teal);}
+.fg-item.on .fg-box::after{
+  content:"";
+  position:absolute;left:3px;top:0px;
+  width:4px;height:8px;
+  border:solid #fff;border-width:0 2px 2px 0;
+  transform:rotate(45deg);
+}
+.fg-item .fg-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);}
+.fg-item.on .fg-name{color:var(--navy);font-weight:600;}
+.fg-empty{padding:10px;font-size:11px;color:var(--ink);opacity:.6;text-align:center;}
+.fg-hint{padding:8px 10px;font-size:10.5px;color:var(--ink);opacity:.65;line-height:1.4;border-bottom:1px dashed var(--line);}
+.filter-group.fg-inactive .filter-group-toggle{opacity:.55;}
+
 /* legend */
 .legend-scale{display:flex;height:14px;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden;margin-top:8px;}
 .legend-scale span{flex:1;}
@@ -663,6 +761,61 @@ footer.src a{color:var(--navy);}
           <input type="text" id="searchInput" placeholder="Cari nama kecamatan / desa…">
         </div>
         <div class="chips" id="provChips"></div>
+
+        <div class="filter-group" id="fgKab" data-level="kab">
+          <button class="filter-group-toggle" data-target="fgKab">
+            <span class="fg-label">Kabupaten / Kota</span>
+            <span class="fg-count" id="kabCount"></span>
+            <svg class="fg-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="filter-group-body">
+            <div class="fg-inner">
+              <div class="fg-actions">
+                <input type="text" id="kabSearch" placeholder="Cari kabupaten/kota…">
+                <button class="fg-btn" data-fg-all="kab">Semua</button>
+                <button class="fg-btn" data-fg-none="kab">Kosongkan</button>
+              </div>
+              <div class="fg-list" id="kabList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group" id="fgKec" data-level="kec">
+          <button class="filter-group-toggle" data-target="fgKec">
+            <span class="fg-label">Kecamatan</span>
+            <span class="fg-count" id="kecFilterCount"></span>
+            <svg class="fg-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="filter-group-body">
+            <div class="fg-inner">
+              <div class="fg-actions">
+                <input type="text" id="kecSearch" placeholder="Cari kecamatan…">
+                <button class="fg-btn" data-fg-all="kec">Semua</button>
+                <button class="fg-btn" data-fg-none="kec">Kosongkan</button>
+              </div>
+              <div class="fg-list" id="kecList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group" id="fgKel" data-level="kel">
+          <button class="filter-group-toggle" data-target="fgKel">
+            <span class="fg-label">Desa / Kelurahan</span>
+            <span class="fg-count" id="kelCount"></span>
+            <svg class="fg-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="filter-group-body">
+            <div class="fg-inner" id="kelInner">
+              <div class="fg-hint">Filter ini hanya berlaku saat tampilan <b>Desa Pesisir</b> aktif.</div>
+              <div class="fg-actions">
+                <input type="text" id="kelSearch" placeholder="Cari desa/kelurahan…">
+                <button class="fg-btn" data-fg-all="kel">Semua</button>
+                <button class="fg-btn" data-fg-none="kel">Kosongkan</button>
+              </div>
+              <div class="fg-list" id="kelList"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="panel-block">
@@ -718,9 +871,13 @@ footer.src a{color:var(--navy);}
   const state = {
     view: "kec",              // "kec" | "desa"
     activeProvinces: new Set(PROVINCES),
+    activeKabs: new Set(),
+    activeKecs: new Set(),
+    activeKels: new Set(),
     search: "",
     selectedId: null
   };
+  const filterSearch = { kab: "", kec: "", kel: "" };
 
   /* ---------------- map setup ---------------- */
   const map = L.map("map", {
@@ -769,6 +926,14 @@ footer.src a{color:var(--navy);}
   const allDistrict = DISTRICT_GEOJSON.features;
   const allVillage = VILLAGE_GEOJSON.features;
 
+  /* ---------------- filter option lists (kabupaten/kota, kecamatan, desa) ---------------- */
+  const KAB_LIST = [...new Set([...allDistrict, ...allVillage].map(f => f.properties.kab))].sort();
+  const KEC_LIST = [...new Set([...allDistrict, ...allVillage].map(f => f.properties.kec))].sort();
+  const KEL_LIST = [...new Set(allVillage.map(f => f.properties.kel))].sort();
+  state.activeKabs = new Set(KAB_LIST);
+  state.activeKecs = new Set(KEC_LIST);
+  state.activeKels = new Set(KEL_LIST);
+
   function quantileBreaks(values, n) {
     const sorted = [...values].sort((a, b) => a - b);
     const breaks = [];
@@ -796,6 +961,9 @@ footer.src a{color:var(--navy);}
     return src.filter(f => {
       const p = f.properties;
       if (!state.activeProvinces.has(p.prop)) return false;
+      if (!state.activeKabs.has(p.kab)) return false;
+      if (!state.activeKecs.has(p.kec)) return false;
+      if (state.view === "desa" && !state.activeKels.has(p.kel)) return false;
       if (q) {
         const name = (state.view === "kec" ? p.kec : p.kel).toLowerCase();
         const kab = p.kab.toLowerCase();
@@ -1039,8 +1207,15 @@ footer.src a{color:var(--navy);}
     state.view = btn.getAttribute("data-view");
     state.selectedId = null;
     document.getElementById("detailCard").classList.remove("show");
+    updateKelFilterAvailability();
     renderMap();
   });
+
+  function updateKelFilterAvailability() {
+    const fgKel = document.getElementById("fgKel");
+    fgKel.classList.toggle("fg-inactive", state.view === "kec");
+  }
+  updateKelFilterAvailability();
 
   const provChips = document.getElementById("provChips");
   provChips.innerHTML = `<div class="chip active" data-all="1">Semua</div>` +
@@ -1065,6 +1240,86 @@ footer.src a{color:var(--navy);}
     }
     renderMap();
   });
+
+  /* ---------------- filter groups: kabupaten/kota, kecamatan, desa ---------------- */
+  const FILTER_LEVELS = {
+    kab: { list: KAB_LIST, getSet: () => state.activeKabs, listEl: "kabList", countEl: "kabCount" },
+    kec: { list: KEC_LIST, getSet: () => state.activeKecs, listEl: "kecList", countEl: "kecFilterCount" },
+    kel: { list: KEL_LIST, getSet: () => state.activeKels, listEl: "kelList", countEl: "kelCount" }
+  };
+
+  function renderFilterList(level) {
+    const cfg = FILTER_LEVELS[level];
+    const listEl = document.getElementById(cfg.listEl);
+    const activeSet = cfg.getSet();
+    const q = filterSearch[level].toLowerCase();
+    const items = q ? cfg.list.filter(name => name.toLowerCase().includes(q)) : cfg.list;
+    if (!items.length) {
+      listEl.innerHTML = `<div class="fg-empty">Tidak ada hasil</div>`;
+      return;
+    }
+    listEl.innerHTML = items.map(name => {
+      const on = activeSet.has(name);
+      return `<div class="fg-item ${on ? "on" : ""}" data-name="${name.replace(/"/g, "&quot;")}">
+        <span class="fg-box"></span><span class="fg-name">${titleCase(name)}</span>
+      </div>`;
+    }).join("");
+  }
+
+  function updateFilterCount(level) {
+    const cfg = FILTER_LEVELS[level];
+    document.getElementById(cfg.countEl).textContent = `${cfg.getSet().size}/${cfg.list.length}`;
+  }
+
+  Object.keys(FILTER_LEVELS).forEach(level => {
+    renderFilterList(level);
+    updateFilterCount(level);
+
+    document.getElementById(FILTER_LEVELS[level].listEl).addEventListener("click", e => {
+      const item = e.target.closest(".fg-item");
+      if (!item) return;
+      const name = item.getAttribute("data-name");
+      const activeSet = FILTER_LEVELS[level].getSet();
+      if (activeSet.has(name)) activeSet.delete(name); else activeSet.add(name);
+      renderFilterList(level);
+      updateFilterCount(level);
+      renderMap();
+    });
+
+    let fgSearchTimer = null;
+    document.getElementById(level + "Search").addEventListener("input", e => {
+      clearTimeout(fgSearchTimer);
+      const val = e.target.value;
+      fgSearchTimer = setTimeout(() => { filterSearch[level] = val; renderFilterList(level); }, 150);
+    });
+  });
+
+  document.querySelectorAll("[data-fg-all]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const level = btn.getAttribute("data-fg-all");
+      FILTER_LEVELS[level].getSet().clear();
+      FILTER_LEVELS[level].list.forEach(n => FILTER_LEVELS[level].getSet().add(n));
+      renderFilterList(level);
+      updateFilterCount(level);
+      renderMap();
+    });
+  });
+  document.querySelectorAll("[data-fg-none]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const level = btn.getAttribute("data-fg-none");
+      FILTER_LEVELS[level].getSet().clear();
+      renderFilterList(level);
+      updateFilterCount(level);
+      renderMap();
+    });
+  });
+
+  document.querySelectorAll(".filter-group-toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.closest(".filter-group").classList.toggle("open");
+    });
+  });
+
 
   let searchTimer = null;
   document.getElementById("searchInput").addEventListener("input", e => {
