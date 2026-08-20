@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Populasi Pesisir Utara — Kecamatan &amp; Desa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -387,9 +387,125 @@ footer.src{
 }
 footer.src a{color:var(--navy);}
 
+/* ---------- MOBILE BOTTOM-SHEET SIDEBAR ---------- */
+.aside-handle{display:none;}
+.aside-backdrop{display:none;}
+
 @media (max-width:900px){
-  main{grid-template-columns:1fr;}
-  aside{display:none;}
+  html,body{height:100%;}
+  .app{height:100dvh;}
+
+  /* header: tighter, drop the coord readout, keep title legible */
+  header.cartouche{
+    grid-template-columns:auto 1fr;
+    gap:10px;
+    padding:calc(10px + env(safe-area-inset-top)) 14px 10px 14px;
+  }
+  header.cartouche .rose{width:38px;height:38px;}
+  header.cartouche h1{font-size:15.5px;letter-spacing:.02em;}
+  header.cartouche .sub{font-size:10px;}
+  header .coords{display:none;}
+
+  /* stat strip becomes a horizontal scroller instead of squeezed columns */
+  .stat-strip{
+    grid-template-columns:none;
+    grid-auto-flow:column;
+    grid-auto-columns:minmax(128px,1fr);
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .stat-strip::-webkit-scrollbar{display:none;}
+  .stat{padding:9px 14px;}
+  .stat .v{font-size:17px;}
+
+  main{grid-template-columns:1fr;position:relative;}
+  #map{height:100%;}
+
+  /* leaflet chrome shifted up so it clears the bottom-sheet handle */
+  .leaflet-bottom{bottom:52px !important;}
+  footer.src{bottom:52px;font-size:8.5px;padding:2px 8px;}
+  .map-credit{bottom:52px;font-size:8.5px;}
+  .detail-card{left:12px;right:12px;width:auto;bottom:60px;padding:12px 14px;}
+  .detail-card .dc-pop{font-size:22px;}
+
+  /* backdrop shown while the data sheet is open */
+  .aside-backdrop{
+    display:block;
+    position:fixed;inset:0;
+    background:rgba(7,26,51,.4);
+    z-index:850;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .aside-backdrop.show{opacity:1;pointer-events:auto;}
+
+  /* aside becomes a draggable-feeling bottom sheet */
+  aside{
+    position:fixed;
+    left:0;right:0;bottom:0;top:auto;
+    height:72vh;
+    max-height:72vh;
+    border-left:none;
+    border-top:2px solid var(--brass);
+    border-radius:16px 16px 0 0;
+    box-shadow:0 -10px 28px rgba(7,26,51,.32);
+    transform:translateY(calc(100% - 44px));
+    transition:transform .28s ease;
+    z-index:900;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  aside.open{transform:translateY(0);}
+
+  .aside-handle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    position:relative;
+    height:44px;
+    flex:none;
+    padding:0 16px;
+    cursor:pointer;
+  }
+  .aside-handle .ah-grip{
+    position:absolute;
+    left:50%;top:6px;transform:translateX(-50%);
+    width:36px;height:4px;
+    background:var(--line-strong);
+    border-radius:3px;
+  }
+  .aside-handle .ah-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--teal);
+    font-weight:600;
+    margin-top:6px;
+  }
+  .aside-handle .ah-chevron{
+    margin-top:6px;
+    width:14px;height:14px;
+    transition:transform .28s ease;
+    color:var(--teal);
+  }
+  aside.open .aside-handle .ah-chevron{transform:rotate(180deg);}
+
+  /* roomier tap targets */
+  .panel-block{padding:12px 16px;}
+  .segmented button{padding:11px 6px;font-size:13px;}
+  .chip{padding:7px 12px;font-size:11px;}
+  .search-wrap input{font-size:16px;padding:10px 10px 10px 30px;}
+  .rank-item{padding:10px 8px;}
+  .rank-item .ri-name{font-size:13px;}
+}
+
+@media (max-width:420px){
+  header.cartouche h1{font-size:13.5px;}
+  header.cartouche .rose{width:32px;height:32px;}
+  .stat-strip{grid-auto-columns:minmax(112px,1fr);}
 }
 </style>
 </head>
@@ -436,7 +552,13 @@ footer.src a{color:var(--navy);}
       <footer class="src">Data: Ditjen Dukcapil Kemendagri · gis.dukcapil.kemendagri.go.id/peta</footer>
     </div>
 
-    <aside>
+    <div class="aside-backdrop" id="asideBackdrop"></div>
+    <aside id="sidePanel">
+      <div class="aside-handle" id="asideHandle">
+        <span class="ah-grip"></span>
+        <span class="ah-label">Data &amp; Peringkat</span>
+        <svg class="ah-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>
+      </div>
       <div class="panel-block">
         <div class="panel-title">Tampilan Peta</div>
         <div class="segmented" id="viewToggle">
@@ -661,6 +783,7 @@ footer.src a{color:var(--navy);}
     }
     showDetail(feature);
     highlightListItem(state.selectedId);
+    if (isMobile()) setSheetOpen(false);
   }
 
   /* ---------------- caption ---------------- */
@@ -850,8 +973,23 @@ footer.src a{color:var(--navy);}
     searchTimer = setTimeout(() => { state.search = val; renderMap(); }, 220);
   });
 
+  /* ---------------- mobile bottom-sheet ---------------- */
+  const sidePanel = document.getElementById("sidePanel");
+  const asideHandle = document.getElementById("asideHandle");
+  const asideBackdrop = document.getElementById("asideBackdrop");
+  const isMobile = () => window.matchMedia("(max-width:900px)").matches;
+
+  function setSheetOpen(open) {
+    sidePanel.classList.toggle("open", open);
+    asideBackdrop.classList.toggle("show", open);
+  }
+  asideHandle.addEventListener("click", () => setSheetOpen(!sidePanel.classList.contains("open")));
+  asideBackdrop.addEventListener("click", () => setSheetOpen(false));
+
+  window.addEventListener("resize", () => map.invalidateSize());
+
   /* ---------------- boot ---------------- */
-  map.setView([-6.9, 110.4], 7);
+  map.setView([-6.9, 110.4], isMobile() ? 6 : 7);
   renderMap();
 })();
 
