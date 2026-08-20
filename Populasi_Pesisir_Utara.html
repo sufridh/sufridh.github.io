@@ -359,6 +359,33 @@ aside{
 }
 .map-caption b{color:var(--brass);}
 
+/* floating view switch (kecamatan / desa) — sits on the map itself */
+.map-view-toggle{
+  position:absolute; top:14px; right:16px; z-index:650;
+  display:flex;
+  background:rgba(244,239,225,.96);
+  border:1px solid var(--line-strong);
+  border-radius:5px;
+  box-shadow:0 4px 14px rgba(7,26,51,.22);
+  overflow:hidden;
+}
+.map-view-toggle button{
+  border:none;
+  background:transparent;
+  padding:9px 14px;
+  font-family:var(--font-body);
+  font-weight:600;
+  font-size:12.5px;
+  color:var(--navy);
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background .15s, color .15s;
+  border-right:1px solid var(--line);
+}
+.map-view-toggle button:last-child{border-right:none;}
+.map-view-toggle button.active{background:var(--navy);color:var(--paper);}
+.map-view-toggle button:hover:not(.active){background:var(--sand);}
+
 .leaflet-control-zoom{border:1px solid var(--line-strong) !important; box-shadow:none !important;}
 .leaflet-control-zoom a{background:var(--paper) !important; color:var(--navy) !important; font-family:var(--font-body) !important;}
 .leaflet-control-zoom a:hover{background:var(--sand) !important;}
@@ -464,38 +491,42 @@ footer.src a{color:var(--navy);}
     justify-content:center;
     gap:8px;
     position:relative;
-    height:44px;
+    height:48px;
     flex:none;
     padding:0 16px;
     cursor:pointer;
+    background:linear-gradient(180deg, var(--paper) 0%, var(--paper-dim) 100%);
   }
   .aside-handle .ah-grip{
     position:absolute;
-    left:50%;top:6px;transform:translateX(-50%);
-    width:36px;height:4px;
-    background:var(--line-strong);
+    left:50%;top:7px;transform:translateX(-50%);
+    width:38px;height:4px;
+    background:var(--brass);
+    opacity:.55;
     border-radius:3px;
   }
   .aside-handle .ah-label{
     font-family:var(--font-mono);
-    font-size:11px;
+    font-size:12px;
     letter-spacing:.08em;
     text-transform:uppercase;
     color:var(--teal);
-    font-weight:600;
+    font-weight:700;
     margin-top:6px;
   }
   .aside-handle .ah-chevron{
     margin-top:6px;
-    width:14px;height:14px;
+    width:16px;height:16px;
     transition:transform .28s ease;
-    color:var(--teal);
+    color:var(--brass);
   }
   aside.open .aside-handle .ah-chevron{transform:rotate(180deg);}
 
   /* roomier tap targets */
   .panel-block{padding:12px 16px;}
   .segmented button{padding:11px 6px;font-size:13px;}
+  .map-view-toggle{top:10px;right:10px;}
+  .map-view-toggle button{padding:8px 10px;font-size:11.5px;}
   .chip{padding:7px 12px;font-size:11px;}
   .search-wrap input{font-size:16px;padding:10px 10px 10px 30px;}
   .rank-item{padding:10px 8px;}
@@ -539,6 +570,10 @@ footer.src a{color:var(--navy);}
   <main>
     <div style="position:relative;min-width:0;">
       <div id="map"></div>
+      <div class="map-view-toggle" id="viewToggle">
+        <button data-view="kec" class="active">Kecamatan</button>
+        <button data-view="desa">Desa Pesisir</button>
+      </div>
       <div class="map-caption" id="mapCaption">Memuat data…</div>
       <div class="map-credit">Basemap © CARTO, © OpenStreetMap contributors</div>
       <div class="detail-card" id="detailCard">
@@ -560,11 +595,7 @@ footer.src a{color:var(--navy);}
         <svg class="ah-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>
       </div>
       <div class="panel-block">
-        <div class="panel-title">Tampilan Peta</div>
-        <div class="segmented" id="viewToggle">
-          <button data-view="kec" class="active">Kecamatan</button>
-          <button data-view="desa">Desa Pesisir</button>
-        </div>
+        <div class="panel-title">Cari &amp; Filter</div>
         <div class="search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="searchInput" placeholder="Cari nama kecamatan / desa…">
