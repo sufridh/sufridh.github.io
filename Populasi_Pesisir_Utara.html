@@ -501,14 +501,6 @@ aside{
   font-family:var(--font-mono) !important;
 }
 
-/* ---------- BAR CHART BLOCK ---------- */
-.chart-block{padding:14px 18px;border-bottom:1px solid var(--line);}
-.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.bar-row .b-label{font-size:10.5px;width:74px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.bar-row .b-track{flex:1;height:12px;background:var(--paper);border:1px solid var(--line);border-radius:2px;overflow:hidden;}
-.bar-row .b-fill{height:100%;background:linear-gradient(90deg, var(--channel), var(--navy));}
-.bar-row .b-val{font-family:var(--font-mono);font-size:10px;width:52px;flex:none;text-align:right;}
-
 footer.src{
   position:absolute; bottom:0; right:0; z-index:600;
   font-family:var(--font-mono); font-size:9.5px;
@@ -826,11 +818,6 @@ footer.src a{color:var(--navy);}
         <div class="legend-note" id="legendNote"></div>
       </div>
 
-      <div class="chart-block">
-        <div class="panel-title">10 Teratas (tampilan saat ini)</div>
-        <div id="barChart"></div>
-      </div>
-
       <div class="list-wrap">
         <div class="panel-title" id="listTitle">Peringkat Populasi</div>
         <div class="rank-list" id="rankList"></div>
@@ -1035,7 +1022,6 @@ footer.src a{color:var(--navy);}
     }
     renderLegend();
     renderList(feats);
-    renderBarChart(feats);
     renderStats(feats);
     renderCaption(feats.length);
   }
@@ -1138,24 +1124,6 @@ footer.src a{color:var(--navy);}
     document.querySelectorAll(".rank-item").forEach(el => {
       el.classList.toggle("selected", el.getAttribute("data-id") === id);
     });
-  }
-
-  /* ---------------- bar chart (top 10) ---------------- */
-  function renderBarChart(feats) {
-    const sorted = [...feats].sort((a, b) => b.properties.pop - a.properties.pop).slice(0, 10);
-    const max = sorted.length ? sorted[0].properties.pop : 1;
-    const el = document.getElementById("barChart");
-    if (!sorted.length) { el.innerHTML = ""; return; }
-    el.innerHTML = sorted.map(f => {
-      const p = f.properties;
-      const name = state.view === "kec" ? titleCase(p.kec) : state.view === "kab" ? titleCase(p.kab) : titleCase(p.kel);
-      const pct = (p.pop / max) * 100;
-      return `<div class="bar-row">
-        <div class="b-label" title="${name}">${name}</div>
-        <div class="b-track"><div class="b-fill" style="width:${pct}%"></div></div>
-        <div class="b-val">${fmt(p.pop)}</div>
-      </div>`;
-    }).join("");
   }
 
   /* ---------------- stats strip ---------------- */
