@@ -882,11 +882,13 @@ footer.src a{color:var(--navy);}
 
   // basemap — light, label-free tiles so the Java coastline reads clearly;
   // recolored via CSS (.leaflet-tile-pane filter) to sit under the paper/teal palette
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
-    subdomains: "abcd",
+  // (switched from CARTO raster tiles, which now require an API key, to Esri's
+  // free no-key "World Light Gray Base" canvas — a similarly minimal, label-free style)
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
     minZoom: 5,
-    maxZoom: 13,
-    opacity: 1
+    maxZoom: 16,
+    opacity: 1,
+    attribution: "Esri, HERE, Garmin, FAO, NOAA, USGS"
   }).addTo(map);
 
   // graticule (chart-style lat/lon grid)
