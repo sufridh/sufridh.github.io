@@ -171,14 +171,264 @@ Conclusions drawn from either earlier version should be revisited.</p>
 <p><strong>Per TPS:</strong> TRUCK_DIRECT ≤50 m (1,747) · TRUCK_NEAR ≤100 m (252) · GEROBAK_ONLY (151) · OUTSIDE_ROAD_COVERAGE (129 — outside the boundary where the road layer has no data; no judgment made, excluded from stats) · UNKNOWN_GEOM (137).</p>
 <p><strong>FASIL equipment verification</strong> (<code>fasil_mode</code>, <code>access_verified</code>): VERIFIED_TRUCK 184 · CART_OPS_ON_TRUCK_ROAD 820 (consistent feeder TPS) · VERIFIED_CART 23 · <strong>CONFLICT_TRUCK_CLAIMED 17</strong> · UNVERIFIED 1,106 (blank FASIL). 15 of the 17 conflicts sit 100–250 m from a truck road and are large compounds (Monas, Mabes AL, rusun towers, BRIN, museums) — equipment records show trucks do reach them, so these indicate <strong>unmapped internal roads</strong>, not real inaccessibility. <code>access_mismatch</code> (19) = conflict, or ≥20,000 L at a gerobak-only site.</p>
 <h2 id="4-generation-sni-86322018">4 · Generation (SNI 8632:2018)</h2>
-<p>SNI 19-3983-1995 was superseded by <strong>SNI 8632:2018</strong>. Rates (midpoints): household <strong>2.23 L/person/day</strong> (0.675 kg); toko/ruko 0.045 L/m²/day; tempat-ibadah class 0.025; khusus 0.02; PENGGUNAAN LAIN 0.</p>
-<p>Three components, always in separate fields:</p>
-<ol>
-<li><strong>Rusunawa (highest confidence)</strong> — JMLHUNI × 2.23. All 51 Terhuni; mean household size 3.21. Four buildings (Karang Anyar, Muara Angke, Ujung Menteng, BLK Pasar Rebo) have JKK/JMLHUNI <strong>almost certainly swapped</strong> (hh size ≈0.3); swap-corrected series used in totals, originals retained. → 87,540 residents, ≈195 m³/day.</li>
-<li><strong>Residential non-rusunawa</strong> — BPS kecamatan total minus rusunawa, × 2.23, distributed on the WorldPop 100 m grid → <strong>23,295 m³/day</strong>.</li>
-<li><strong>Non-residential (area proxy)</strong> — parcel area × class rate → 8,419 m³/day.</li>
-</ol>
-<p><strong>Total ≈ 31,900 m³/day</strong>, consistent with DKI's reported 7,500–8,000 t/day at ~250 kg/m³.</p>
+<p>Waste volumes come from <strong>SNI 8632:2018</strong> (<em>Tata cara perencanaan teknik operasional pengelolaan sampah perkotaan</em>), which superseded SNI 19-3983-1995. Generation is built from three components that are kept in <strong>separate fields everywhere</strong> and never silently merged.</p>
+<h3 id="41-summary-of-the-three-components">4.1 Summary of the three components</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Basis</th>
+<th>Confidence</th>
+<th>Volume (m³/day)</th>
+<th>Share</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Public housing (rusunawa)</td>
+<td>Actual recorded occupancy × 2.23 L/person/day</td>
+<td><strong>High</strong> — measured occupancy</td>
+<td>195</td>
+<td>0.6%</td>
+</tr>
+<tr>
+<td>Other residential</td>
+<td>(BPS district population − rusunawa residents) × 2.23 L/person/day</td>
+<td>Medium — measured totals, modelled distribution</td>
+<td>23,295</td>
+<td>73.1%</td>
+</tr>
+<tr>
+<td>Non-residential</td>
+<td>Parcel area × per-m² rate by land-use class</td>
+<td>Lower — area proxy, no floor-area or activity data</td>
+<td>8,373</td>
+<td>26.3%</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td></td>
+<td><strong>31,863</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Cross-check: 31,863 m³/day at a typical 250 kg/m³ loose density is ≈ 7,970 t/day, consistent with DKI's reported 7,500–8,000 t/day.</p>
+<h3 id="42-residential-rate">4.2 Residential rate</h3>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Unit</th>
+<th>Volume</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rumah tangga (household)</td>
+<td>per person per day</td>
+<td><strong>2.23 L</strong> (SNI range 2.14–2.32)</td>
+<td>0.675 kg (0.65–0.70)</td>
+</tr>
+</tbody>
+</table>
+<p>Midpoints of the SNI band are used. This single rate covers all 10.45 million non-rusunawa residents plus the 87,540 rusunawa residents; no income or district differentiation is applied, because the standard does not provide one at this level.</p>
+<h3 id="43-non-residential-per-land-use-class">4.3 Non-residential, per land-use class</h3>
+<p>Every land-use polygon inside Jakarta, its area, the rate applied, and what it contributes. Rates are the SNI per-area figures for the closest matching source type.</p>
+<table>
+<thead>
+<tr>
+<th>Land-use class (<code>D_PENGGUNA</code>)</th>
+<th>Parcels</th>
+<th>Area (ha)</th>
+<th>% of city</th>
+<th>Rate applied</th>
+<th>Generation (L/day)</th>
+<th>% of non-residential</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USAHA (commerce &amp; industry)</td>
+<td>38,150</td>
+<td>16,374</td>
+<td>28.3%</td>
+<td>0.045 L/m²/day (toko/ruko)</td>
+<td>7,368,122</td>
+<td><strong>88.0%</strong></td>
+</tr>
+<tr>
+<td>SOSIAL BUDAYA (social &amp; cultural)</td>
+<td>8,618</td>
+<td>2,871</td>
+<td>5.0%</td>
+<td>0.025 L/m²/day</td>
+<td>717,691</td>
+<td>8.6%</td>
+</tr>
+<tr>
+<td>KHUSUS (special use)</td>
+<td>397</td>
+<td>885</td>
+<td>1.5%</td>
+<td>0.020 L/m²/day</td>
+<td>177,094</td>
+<td>2.1%</td>
+</tr>
+<tr>
+<td>KEAGAMAAN (religious)</td>
+<td>5,913</td>
+<td>440</td>
+<td>0.8%</td>
+<td>0.025 L/m²/day</td>
+<td>110,121</td>
+<td>1.3%</td>
+</tr>
+<tr>
+<td>PELAYANAN PENDIDIKAN (education)</td>
+<td>1</td>
+<td>0.04</td>
+<td>0.0%</td>
+<td>0.025 L/m²/day</td>
+<td>79</td>
+<td>0.0%</td>
+</tr>
+<tr>
+<td>HUNIAN (residential)</td>
+<td>48,935</td>
+<td>28,913</td>
+<td>50.0%</td>
+<td><em>not area-based</em> — see 4.2</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PENGGUNAAN LAIN (other)</td>
+<td>22,914</td>
+<td>8,385</td>
+<td>14.5%</td>
+<td><strong>0</strong></td>
+<td>0</td>
+<td>0%</td>
+</tr>
+<tr>
+<td><strong>Total non-residential</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>8,373,107</strong></td>
+<td><strong>100%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><code>HUNIAN</code> is deliberately excluded from the area calculation to avoid double-counting: residential waste is already derived from population (4.2). The <code>HUNIAN</code> footprint is still used, but only as the <em>shape</em> over which district population is distributed.</p>
+<p><code>PENGGUNAAN LAIN</code> — 8,385 ha, 14.5% of the city — is zero-rated. It covers roads, water bodies, open space and vacant land, which generate street-sweeping and litter volumes that the SNI per-area residential and commercial rates don't represent. Treating it as zero means <strong>street-sweeping waste (<em>sampah penyapuan jalan</em>) is not counted anywhere in this analysis</strong> — a known omission rather than an oversight.</p>
+<h3 id="44-what-is-inside-usaha-and-why-this-is-the-weakest-rate">4.4 What is inside USAHA — and why this is the weakest rate</h3>
+<p><code>USAHA</code> supplies 88% of the non-residential estimate, so its single 0.045 L/m²/day shop rate carries a lot of weight. Its subclasses are not all shops:</p>
+<table>
+<thead>
+<tr>
+<th>Subclass (<code>D_SUB_PENG</code>)</th>
+<th>Parcels</th>
+<th>Area (ha)</th>
+<th>Generation at 0.045 (L/day)</th>
+<th>Is the shop rate appropriate?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PERKANTORAN DAN PERDAGANGAN (offices &amp; trade)</td>
+<td>15,696</td>
+<td>3,448</td>
+<td>1,551,581</td>
+<td>Yes — closest to the SNI toko/ruko source type</td>
+</tr>
+<tr>
+<td>INDUSTRI (industry)</td>
+<td>1,451</td>
+<td>3,131</td>
+<td>1,408,822</td>
+<td><strong>No</strong> — industrial waste streams differ in both volume and type</td>
+</tr>
+<tr>
+<td>WISATA (tourism/recreation)</td>
+<td>5,946</td>
+<td>2,124</td>
+<td>956,016</td>
+<td>Partly — visitor-driven, not floor-area-driven</td>
+</tr>
+<tr>
+<td>PENYIMPANAN (warehousing)</td>
+<td>2,331</td>
+<td>2,018</td>
+<td>907,908</td>
+<td><strong>No</strong> — large footprint, few occupants, low waste per m²</td>
+</tr>
+<tr>
+<td>PERTANIAN (agriculture)</td>
+<td>435</td>
+<td>1,394</td>
+<td>627,465</td>
+<td><strong>No</strong> — produces organic residue, not municipal waste</td>
+</tr>
+</tbody>
+</table>
+<p>So roughly <strong>2.9 million L/day (35% of the non-residential estimate, 9% of the city total) is assigned to industry, warehousing and agriculture using a rate designed for shops</strong> — likely an over-estimate for warehousing and agriculture in particular. Correcting it needs either the SNI per-employee industrial rates plus employment data, or floor-area figures instead of parcel footprints. Neither is in the supplied datasets, so the current figures stand with this caveat attached.</p>
+<p>Also absent by design: <strong>markets (<em>pasar</em>)</strong>, which SNI rates at roughly 1.5 L/m²/day — over 30× the shop rate. No separable market class exists in the land-use layer, so market waste is currently priced as ordinary commerce. Any kecamatan with a large traditional market is therefore under-estimated.</p>
+<h3 id="45-public-housing-detail">4.5 Public housing detail</h3>
+<p><code>est_gen_lday</code> = recorded occupants × 2.23 L. All 51 blocks are <em>Terhuni</em> (occupied); mean household size 3.21. Four blocks (Karang Anyar, Muara Angke, Ujung Menteng, BLK Pasar Rebo) record households greater than residents, implying a household size of about 0.3 — almost certainly two swapped columns; swapping restores ≈3.4 and near-full occupancy. Original fields are untouched and the corrected series is used in totals, with the raw series retained as <code>rusun_gen_lday_raw</code>. Adjusted result: 87,540 residents, ≈195 m³/day.</p>
+<h3 id="46-rate-table-as-applied">4.6 Rate table as applied</h3>
+<table>
+<thead>
+<tr>
+<th>SNI source type</th>
+<th>Unit</th>
+<th>Rate used</th>
+<th>Applied to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rumah tangga</td>
+<td>per person/day</td>
+<td>2.23 L</td>
+<td>all residents (rusunawa and other)</td>
+</tr>
+<tr>
+<td>Toko / ruko</td>
+<td>per m²/day</td>
+<td>0.045 L</td>
+<td>USAHA</td>
+</tr>
+<tr>
+<td>Tempat ibadah class</td>
+<td>per m²/day</td>
+<td>0.025 L</td>
+<td>SOSIAL BUDAYA, KEAGAMAAN, PELAYANAN PENDIDIKAN</td>
+</tr>
+<tr>
+<td>Special use</td>
+<td>per m²/day</td>
+<td>0.020 L</td>
+<td>KHUSUS</td>
+</tr>
+<tr>
+<td>Roads, water, open space</td>
+<td>—</td>
+<td>0</td>
+<td>PENGGUNAAN LAIN</td>
+</tr>
+<tr>
+<td>Pasar (market)</td>
+<td>per m²/day</td>
+<td>1.5 L</td>
+<td><strong>not applied</strong> — no market class in the source data</td>
+</tr>
+</tbody>
+</table>
 <h2 id="5-capacity-vs-demand">5 · Capacity vs demand</h2>
 <p>Pickup frequency from REMARK: 466 stated, 14 irregular (scored 3/wk), 1,936 blank → assumed daily, flagged FREQ_UNKNOWN. <code>eff_capacity_lday</code> = KAPASITAS × pickups/7. <code>service_flag</code>: WELL_SERVED 253 · HIGH_CAP_LOW_FREQ 109 · LOW_FREQ 118 · FREQ_UNKNOWN 1,936.</p>
 <p><code>gap_lday</code> = total generation − Σ effective capacity, ranked by area-normalized <code>gap_per_km2</code>. Much waste bypasses TPS (direct truck routes, TPST), so gaps are <strong>relative rankings</strong>. Deficit surface: 250 m, generation and capacity Gaussian-smoothed σ=500 m.</p>
@@ -472,7 +722,6 @@ Conclusions drawn from either earlier version should be revisited.</p>
 <p>Anchor: SNI 19-2454-2002 §5.3.2 sets transfer-depot spacing at 1.0–1.5 km, implying a 500–750 m system-level half-spacing. Cart and motor modes are scaled around that by vehicle capability; container-only and blank records fall back to it directly.</p></article>
 </div>
 <script>
-// wrap tables so wide ones scroll instead of breaking the layout
-document.querySelectorAll('#doc table').forEach(t=>{const d=document.createElement('div');d.className='tw';t.parentNode.insertBefore(d,t);d.appendChild(t);});
+document.querySelectorAll("#doc table").forEach(t=>{const d=document.createElement("div");d.className="tw";t.parentNode.insertBefore(d,t);d.appendChild(t);});
 </script>
 </body></html>
