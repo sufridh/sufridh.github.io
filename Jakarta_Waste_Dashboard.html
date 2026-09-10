@@ -159,8 +159,10 @@ let choroOn=false;
 const kecCard=document.getElementById('kecCard');
 function kecStyle(f){
  return choroOn ? {color:'#3a3a3a',weight:1.2,fillColor:ramp(f.properties.gd/gdMax),fillOpacity:.72}
-                : {color:'#2b2b2b',weight:2,dashArray:'6 3',fillOpacity:0.02,fillColor:'#000'};}
-const isTouch = window.matchMedia('(max-width:780px)').matches || ('ontouchstart' in window && window.innerWidth<900);
+                : {color:'#2b2b2b',weight:2,dashArray:'6 3',fillOpacity:0.05,fillColor:'#1d4ed8'};}
+const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches
+ || window.matchMedia('(max-width:780px)').matches
+ || ('ontouchstart' in window && window.innerWidth<1100);
 let pinned=null;
 const bmc=document.getElementById('basemapCtl');
 function showKec(f,l){
@@ -181,17 +183,25 @@ function showKec(f,l){
 }
 function hideKec(){kecCard.style.display='none';bmc.style.display='';if(pinned){kecLayer.resetStyle(pinned);pinned=null;}}
 window.hideKec=hideKec;
+let lastKecTap=0;
 const kecLayer=L.geoJSON(D.kec,{style:kecStyle,
  onEachFeature:(f,l)=>{
-  if(isTouch){
-   l.on('click',e=>{if(pinned&&pinned!==l)kecLayer.resetStyle(pinned);pinned=l;showKec(f,l);
-    if(side.classList.contains('big'))setSheet('mid');});
-  }else{
-   l.on('mouseover',()=>showKec(f,l));
-   l.on('mouseout',()=>{kecLayer.resetStyle(l);kecCard.style.display='none';});
+  // tap/click always pins the card (works on touch and desktop)
+  l.on('click',e=>{
+   lastKecTap=Date.now();
+   if(L.DomEvent&&e.originalEvent)L.DomEvent.stopPropagation(e);
+   if(pinned&&pinned!==l)kecLayer.resetStyle(pinned);
+   pinned=l;showKec(f,l);
+   if(isTouch&&sheetState==='big')setSheet('mid');
+  });
+  // hover preview only where hover actually exists
+  if(!isTouch){
+   l.on('mouseover',()=>{if(!pinned)showKec(f,l);});
+   l.on('mouseout',()=>{if(!pinned){kecLayer.resetStyle(l);kecCard.style.display='none';}});
   }
  }}).addTo(map);
-map.on('click',()=>{if(isTouch)hideKec();});
+// tapping bare map clears the pin — but ignore the same tap that just opened it
+map.on('click',()=>{if(Date.now()-lastKecTap>350)hideKec();});
 function zoomKec(n){kecLayer.eachLayer(l=>{if(l.feature.properties.n===n)map.fitBounds(l.getBounds(),{padding:[30,30]});});}
 
 const accCol={TRUCK_DIRECT:'#16a34a',TRUCK_NEAR:'#d97706',GEROBAK_ONLY:'#dc2626',OUTSIDE_ROAD_COVERAGE:'#94a3b8'};
@@ -420,6 +430,10 @@ if(window.matchMedia('(max-width:780px)').matches){
 window.fly=(la,lo,z=17)=>{map.flyTo([la,lo],z,{duration:.8});};
 window.zoomKec=zoomKec;
 setView(0);
+if(isTouch){
+ const hp=document.querySelector('#head p');
+ if(hp)hp.innerHTML='Default view shows <b>which areas are under-served</b>. <b>Tap any kecamatan</b> for its scorecard; tap points for details; drag the handle above to resize this panel.';
+}
 if(window.matchMedia('(max-width:780px)').matches){setSheet('mid');}
 </script>
 </body>
