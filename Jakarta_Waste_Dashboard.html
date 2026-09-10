@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"/>
 <title>Jakarta Waste Infrastructure — TPS · Bank Sampah · Rusunawa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -75,11 +75,55 @@ padding:14px 16px;min-width:256px;max-width:296px;font-size:12px;box-shadow:0 8p
 .pp td:last-child{font-weight:600}
 .prioIcon{background:var(--red);color:#fff;border-radius:50%;width:27px;height:27px;line-height:27px;text-align:center;
 font-weight:800;font-size:12.5px;border:2.5px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35);font-family:'Plus Jakarta Sans',sans-serif}
-@media(max-width:860px){#side{width:320px;min-width:320px}}
+@media(max-width:1024px) and (min-width:781px){#side{width:330px;min-width:330px}#kpis{grid-template-columns:1fr 1fr}}
+
+/* ---------- MOBILE: full-screen map + draggable bottom sheet ---------- */
+#grip{display:none}
+@media(max-width:780px){
+ body{flex-direction:column;overflow:hidden;height:100vh;height:100dvh}
+ #map{order:1;flex:1 1 auto;width:100%;height:auto;min-height:0}
+ #side{order:2;position:fixed;left:0;right:0;bottom:0;width:100%;min-width:0;
+   height:var(--sheet,62vh);max-height:92vh;border-right:none;border-top:1px solid var(--line);
+   border-radius:18px 18px 0 0;box-shadow:0 -6px 28px rgba(15,23,42,.18);
+   transition:height .28s cubic-bezier(.4,0,.2,1);z-index:1200}
+ #side.peek{height:132px}
+ #grip{display:block;position:relative;padding:9px 0 3px;cursor:grab;touch-action:none;flex:none}
+ #grip:before{content:"";display:block;width:42px;height:4.5px;border-radius:3px;background:#cbd5e1;margin:0 auto}
+ #head{padding:4px 18px 8px}
+ #head h1{font-size:16.5px}
+ #head p{display:none}
+ #side.big #head p{display:block;font-size:11.5px}
+ #kpis{grid-template-columns:1fr 1fr 1fr;gap:6px;padding:2px 14px 10px}
+ .kpi{padding:7px 4px 6px}.kpi b{font-size:15px}.kpi span{font-size:8.5px}
+ #tabs{padding:0 12px 10px;gap:5px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+ #tabs::-webkit-scrollbar{display:none}
+ .tab{flex:0 0 auto;min-width:74px;padding:9px 8px 8px}
+ .tab .lb{font-size:9.5px}
+ #content{padding:12px 16px 26px;-webkit-overflow-scrolling:touch}
+ #foot{display:none}
+ /* larger touch targets */
+ .tgl{margin:9px 0;font-size:12.5px}.tgl input{width:18px;height:18px}
+ .seg label{padding:9px 4px;font-size:11.5px}
+ .bar{grid-template-columns:104px 1fr 42px;margin:7px 0}
+ .bar .tr{height:14px}
+ .item{padding:11px 13px;margin:8px 0}
+ /* kecamatan card becomes a top banner, tap-driven */
+ #kecCard{top:8px;left:8px;right:8px;max-width:none;min-width:0;padding:11px 13px;border-radius:12px;pointer-events:auto}
+ #kecCard .cls{position:absolute;top:7px;right:10px;font-size:17px;color:var(--mut);line-height:1;padding:4px 6px;cursor:pointer}
+ #basemapCtl{bottom:auto;top:8px;right:8px;padding:5px 7px;font-size:10px}
+ .leaflet-control-zoom{display:none}
+ .leaflet-popup-content{margin:12px 13px;font-size:12.5px}
+ .leaflet-popup-content-wrapper{max-width:82vw}
+}
+@media(max-width:400px){
+ #kpis{grid-template-columns:1fr 1fr}
+ #head h1{font-size:15.5px}
+}
 </style>
 </head>
 <body>
 <div id="side">
+  <div id="grip" title="Drag to resize"></div>
   <div id="head">
     <div class="eyebrow">DKI Jakarta · Solid Waste</div>
     <h1>Waste Infrastructure Dashboard</h1>
@@ -116,12 +160,14 @@ const kecCard=document.getElementById('kecCard');
 function kecStyle(f){
  return choroOn ? {color:'#3a3a3a',weight:1.2,fillColor:ramp(f.properties.gd/gdMax),fillOpacity:.72}
                 : {color:'#2b2b2b',weight:2,dashArray:'6 3',fillOpacity:0.02,fillColor:'#000'};}
-const kecLayer=L.geoJSON(D.kec,{style:kecStyle,
- onEachFeature:(f,l)=>{
-  l.on('mouseover',()=>{l.setStyle({weight:3,color:'#1d4ed8',dashArray:null});if(!choroOn)l.setStyle({fillOpacity:.07,fillColor:'#1d4ed8'});
-   const p=f.properties;
-   kecCard.style.display='block';
-   kecCard.innerHTML=`<h3>${p.n}</h3><div class="w">${p.w} · est. pop ${fmt(p.pop)}</div><table>
+const isTouch = window.matchMedia('(max-width:780px)').matches || ('ontouchstart' in window && window.innerWidth<900);
+let pinned=null;
+const bmc=document.getElementById('basemapCtl');
+function showKec(f,l){
+ const p=f.properties;
+ kecCard.style.display='block';
+ if(isTouch)bmc.style.display='none';
+ kecCard.innerHTML=`${isTouch?'<span class="cls" onclick="hideKec()">&times;</span>':''}<h3>${p.n}</h3><div class="w">${p.w} · est. pop ${fmt(p.pop)}</div><table>
    <tr><td>Est. generation</td><td>${p.gen} m³/d</td></tr>
    <tr><td>· rusunawa (actual)</td><td>${p.rg} m³/d</td></tr>
    <tr><td>· land-use (proxy)</td><td>${p.pg} m³/d</td></tr>
@@ -129,9 +175,23 @@ const kecLayer=L.geoJSON(D.kec,{style:kecStyle,
    <tr class="hl"><td>Gap (deficit)</td><td>${p.gap} m³/d</td></tr>
    <tr class="hl"><td>Gap density</td><td>${fmt(p.gd)} L/d/km²</td></tr>
    <tr><td>TPS truck-accessible</td><td>${p.tc} (${p.pt==null?'—':p.pt+'%'})</td></tr>
-   <tr><td>Bank Sampah</td><td>${p.bsc} (${p.bsr}/100k)</td></tr></table>`;});
-  l.on('mouseout',()=>{kecLayer.resetStyle(l);kecCard.style.display='none';});
+   <tr><td>Bank Sampah</td><td>${p.bsc} (${p.bsr}/100k)</td></tr></table>`;
+ l.setStyle({weight:3,color:'#1d4ed8',dashArray:null});
+ if(!choroOn)l.setStyle({fillOpacity:.07,fillColor:'#1d4ed8'});
+}
+function hideKec(){kecCard.style.display='none';bmc.style.display='';if(pinned){kecLayer.resetStyle(pinned);pinned=null;}}
+window.hideKec=hideKec;
+const kecLayer=L.geoJSON(D.kec,{style:kecStyle,
+ onEachFeature:(f,l)=>{
+  if(isTouch){
+   l.on('click',e=>{if(pinned&&pinned!==l)kecLayer.resetStyle(pinned);pinned=l;showKec(f,l);
+    if(side.classList.contains('big'))setSheet('mid');});
+  }else{
+   l.on('mouseover',()=>showKec(f,l));
+   l.on('mouseout',()=>{kecLayer.resetStyle(l);kecCard.style.display='none';});
+  }
  }}).addTo(map);
+map.on('click',()=>{if(isTouch)hideKec();});
 function zoomKec(n){kecLayer.eachLayer(l=>{if(l.feature.properties.n===n)map.fitBounds(l.getBounds(),{padding:[30,30]});});}
 
 const accCol={TRUCK_DIRECT:'#16a34a',TRUCK_NEAR:'#d97706',GEROBAK_ONLY:'#dc2626',OUTSIDE_ROAD_COVERAGE:'#94a3b8'};
@@ -161,10 +221,11 @@ function tpsPopup(t){
  ${rem?`<tr><td>Remark</td><td style="font-weight:500;font-size:10.5px">${rem}</td></tr>`:''}
  </table>${mm?'<div style="margin-top:6px;font-size:10.5px;color:#b91c1c">Truck-scale capacity or truck equipment recorded, but no truck-passable road mapped within 100 m — likely an unmapped access/internal road; verify on site.</div>':''}</div>`;}
 
+const TB = window.matchMedia('(max-width:780px)').matches ? 1.5 : 0;  // touch bump
 function tpsLayer(colorFn,ringMM){
  const g=L.layerGroup();
  D.tps.forEach(t=>{const mm=t[11]===1;
-  L.circleMarker([t[0],t[1]],{radius:mm&&ringMM?7:4.2,fillColor:colorFn(t),color:mm&&ringMM?'#111':colorFn(t),
+  L.circleMarker([t[0],t[1]],{radius:(mm&&ringMM?7:4.2)+TB,fillColor:colorFn(t),color:mm&&ringMM?'#111':colorFn(t),
    weight:mm&&ringMM?2.2:.6,fillOpacity:.88}).bindPopup(tpsPopup(t),{maxWidth:340}).addTo(g);});
  return g;}
 const roadCol=['#9ecae1','#3182bd','#08519c'];
@@ -177,7 +238,7 @@ const layVerTPS=tpsLayer(t=>verCol[t[14]]||'#ccc',true);
 const layRaster=L.imageOverlay('data:image/png;base64,'+D.png,D.pngb,{opacity:.85});
 const layCov=L.imageOverlay('data:image/png;base64,'+D.png2,D.png2b,{opacity:.9});
 const layRusBig=L.layerGroup();
-D.rus.forEach(r=>L.circleMarker([r[0],r[1]],{radius:Math.max(5,Math.sqrt(r[7])/9),fillColor:'#7c3aed',color:'#fff',weight:1.6,fillOpacity:.92})
+D.rus.forEach(r=>L.circleMarker([r[0],r[1]],{radius:Math.max(5,Math.sqrt(r[7])/9)+TB,fillColor:'#7c3aed',color:'#fff',weight:1.6,fillOpacity:.92})
  .bindPopup(`<div class="pp"><b class="t">Rusunawa ${r[2]}</b><br>
  <table><tr><td>Penghuni</td><td>${fmt(r[3])}</td></tr><tr><td>KK / unit</td><td>${fmt(r[4])} / ${fmt(r[5])}</td></tr>
  <tr><td>Household size</td><td>${r[6]}</td></tr><tr><td>Est. waste</td><td>${fmt(r[7])} L/d (${fmt(r[8])} kg/d)</td></tr></table>
@@ -185,7 +246,7 @@ D.rus.forEach(r=>L.circleMarker([r[0],r[1]],{radius:Math.max(5,Math.sqrt(r[7])/9
 const layTPSctx=L.layerGroup();
 D.tps.forEach(t=>{if(t[7]!=='OUTSIDE_ROAD_COVERAGE')L.circleMarker([t[0],t[1]],{radius:2.6,fillColor:'#334155',color:'#fff',weight:.5,fillOpacity:.75}).bindPopup(tpsPopup(t),{maxWidth:340}).addTo(layTPSctx);});
 const layBS=L.layerGroup();
-D.bs.forEach(b=>L.circleMarker([b[0],b[1]],{radius:3.2,fillColor:'#0d9488',color:'#0f766e',weight:.7,fillOpacity:.85})
+D.bs.forEach(b=>L.circleMarker([b[0],b[1]],{radius:3.2+TB,fillColor:'#0d9488',color:'#0f766e',weight:.7,fillOpacity:.85})
  .bindPopup(`<div class="pp"><b class="t">Bank Sampah ${b[2]}</b><br><span style="color:#64748b;font-size:11px">Kecamatan ${b[3]}</span></div>`).addTo(layBS));
 const layBSheat=L.heatLayer(D.bs.map(b=>[b[0],b[1],1]),{radius:20,blur:24,gradient:{0.2:'#ccfbf1',0.45:'#5eead4',0.7:'#0d9488',1:'#134e4a'}});
 const layTop=L.layerGroup();
@@ -325,9 +386,41 @@ function colorBy(v,el){
  cby=v;const lay=tpsModeLayers[v];lay.addTo(map);active.push(lay);legAcc();}
 window.colorBy=colorBy;
 window.tog=(l,cb)=>{cb.checked?l.addTo(map):map.removeLayer(l);};
+
+/* ---------- mobile bottom sheet ---------- */
+const side=document.getElementById('side'), grip=document.getElementById('grip');
+const SNAP={peek:null,mid:'62vh',big:'90vh'};
+function setSheet(state){
+ side.classList.toggle('peek',state==='peek');
+ side.classList.toggle('big',state==='big');
+ if(state!=='peek')side.style.setProperty('--sheet',SNAP[state]);
+ sheetState=state;
+ setTimeout(()=>map.invalidateSize(),300);
+}
+let sheetState='mid';
+if(grip){
+ let sy=0,sh=0,drag=false;
+ const H=()=>window.innerHeight;
+ grip.addEventListener('pointerdown',e=>{drag=true;sy=e.clientY;sh=side.getBoundingClientRect().height;
+  side.style.transition='none';grip.setPointerCapture(e.pointerId);});
+ grip.addEventListener('pointermove',e=>{if(!drag)return;
+  const h=Math.max(110,Math.min(H()*0.92,sh+(sy-e.clientY)));
+  side.classList.remove('peek');side.style.setProperty('--sheet',h+'px');});
+ grip.addEventListener('pointerup',e=>{if(!drag)return;drag=false;side.style.transition='';
+  const frac=side.getBoundingClientRect().height/H();
+  setSheet(frac<0.28?'peek':frac>0.75?'big':'mid');});
+ grip.addEventListener('click',()=>{setSheet(sheetState==='peek'?'mid':sheetState==='mid'?'big':'peek');});
+}
+/* tapping a tab on mobile drops the sheet to mid so the map is visible */
+if(window.matchMedia('(max-width:780px)').matches){
+ [...tabsEl.children].forEach(t=>t.addEventListener('click',()=>{if(sheetState==='big')setSheet('mid');}));
+ window.addEventListener('orientationchange',()=>setTimeout(()=>map.invalidateSize(),350));
+ map.on('popupopen',()=>{if(sheetState!=='peek')setSheet('peek');});
+}
 window.fly=(la,lo,z=17)=>{map.flyTo([la,lo],z,{duration:.8});};
 window.zoomKec=zoomKec;
 setView(0);
+if(window.matchMedia('(max-width:780px)').matches){setSheet('mid');}
 </script>
 </body>
 </html>
