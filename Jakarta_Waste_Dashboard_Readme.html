@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Methodology &amp; Data Sources — Jakarta Waste Infrastructure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f5;--panel:#fff;--card:#f7f9fc;--line:#e4e9f0;--ink:#0f172a;--mut:#64748b;--acc:#1d4ed8;--accsoft:#e8eefc}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+#top{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line)}
+#top .in{max-width:1180px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:14px}
+#top .eyebrow{font-size:10px;font-weight:700;letter-spacing:1.3px;color:var(--acc);text-transform:uppercase}
+#top h1{font-size:16px;font-weight:800;letter-spacing:-.2px}
+.back{margin-left:auto;display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:#fff;text-decoration:none;
+font-size:12.5px;font-weight:700;padding:9px 15px;border-radius:9px;transition:.15s;white-space:nowrap}
+.back:hover{background:var(--acc)}
+.back svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#wrap{max-width:1180px;margin:0 auto;padding:26px 24px 80px;display:grid;grid-template-columns:238px 1fr;gap:34px;align-items:start}
+#toc{position:sticky;top:74px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px 16px}
+#toc b{display:block;font-size:10.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--mut);margin-bottom:9px}
+#toc a{display:block;font-size:12px;font-weight:600;color:var(--ink);text-decoration:none;padding:5px 0 5px 9px;border-left:2px solid transparent}
+#toc a:hover{color:var(--acc);border-left-color:var(--acc)}
+#doc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:34px 40px 44px;font-size:14px}
+#doc h1{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+#doc h2{font-size:20px;font-weight:800;letter-spacing:-.3px;margin:34px 0 12px;padding-top:14px;border-top:1px solid var(--line);scroll-margin-top:80px}
+#doc h2:first-child{margin-top:0;border-top:none;padding-top:0}
+#doc h3{font-size:15px;font-weight:700;margin:22px 0 8px}
+#doc p{margin:11px 0;color:#26324a}
+#doc strong{color:var(--ink);font-weight:700}
+#doc code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace}
+#doc ol,#doc ul{margin:11px 0 11px 22px;color:#26324a}
+#doc li{margin:5px 0}
+#doc blockquote{background:var(--accsoft);border-left:3px solid var(--acc);border-radius:0 10px 10px 0;padding:14px 18px;margin:18px 0;font-size:13px}
+#doc blockquote p{margin:7px 0}
+.tw{overflow-x:auto;margin:16px 0}
+#doc table{border-collapse:collapse;width:100%;font-size:12.5px}
+#doc th{background:var(--ink);color:#fff;text-align:left;padding:9px 11px;font-weight:700}
+#doc td{border:1px solid var(--line);padding:8px 11px;vertical-align:top}
+#doc tbody tr:nth-child(even){background:var(--card)}
+#doc hr{border:none;border-top:1px solid var(--line);margin:26px 0}
+@media(max-width:880px){#wrap{grid-template-columns:1fr;gap:18px}#toc{position:static}#doc{padding:24px 20px 32px}#top h1{font-size:14px}}
+</style></head><body>
+<div id="top"><div class="in">
+  <div><div class="eyebrow">DKI Jakarta · Solid Waste</div><h1>Methodology &amp; Data Sources</h1></div>
+  <a class="back" href="Jakarta_Waste_Dashboard.html"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to dashboard</a>
+</div></div>
+<div id="wrap">
+  <nav id="toc"><b>On this page</b><a href="#1-population">1 · Population</a>
+<a href="#2-cleaning">2 · Cleaning</a>
+<a href="#3-truck-accessibility">3 · Truck accessibility</a>
+<a href="#4-generation-sni-86322018">4 · Generation (SNI 8632:2018)</a>
+<a href="#5-capacity-vs-demand">5 · Capacity vs demand</a>
+<a href="#6-collection-catchments-network-routed-per-tps-equipment">6 · Collection catchments (network-routed, per TPS equipment)</a>
+<a href="#7-bank-sampah">7 · Bank Sampah</a>
+<a href="#8-priority-areas">8 · Priority areas</a>
+<a href="#9-files">9 · Files</a>
+<a href="#10-limitations">10 · Limitations</a>
+<a href="#appendix-collection-mode-radii-full-parameter-table">Appendix · Collection mode radii (full parameter table)</a></nav>
+  <article id="doc"><h1 id="jakarta-tps-bank-sampah-spatial-analysis-methodology">Jakarta TPS &amp; Bank Sampah Spatial Analysis — Methodology</h1>
+<p>TPS, Bank Sampah, rusunawa, roads, land use (1:5,000, 2021) and administrative boundaries for the 5 mainland wilayah of DKI Jakarta. Metric analysis in <strong>EPSG:32748 (UTM 48S)</strong>.</p>
+<blockquote>
+<p><strong>Revision history of the population basis</strong> — worth reading, because the priority ranking changed twice.
+1. <em>Initial (superseded).</em> A single citywide figure spread across kecamatan in proportion to residential land area, implying a uniform 364 persons/ha.
+2. <em>BPS totals.</em> Replaced with measured population per kecamatan from BPS <em>Kota Dalam Angka 2020</em>. Real intensity ranges 205–771 persons/ha; several kecamatan moved 20+ places in the ranking.
+3. <em>Current.</em> Within-kecamatan distribution from the <strong>WorldPop 2021 100 m grid</strong>, used dasymetrically so BPS totals are preserved exactly. Hotspots now resolve to individual kelurahan.</p>
+<p><strong>Coverage is now measured as the routed reach of the collection vehicle recorded at each TPS</strong> (Section 6), not a straight-line or pedestrian radius — TPS are transfer points fed by gerobak and motor sampah. 64.1% of residents fall inside a real catchment; 35.9% do not. Any conclusion based on radius-style or walking-distance coverage should be revisited.
+Conclusions drawn from either earlier version should be revisited.</p>
+</blockquote>
+<h2 id="1-population">1 · Population</h2>
+<p><strong>Control totals — BPS (authoritative).</strong> Table 3.1.1 parsed from the five <em>Kota Dalam Angka 2020</em> PDFs (2019 figures). The books use three numeric conventions (absolute with commas, absolute with spaces, thousands with decimal comma); Jakarta Utara reports at kelurahan level with kecamatan subtotals; some rows wrap across lines with watermark characters interleaved. Validated against the totals printed in the books:</p>
+<table>
+<thead>
+<tr>
+<th>Wilayah</th>
+<th>Extracted</th>
+<th>Printed</th>
+<th>Diff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jakarta Pusat</td>
+<td>928,109</td>
+<td>928,109</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Jakarta Barat</td>
+<td>2,589,933</td>
+<td>2,589,933</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Jakarta Selatan</td>
+<td>2,264,700</td>
+<td>2,264,700</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Jakarta Timur</td>
+<td>2,937,880</td>
+<td>2,937,860</td>
+<td>+20 (rounding)</td>
+</tr>
+<tr>
+<td>Jakarta Utara</td>
+<td>1,812,915</td>
+<td>1,812,915</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>DKI mainland</strong></td>
+<td><strong>10,533,537</strong></td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>All 42 kecamatan matched the admin layer by normalized name, none unmatched either direction.</p>
+<p><strong>Within-kecamatan shape — WorldPop 2021 (dasymetric).</strong> 100 m grid, EPSG:4326, already clipped to Jakarta; 99.98% of its population falls inside the boundary, and the 1,278 nodata cells inside are coastal water in Penjaringan and Cilincing (genuinely unpopulated). Within each kecamatan, cell values are rescaled so they sum to that kecamatan's BPS total minus its rusunawa occupants → <strong>10,445,989 non-rusunawa residents across 74,339 populated cells</strong>, BPS totals preserved exactly.</p>
+<p><strong>WorldPop totals are deliberately not used.</strong> Its kecamatan totals disagree with BPS (r = 0.88, citywide +1.8%), and the disagreement is structured: it over-allocates where building footprints are large and under-allocates dense kampung with small tightly-packed roofs.</p>
+<table>
+<thead>
+<tr>
+<th>WorldPop over-allocates</th>
+<th>vs BPS</th>
+<th>WorldPop under-allocates</th>
+<th>vs BPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Menteng</td>
+<td>+134%</td>
+<td>Tambora</td>
+<td>−46%</td>
+</tr>
+<tr>
+<td>Kelapa Gading</td>
+<td>+94%</td>
+<td>Johar Baru</td>
+<td>−43%</td>
+</tr>
+<tr>
+<td>Gambir</td>
+<td>+85%</td>
+<td>Koja</td>
+<td>−28%</td>
+</tr>
+<tr>
+<td>Kembangan</td>
+<td>+53%</td>
+<td>Kemayoran</td>
+<td>−22%</td>
+</tr>
+<tr>
+<td>Cempaka Putih</td>
+<td>+39%</td>
+<td>Cengkareng</td>
+<td>−22%</td>
+</tr>
+</tbody>
+</table>
+<p>Adopting its totals would understate demand in exactly the kecamatan this analysis flags as worst. Both figures are carried in the outputs (<code>pop_2019_bps</code>, <code>pop_2021_worldpop_raw</code>, <code>worldpop_vs_bps_pct</code>) so the disagreement stays auditable.</p>
+<h2 id="2-cleaning">2 · Cleaning</h2>
+<p><strong>Bank Sampah 2,016 → 1,941.</strong> Dropped 75: 5 null-island (0,0); 11 corrupted longitude (pattern lon = lat×10, e.g. −6.1087 → −61.087); 24 Kepulauan Seribu (valid, outside study area); 35 genuinely outside the boundary (&gt;150 m). Log: <code>bank_sampah_drop_log.csv</code>.</p>
+<p><strong>Lokasi_TPS geometry.</strong> 82 placeholder coordinates (exactly 106.0, −6.04014, or 0,0) + 55 out-of-range → <code>UNKNOWN_GEOM</code>, excluded from spatial work; all have blank WADMKC and zero KAPASITAS so kecamatan totals are unaffected. 98 points ≤2 km outside assigned to nearest kecamatan. Field: <code>geom_status</code>.</p>
+<h2 id="3-truck-accessibility">3 · Truck accessibility</h2>
+<p><strong>Roads</strong> (<code>Jalan_truck_classification</code>, all 102,616 segments retained so the threshold can be retuned): <code>GEROBAK_MOTOR</code> width &lt;3 m or KETERANGAN=GANG (incl. 4,541 GANG with recorded width ≥3 m) = 48,980; <code>TRUCK_MARGINAL</code> 3–5 m = 24,197; <code>TRUCK_OK</code> ≥5 m = 29,439. A compactor/armroll truck is ~2.2–2.5 m wide and needs ≥3 m clear lane.</p>
+<p><strong>Per TPS:</strong> TRUCK_DIRECT ≤50 m (1,747) · TRUCK_NEAR ≤100 m (252) · GEROBAK_ONLY (151) · OUTSIDE_ROAD_COVERAGE (129 — outside the boundary where the road layer has no data; no judgment made, excluded from stats) · UNKNOWN_GEOM (137).</p>
+<p><strong>FASIL equipment verification</strong> (<code>fasil_mode</code>, <code>access_verified</code>): VERIFIED_TRUCK 184 · CART_OPS_ON_TRUCK_ROAD 820 (consistent feeder TPS) · VERIFIED_CART 23 · <strong>CONFLICT_TRUCK_CLAIMED 17</strong> · UNVERIFIED 1,106 (blank FASIL). 15 of the 17 conflicts sit 100–250 m from a truck road and are large compounds (Monas, Mabes AL, rusun towers, BRIN, museums) — equipment records show trucks do reach them, so these indicate <strong>unmapped internal roads</strong>, not real inaccessibility. <code>access_mismatch</code> (19) = conflict, or ≥20,000 L at a gerobak-only site.</p>
+<h2 id="4-generation-sni-86322018">4 · Generation (SNI 8632:2018)</h2>
+<p>SNI 19-3983-1995 was superseded by <strong>SNI 8632:2018</strong>. Rates (midpoints): household <strong>2.23 L/person/day</strong> (0.675 kg); toko/ruko 0.045 L/m²/day; tempat-ibadah class 0.025; khusus 0.02; PENGGUNAAN LAIN 0.</p>
+<p>Three components, always in separate fields:</p>
+<ol>
+<li><strong>Rusunawa (highest confidence)</strong> — JMLHUNI × 2.23. All 51 Terhuni; mean household size 3.21. Four buildings (Karang Anyar, Muara Angke, Ujung Menteng, BLK Pasar Rebo) have JKK/JMLHUNI <strong>almost certainly swapped</strong> (hh size ≈0.3); swap-corrected series used in totals, originals retained. → 87,540 residents, ≈195 m³/day.</li>
+<li><strong>Residential non-rusunawa</strong> — BPS kecamatan total minus rusunawa, × 2.23, distributed on the WorldPop 100 m grid → <strong>23,295 m³/day</strong>.</li>
+<li><strong>Non-residential (area proxy)</strong> — parcel area × class rate → 8,419 m³/day.</li>
+</ol>
+<p><strong>Total ≈ 31,900 m³/day</strong>, consistent with DKI's reported 7,500–8,000 t/day at ~250 kg/m³.</p>
+<h2 id="5-capacity-vs-demand">5 · Capacity vs demand</h2>
+<p>Pickup frequency from REMARK: 466 stated, 14 irregular (scored 3/wk), 1,936 blank → assumed daily, flagged FREQ_UNKNOWN. <code>eff_capacity_lday</code> = KAPASITAS × pickups/7. <code>service_flag</code>: WELL_SERVED 253 · HIGH_CAP_LOW_FREQ 109 · LOW_FREQ 118 · FREQ_UNKNOWN 1,936.</p>
+<p><code>gap_lday</code> = total generation − Σ effective capacity, ranked by area-normalized <code>gap_per_km2</code>. Much waste bypasses TPS (direct truck routes, TPST), so gaps are <strong>relative rankings</strong>. Deficit surface: 250 m, generation and capacity Gaussian-smoothed σ=500 m.</p>
+<p><strong>Top gap density:</strong> Johar Baru, Tambora, Koja, Kemayoran, Palmerah, Cengkareng, Taman Sari, Sawah Besar — dense inner-city kampung areas. Under the original area-weighted method Grogol Petamburan ranked #1 (now #12), Kebayoran Lama #3 (now #22), Jagakarsa #4 (now #24), Menteng #5 (now #34).</p>
+<h2 id="6-collection-catchments-network-routed-per-tps-equipment">6 · Collection catchments (network-routed, per TPS equipment)</h2>
+<p><strong>Framing.</strong> Under SNI 19-2454-2002 a TPS is a <em>pemindahan</em> (transfer) point: household → gerobak or motor sampah → TPS → truck → TPA. Residents don't carry waste to a TPS, so a pedestrian radius is the wrong instrument. What matters is <strong>the reach of the collection vehicle that feeds each TPS</strong> — and FASIL records that vehicle.</p>
+<p><strong>Mode assignment and radii.</strong> Radii are explicit, tunable assumptions anchored on SNI 19-2454-2002 §5.3.2 (transfer-depot spacing 1.0–1.5 km, implying a 500–750 m system half-spacing). Exported as <code>collection_mode_radii.csv</code>.</p>
+<table>
+<thead>
+<tr>
+<th>collect_mode</th>
+<th>From FASIL</th>
+<th>Radius</th>
+<th>Network</th>
+<th>TPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MOTOR_SAMPAH</td>
+<td>motor / germor</td>
+<td>1,000 m</td>
+<td>all roads incl. gang</td>
+<td>226</td>
+</tr>
+<tr>
+<td>GEROBAK</td>
+<td>gerobak / becak (no motor)</td>
+<td>400 m</td>
+<td>all roads incl. gang</td>
+<td>692</td>
+</tr>
+<tr>
+<td>TRUCK_ROUND</td>
+<td>a collection vehicle runs the round</td>
+<td><strong>2,000 m</strong></td>
+<td>truck-passable only</td>
+<td>8</td>
+</tr>
+<tr>
+<td>CONTAINER_FEED_UNKNOWN</td>
+<td>container / armroll receptacle only</td>
+<td>500 m (default)</td>
+<td>all roads incl. gang</td>
+<td>117</td>
+</tr>
+<tr>
+<td>BIN_DROPOFF</td>
+<td>bak / dustbin / tong only</td>
+<td>250 m</td>
+<td>all roads incl. gang</td>
+<td>133</td>
+</tr>
+<tr>
+<td>UNRECORDED</td>
+<td>FASIL blank</td>
+<td>500 m (default)</td>
+<td>all roads incl. gang</td>
+<td>960</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Container ≠ truck round.</strong> A "container besar/kecil" entry names the <em>receptacle</em> an armroll truck lifts away — that's the downstream TPS→TPA leg and says nothing about how waste reaches the TPS. Only 8 records name a vehicle running the collection round itself ("langsung masuk truk", "mobil lintas", "tipper kecil"); those get 2,000 m on truck-passable roads, since a vehicle round is limited by capacity and ritasi rather than distance. The 117 container-only records take the neutral 500 m default because their feed mode is unrecorded.</p>
+<p>Two independent checks support the ordering: median KAPASITAS is <strong>8,000 L at motor-sampah TPS vs 3,000 L at gerobak-fed ones</strong>; and container-only TPS sit at <strong>2,000 L</strong>, behaving like ordinary neighbourhood transfer points rather than truck-round nodes — which supports the neutral default over a wide truck radius.</p>
+<p><strong>Method.</strong> Graph of 956,582 nodes / 1,006,623 edges over 12,601 km (8,468 km truck-passable, 4,133 km gang), 99.3% one connected component. Multi-source Dijkstra run <strong>once per collection mode</strong>. Every population cell, parcel and raster cell takes the mode reaching it with the smallest ratio of routed distance to that mode's radius; ratio ≤ 1.0 = inside a real catchment.</p>
+<p><strong>Result. 64.1% of residents are inside a catchment. 35.9% — about 3.75 million people — are outside the reach of the equipment their nearest TPS actually has.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Serving mode</th>
+<th>Population</th>
+<th>Share</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Motor sampah</td>
+<td>2.83 M</td>
+<td>27.1%</td>
+</tr>
+<tr>
+<td>FASIL blank (500 m default)</td>
+<td>2.07 M</td>
+<td>19.8%</td>
+</tr>
+<tr>
+<td>Gerobak</td>
+<td>1.30 M</td>
+<td>12.4%</td>
+</tr>
+<tr>
+<td>Container-only (500 m default)</td>
+<td>0.34 M</td>
+<td>3.2%</td>
+</tr>
+<tr>
+<td>Truck round</td>
+<td>0.11 M</td>
+<td>1.0%</td>
+</tr>
+<tr>
+<td>Communal bin</td>
+<td>0.07 M</td>
+<td>0.6%</td>
+</tr>
+<tr>
+<td><strong>Outside any catchment</strong></td>
+<td><strong>3.75 M</strong></td>
+<td><strong>35.9%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Land: 36.7% in catchment with headroom, 21.5% in catchment but capacity-strained, 32.7% marginal (1–2× the serving vehicle's radius), 9.1% beyond 2×.</p>
+<p><strong>Sensitivity — read the headline as conditional:</strong></p>
+<table>
+<thead>
+<tr>
+<th>All radii ×</th>
+<th>Residents in catchment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.50</td>
+<td>23.5%</td>
+</tr>
+<tr>
+<td>0.75</td>
+<td>44.9%</td>
+</tr>
+<tr>
+<td><strong>1.00 (as specified)</strong></td>
+<td><strong>64.1%</strong></td>
+</tr>
+<tr>
+<td>1.50</td>
+<td>86.2%</td>
+</tr>
+<tr>
+<td>2.00</td>
+<td>94.8%</td>
+</tr>
+</tbody>
+</table>
+<p>The absolute % is assumption-driven; the <strong>ranking between kecamatan is the robust output</strong>, since every kecamatan is scored by the same rule.</p>
+<p><strong>Worst-covered kecamatan:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kecamatan</th>
+<th>In catchment</th>
+<th>Mean haul</th>
+<th>Motor TPS</th>
+<th>Gerobak TPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pademangan</td>
+<td>37.4%</td>
+<td>1,136 m</td>
+<td>1</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Penjaringan</td>
+<td>38.5%</td>
+<td>1,406 m</td>
+<td>12</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Cilandak</td>
+<td>42.6%</td>
+<td>829 m</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Tanjung Priok</td>
+<td>43.5%</td>
+<td>1,088 m</td>
+<td>5</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Pasar Minggu</td>
+<td>48.8%</td>
+<td>924 m</td>
+<td>8</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Jagakarsa</td>
+<td>48.8%</td>
+<td>793 m</td>
+<td>8</td>
+<td>22</td>
+</tr>
+</tbody>
+</table>
+<p><strong>This points to a cheap intervention.</strong> Pademangan has 16 gerobak-fed TPS and only one on motor sampah; Cilandak has none at all. Converting gerobak rounds to motor sampah multiplies catchment radius by 2.5× <strong>without building anything</strong> — in these kecamatan that closes more coverage than a new TPS would.</p>
+<p><strong>Cart haul from gerobak-only TPS.</strong> Separately, for the 151 TPS with no truck road within 100 m, <code>cart_haul_to_truck_m</code> is the routed distance a cart must cover to reach the truck network: median 184 m, p90 367 m, max 978 m; 29 exceed 300 m, 6 exceed 500 m. Worst: TPS RW 05 (Makasar, 978 m), TPS RW 002 Tegal Alur (Cengkareng, 824 m), Rw.005 pos giro (Duren Sawit, 569 m).</p>
+<p><strong>Per-TPS catchment load.</strong> Each TPS carries <code>catchment_pop</code>, <code>catchment_gen_lday</code>, <code>capacity_vs_catchment</code>. 80% (1,632 of 2,032) face more catchment demand than their effective capacity, median ratio 0.08 — consistent with much of the stream bypassing TPS via direct truck rounds and TPST rather than TPS being 12× undersized.</p>
+<p><strong>Outputs.</strong> <code>service_coverage_20m.tif</code>: 4 bands — collection haul (m), catchment ratio, serving mode, service class. Parcels carry <code>collect_haul_m</code>, <code>serving_mode</code>, <code>catchment_ratio</code>, <code>service_class</code>, <code>detour_ratio</code>.</p>
+<p><strong>Remaining limitations.</strong> Radii are planning parameters, not observed rounds — real catchments depend on crew numbers, ritasi (SNI allows 1–4/day), topography and local agreements. The network is unweighted by width or surface. <strong>Where FASIL is blank (960 TPS) or names only a container (117), the feed mode is unknown and the 500 m default applies — 1,077 of 2,036 TPS, or 53%. That is the single largest source of uncertainty here.</strong></p>
+<h2 id="7-bank-sampah">7 · Bank Sampah</h2>
+<p><code>bs_per_100k</code> is genuinely per-capita. Cengkareng is the clearest gap: 601,156 residents, the highest absolute generation in the city, ~4 BS per 100k. Cakung, Kramat Jati and Cilandak follow the same pattern.</p>
+<h2 id="8-priority-areas">8 · Priority areas</h2>
+<p>Top-10 highest-deficit ~1 km² cells, deduplicated per kelurahan. With the 100 m population surface these resolve to specific dense kelurahan: Tugu Selatan and Tugu Utara (Koja); Pekojan, Kerendang, Jembatan Lima, Duri Utara and Tanah Sereal (Tambora); Johar Baru, Tanah Tinggi and Kampung Rawa (Johar Baru). Per-site reasoning in <code>top10_priority_sites.csv</code>.</p>
+<h2 id="9-files">9 · Files</h2>
+<ul>
+<li><code>jakarta_waste_dashboard.html</code> — standalone responsive dashboard, 5 views.</li>
+<li><code>Jakarta_Waste_Analysis.gpkg</code> — Bank_Sampah_clean · Lokasi_TPS_enriched · Rusunawa_DPRKP_enriched · Kecamatan_summary · Jalan_truck_classification · Landuse_service_class · Deficit_grid_500m · Priority_hotspots_top10.</li>
+<li><code>population_dasymetric_100m.tif</code> — band 1 population, band 2 residential generation (BPS-anchored, WorldPop shape).</li>
+<li><code>service_coverage_20m.tif</code> — 4 bands: collection haul (m), catchment ratio, serving mode, service class.</li>
+<li><code>collection_mode_radii.csv</code> — FASIL-to-mode mapping and service radius per mode (tunable).</li>
+<li><code>waste_deficit_surface_250m.tif</code>, <code>service_coverage_20m.tif</code> (EPSG:32748).</li>
+<li><code>population_kecamatan_source.csv</code>, <code>kecamatan_summary.csv</code>, <code>top10_priority_sites.csv</code>, <code>bank_sampah_drop_log.csv</code>, <code>anomalies.csv</code>.</li>
+<li><code>Jakarta_Waste_Analysis_Methodology.pdf</code> — full version with all tables (12 pages).</li>
+</ul>
+<h2 id="10-limitations">10 · Limitations</h2>
+<ol>
+<li>KAPASITAS assumed liters, per-pickup throughput.</li>
+<li>Blank REMARK (80% of TPS) → daily pickup assumed, flagged.</li>
+<li>Within-kecamatan spread from WorldPop, which is itself modelled — the 100 m shape carries model uncertainty even after rescaling. BPS totals unaffected.</li>
+<li>Population is 2019 (BPS) / 2021 (WorldPop); TPS and land use are later vintages.</li>
+<li>Collection radii are planning parameters, not observed rounds; coverage % is assumption-sensitive (see Section 6), rankings robust. Network unweighted by width or surface.</li>
+<li>Road layer misses internal/compound roads (quantified: 17 FASIL conflicts).</li>
+<li>53% of TPS have no usable feed-mode record (960 blank FASIL + 117 container-only), so collection-mode assignment is partial; those get a 500 m default radius.</li>
+<li>Non-residential generation remains area-based per land-use class.</li>
+<li>Waste also moves directly to trucks/TPST outside recorded TPS capacity.</li>
+</ol>
+<h2 id="appendix-collection-mode-radii-full-parameter-table">Appendix · Collection mode radii (full parameter table)</h2>
+<p>These are the tunable parameters behind the catchment analysis. Editing them and re-running changes the coverage figures but not the underlying data.</p>
+<table>
+<thead>
+<tr>
+<th>collect_mode</th>
+<th>Derived from FASIL</th>
+<th>Service radius</th>
+<th>Network used</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GEROBAK</code></td>
+<td>gerobak/becak hand cart feeds the TPS</td>
+<td>400 m</td>
+<td>all roads incl. gang</td>
+<td>household-&gt;TPS leg, human-powered</td>
+</tr>
+<tr>
+<td><code>MOTOR_SAMPAH</code></td>
+<td>motor sampah / germor feeds the TPS</td>
+<td>1000 m</td>
+<td>all roads incl. gang</td>
+<td>household-&gt;TPS leg, motorised 3-wheeler</td>
+</tr>
+<tr>
+<td><code>TRUCK_ROUND</code></td>
+<td>FASIL names a collection vehicle (truk/pickup/tipper/mobil)</td>
+<td>2000 m</td>
+<td>truck-passable only</td>
+<td>pola individual langsung: vehicle runs the round itself</td>
+</tr>
+<tr>
+<td><code>CONTAINER_FEED_UNKNOWN</code></td>
+<td>FASIL names only a container/armroll receptacle</td>
+<td>500 m</td>
+<td>all roads incl. gang</td>
+<td>container is the receptacle; feed mode not recorded -&gt; SNI half-spacing default</td>
+</tr>
+<tr>
+<td><code>BIN_DROPOFF</code></td>
+<td>communal bin/tong/dustbin only</td>
+<td>250 m</td>
+<td>all roads incl. gang</td>
+<td>residents drop off at the bin</td>
+</tr>
+<tr>
+<td><code>UNRECORDED</code></td>
+<td>FASIL blank</td>
+<td>500 m</td>
+<td>all roads incl. gang</td>
+<td>SNI half-spacing default</td>
+</tr>
+</tbody>
+</table>
+<p>Anchor: SNI 19-2454-2002 §5.3.2 sets transfer-depot spacing at 1.0–1.5 km, implying a 500–750 m system-level half-spacing. Cart and motor modes are scaled around that by vehicle capability; container-only and blank records fall back to it directly.</p></article>
+</div>
+<script>
+// wrap tables so wide ones scroll instead of breaking the layout
+document.querySelectorAll('#doc table').forEach(t=>{const d=document.createElement('div');d.className='tw';t.parentNode.insertBefore(d,t);d.appendChild(t);});
+</script>
+</body></html>
