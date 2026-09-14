@@ -33,7 +33,7 @@
     },
     {
       id: "rusunawa",
-      file: "rusunawa.html",
+      file: "Rusunawa.html",
       title: "Rusunawa Nasional",
       sub: "Public housing units and cost efficiency, 2019–2022"
     },
@@ -52,6 +52,8 @@
   var layout = (script && script.getAttribute("data-layout")) || "page";
   var base = script && script.getAttribute("data-base");
   if (base === null || base === undefined) base = "../";
+  var dir = script && script.getAttribute("data-dir");
+  if (dir === null || dir === undefined) dir = "projects/";
 
   document.documentElement.setAttribute("data-pf-layout", layout);
 
@@ -123,9 +125,7 @@
       var p = PROJECTS[j];
       m +=
         '<a href="' +
-        base +
-        "projects/" +
-        p.file +
+        base + dir + p.file +
         '"' +
         (p.id === current ? ' class="on" aria-current="page"' : "") +
         '><span class="pf-mt">' +
