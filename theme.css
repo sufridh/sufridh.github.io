@@ -120,15 +120,25 @@
 
 /* Layout compensation. "app" pages are 100vh flex/grid dashboards; "page"
    pages scroll normally. Both get pushed down by the nav bar. */
-html[data-pf-layout] body{margin-top:var(--pf-navh)!important}
+/* Layout compensation. The nav is fixed to the viewport, so the space it
+   occupies is reserved with padding on <html>. A body margin would be at the
+   mercy of margin-collapsing and of whatever the page already sets on <body>;
+   padding on the root element is not. "app" pages fill the remaining height,
+   "page" pages scroll normally below it. */
+html[data-pf-layout]{
+  box-sizing:border-box!important;
+  padding-top:var(--pf-navh)!important;
+  margin:0!important;
+}
+html[data-pf-layout] body{margin-top:0!important}
+
 html[data-pf-layout="app"]{height:100vh!important;overflow:hidden!important}
 html[data-pf-layout="app"] body{
-  height:calc(100vh - var(--pf-navh))!important;
+  height:100%!important;max-height:100%!important;min-height:0!important;
   overflow:hidden!important;
 }
 @supports (height:100dvh){
   html[data-pf-layout="app"]{height:100dvh!important}
-  html[data-pf-layout="app"] body{height:calc(100dvh - var(--pf-navh))!important}
 }
 
 @media(max-width:640px){

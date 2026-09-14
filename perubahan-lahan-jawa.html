@@ -1790,7 +1790,7 @@ const BASEMAPS = [
   {
     id: 'light',
     label: 'Terang',
-    layers: [{ url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 20 }]
+    layers: [{ url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles &copy; Esri', maxNativeZoom: 16, maxZoom: 20 }]
   },
   {
     id: 'satellite',
@@ -1808,7 +1808,7 @@ const BASEMAPS = [
   {
     id: 'dark',
     label: 'Gelap',
-    layers: [{ url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 20 }]
+    layers: [{ url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles &copy; Esri', maxNativeZoom: 16, maxZoom: 20 }]
   }
 ];
 
@@ -2374,8 +2374,8 @@ function createDensityMap() {
   function init() {
     state.map = L.map('densityMap', { minZoom: 6, maxZoom: 13 });
     state.map.fitBounds(LANDCOVER_BOUNDS);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri', maxNativeZoom: 16, maxZoom: 19
     }).addTo(state.map);
 
     loadingEl.classList.add('show');

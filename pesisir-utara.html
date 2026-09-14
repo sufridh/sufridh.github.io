@@ -692,6 +692,9 @@ footer.src a{color:var(--navy);}
 /* the paper grain belongs to the old identity */
 body::before{display:none!important}
 
+/* the grid sized itself to the full viewport, which is now 46px too tall */
+.app{height:100%!important}
+
 /* header becomes a white panel like every other page in the portfolio */
 header.cartouche{
   background:var(--pf-panel)!important;
@@ -760,7 +763,7 @@ header .coords .lbl{color:var(--pf-faint);font-weight:700}
           <div class="mlm-labels" id="mlmLabels"></div>
         </div>
       </div>
-      <div class="map-credit">Basemap © CARTO, © OpenStreetMap contributors</div>
+      <div class="map-credit">Basemap © Esri, © OpenStreetMap contributors</div>
       <div class="detail-card" id="detailCard">
         <span class="dc-close" id="dcClose">✕</span>
         <div class="dc-eyebrow" id="dcEyebrow">DESA PESISIR</div>
