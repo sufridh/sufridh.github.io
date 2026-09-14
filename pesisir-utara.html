@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Populasi Pesisir Utara — Kecamatan &amp; Desa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <style>
 :root{
-  --paper:#F4EFE1;
-  --paper-dim:#EAE2CC;
-  --sand:#D8CDA8;
-  --foam:#9FC7C4;
-  --channel:#57A0A6;
-  --teal:#1B6B72;
-  --navy:#0B2545;
-  --navy-deep:#071A33;
-  --brass:#B8722E;
-  --brass-light:#D89A55;
-  --coral:#B0392E;
-  --ink:#1B2430;
-  --line:rgba(11,37,69,0.16);
-  --line-strong:rgba(11,37,69,0.32);
-  --font-display:'Fraunces', serif;
-  --font-body:'IBM Plex Sans', sans-serif;
-  --font-mono:'IBM Plex Mono', monospace;
+  --paper:#eef1f5;
+  --paper-dim:#e4e9f0;
+  --sand:#cbd5e1;
+  --foam:#bfdbfe;
+  --channel:#60a5fa;
+  --teal:#0d9488;
+  --navy:#0f172a;
+  --navy-deep:#0b1220;
+  --brass:#1d4ed8;
+  --brass-light:#60a5fa;
+  --coral:#dc2626;
+  --ink:#0f172a;
+  --line:rgba(15,23,42,0.16);
+  --line-strong:rgba(15,23,42,0.32);
+  --font-display:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-body:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;height:100%;}
@@ -158,8 +159,8 @@ main{
   font-family:var(--font-mono);
   font-size:9.5px;
   letter-spacing:.02em;
-  color:rgba(11,37,69,.55);
-  background:rgba(244,239,225,.72);
+  color:rgba(15,23,42,.55);
+  background:rgba(255,255,255,.72);
   padding:2px 6px;
   border-radius:2px;
   pointer-events:none;
@@ -445,7 +446,7 @@ aside{
 /* map badges */
 .map-caption{
   position:absolute; top:14px; left:16px; z-index:600;
-  background:rgba(244,239,225,.92);
+  background:rgba(255,255,255,.92);
   border:1px solid var(--line-strong);
   border-radius:4px;
   padding:8px 12px;
@@ -468,10 +469,10 @@ aside{
 .map-view-toggle{
   position:absolute; top:14px; right:16px; z-index:650;
   display:flex;
-  background:rgba(244,239,225,.96);
+  background:rgba(255,255,255,.96);
   border:1px solid var(--line-strong);
   border-radius:5px;
-  box-shadow:0 4px 14px rgba(7,26,51,.22);
+  box-shadow:0 4px 14px rgba(15,23,42,.22);
   overflow:hidden;
 }
 .map-view-toggle button{
@@ -495,7 +496,7 @@ aside{
 .leaflet-control-zoom a{background:var(--paper) !important; color:var(--navy) !important; font-family:var(--font-body) !important;}
 .leaflet-control-zoom a:hover{background:var(--sand) !important;}
 .leaflet-control-scale-line{
-  background:rgba(244,239,225,.9) !important;
+  background:rgba(255,255,255,.9) !important;
   border-color:var(--navy) !important;
   color:var(--navy) !important;
   font-family:var(--font-mono) !important;
@@ -505,7 +506,7 @@ footer.src{
   position:absolute; bottom:0; right:0; z-index:600;
   font-family:var(--font-mono); font-size:9.5px;
   color:var(--navy); opacity:.6;
-  background:rgba(244,239,225,.85);
+  background:rgba(255,255,255,.85);
   padding:3px 10px; border-top-left-radius:4px;
   border:1px solid var(--line-strong); border-bottom:none; border-right:none;
 }
@@ -557,7 +558,7 @@ footer.src a{color:var(--navy);}
   .aside-backdrop{
     display:block;
     position:fixed;inset:0;
-    background:rgba(7,26,51,.4);
+    background:rgba(15,23,42,.4);
     z-index:850;
     opacity:0;
     pointer-events:none;
@@ -574,7 +575,7 @@ footer.src a{color:var(--navy);}
     border-left:none;
     border-top:2px solid var(--brass);
     border-radius:16px 16px 0 0;
-    box-shadow:0 -10px 28px rgba(7,26,51,.32);
+    box-shadow:0 -10px 28px rgba(15,23,42,.32);
     transform:translateY(calc(100% - 44px));
     transition:transform .28s ease;
     z-index:900;
@@ -642,11 +643,11 @@ footer.src a{color:var(--navy);}
   }
   .map-legend-mini{
     display:block;
-    background:rgba(244,239,225,.96);
+    background:rgba(255,255,255,.96);
     border:1px solid var(--line-strong);
     border-radius:4px;
     padding:8px 12px;
-    box-shadow:0 4px 14px rgba(7,26,51,.18);
+    box-shadow:0 4px 14px rgba(15,23,42,.18);
   }
   .map-legend-mini .mlm-title{
     font-family:var(--font-mono);
@@ -684,21 +685,52 @@ footer.src a{color:var(--navy);}
   .stat-strip{grid-auto-columns:minmax(112px,1fr);}
 }
 </style>
+
+<link rel="stylesheet" href="../assets/theme.css">
+<style>
+/* ---- portfolio theme overrides ---- */
+/* the paper grain belongs to the old identity */
+body::before{display:none!important}
+
+/* header becomes a white panel like every other page in the portfolio */
+header.cartouche{
+  background:var(--pf-panel)!important;
+  color:var(--pf-ink)!important;
+  border-bottom:1px solid var(--pf-line)!important;
+}
+header.cartouche h1{
+  font-size:19px;font-weight:800;letter-spacing:-.3px;text-transform:none;
+}
+header.cartouche .sub{color:var(--pf-mut);font-weight:500}
+header.cartouche .sub b{color:var(--pf-acc);font-weight:700}
+header .coords{
+  color:var(--pf-mut);
+  border-left:1px solid var(--pf-line);
+  font-variant-numeric:tabular-nums;
+}
+header .coords .lbl{color:var(--pf-faint);font-weight:700}
+
+.stat-strip{background:var(--pf-card);border-bottom:1px solid var(--pf-line)}
+.stat-strip .k{color:var(--pf-acc);font-weight:800;letter-spacing:1.2px}
+.stat-strip .v{font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.leaflet-container{background:#e9edf3}
+</style>
+<script defer src="../assets/shell.js" data-project="pesisir-utara" data-layout="app"></script>
 </head>
 <body>
 <div class="app">
 
   <header class="cartouche">
     <svg class="rose" viewBox="0 0 100 100" id="compassRose">
-      <circle cx="50" cy="50" r="46" fill="none" stroke="#D8CDA8" stroke-width="1"/>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#B8722E" stroke-width="1"/>
-      <g id="roseStar" stroke="#F4EFE1" stroke-width="1" fill="none">
-        <path d="M50 6 L58 50 L50 94 L42 50 Z" fill="#D8CDA8" opacity="0.9"/>
-        <path d="M6 50 L50 42 L94 50 L50 58 Z" fill="#D8CDA8" opacity="0.9"/>
-        <path d="M50 6 L54 48 L50 50 L46 48 Z" fill="#B8722E"/>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#1d4ed8" stroke-width="1"/>
+      <g id="roseStar" stroke="#94a3b8" stroke-width="1" fill="none">
+        <path d="M50 6 L58 50 L50 94 L42 50 Z" fill="#cbd5e1" opacity="0.9"/>
+        <path d="M6 50 L50 42 L94 50 L50 58 Z" fill="#cbd5e1" opacity="0.9"/>
+        <path d="M50 6 L54 48 L50 50 L46 48 Z" fill="#1d4ed8"/>
       </g>
-      <circle cx="50" cy="50" r="3" fill="#B8722E"/>
-      <text x="50" y="16" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#F4EFE1">U</text>
+      <circle cx="50" cy="50" r="3" fill="#1d4ed8"/>
+      <text x="50" y="16" text-anchor="middle" font-family="Plus Jakarta Sans" font-size="8" fill="#0f172a">U</text>
     </svg>
     <div class="titles">
       <h1>Populasi Pesisir Utara</h1>
@@ -868,7 +900,7 @@ footer.src a{color:var(--navy);}
     "JAWA TIMUR": "Jawa Timur"
   };
 
-  const COLOR_RAMP = ["#F4EFE1", "#D8CDA8", "#9FC7C4", "#57A0A6", "#1B6B72", "#0B2545"];
+  const COLOR_RAMP = ["#eef1f5", "#cbd5e1", "#bfdbfe", "#60a5fa", "#0d9488", "#0f172a"];
 
   const fmt = n => n.toLocaleString("id-ID");
   const titleCase = s => s.replace(/\w\S*/g, t => t.charAt(0) + t.substr(1).toLowerCase())
@@ -925,10 +957,10 @@ footer.src a{color:var(--navy);}
   function drawGraticule() {
     const g = L.layerGroup();
     for (let lon = 105; lon <= 116; lon += 1) {
-      g.addLayer(L.polyline([[-9.2, lon], [-4.8, lon]], { color: "#0B2545", weight: 0.4, opacity: 0.14, interactive: false }));
+      g.addLayer(L.polyline([[-9.2, lon], [-4.8, lon]], { color: "#0f172a", weight: 0.4, opacity: 0.14, interactive: false }));
     }
     for (let lat = -9; lat <= -5; lat += 1) {
-      g.addLayer(L.polyline([[lat, 104.5], [lat, 116.2]], { color: "#0B2545", weight: 0.4, opacity: 0.14, interactive: false }));
+      g.addLayer(L.polyline([[lat, 104.5], [lat, 116.2]], { color: "#0f172a", weight: 0.4, opacity: 0.14, interactive: false }));
     }
     return g;
   }
@@ -1004,12 +1036,12 @@ footer.src a{color:var(--navy);}
 
   function styleFor(feature, isDim) {
     if (feature.properties._id === state.selectedId) {
-      return { color: "#B8722E", weight: 2.5, fillColor: "#B8722E", fillOpacity: 0.55, opacity: 1 };
+      return { color: "#1d4ed8", weight: 2.5, fillColor: "#1d4ed8", fillOpacity: 0.55, opacity: 1 };
     }
     const breaks = state.view === "kec" ? kecBreaks : state.view === "kab" ? kabBreaks : desaBreaks;
     const base = colorFor(feature.properties.pop, breaks);
     return {
-      color: state.view === "kec" ? "#0B2545" : state.view === "kab" ? "#57A0A6" : "#B8722E",
+      color: state.view === "kec" ? "#0f172a" : state.view === "kab" ? "#60a5fa" : "#1d4ed8",
       weight: state.view === "kec" ? 0.6 : state.view === "kab" ? 0.9 : 0.5,
       fillColor: base,
       fillOpacity: isDim ? 0.12 : 0.82,

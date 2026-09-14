@@ -1,0 +1,271 @@
+/* ==========================================================================
+   Geospatial Analysis — shared design system
+   Tokens lifted from the Jakarta Waste Infrastructure Dashboard so every
+   page in the portfolio shares one palette, one typeface, one set of radii.
+   ========================================================================== */
+
+:root{
+  --pf-bg:#eef1f5;
+  --pf-panel:#ffffff;
+  --pf-card:#f7f9fc;
+  --pf-line:#e4e9f0;
+  --pf-line2:#cfd8e6;
+  --pf-ink:#0f172a;
+  --pf-mut:#64748b;
+  --pf-faint:#94a3b8;
+  --pf-acc:#1d4ed8;
+  --pf-accsoft:#e8eefc;
+  --pf-accline:#cfdcfa;
+  --pf-green:#16a34a;
+  --pf-amber:#d97706;
+  --pf-red:#dc2626;
+  --pf-purple:#7c3aed;
+  --pf-teal:#0d9488;
+  --pf-navh:46px;
+  --pf-font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   1. Top navigation, injected on every project page by shell.js
+   -------------------------------------------------------------------------- */
+
+#pfNav{
+  position:fixed;top:0;left:0;right:0;height:var(--pf-navh);
+  display:flex;align-items:center;gap:12px;
+  padding:0 16px;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:saturate(140%) blur(8px);
+  border-bottom:1px solid var(--pf-line);
+  font-family:var(--pf-font);
+  color:var(--pf-ink);
+  z-index:100000;
+  box-shadow:0 1px 3px rgba(15,23,42,.04);
+}
+#pfNav *{box-sizing:border-box}
+
+#pfNav .pf-home{
+  display:inline-flex;align-items:center;gap:8px;
+  text-decoration:none;color:var(--pf-ink);
+  font-size:13px;font-weight:800;letter-spacing:-.2px;
+  padding:6px 10px;border-radius:9px;
+  transition:background .15s,color .15s;
+  white-space:nowrap;
+}
+#pfNav .pf-home:hover{background:var(--pf-accsoft);color:var(--pf-acc)}
+#pfNav .pf-home svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+
+#pfNav .pf-sep{width:1px;height:20px;background:var(--pf-line);flex:none}
+
+#pfNav .pf-title{
+  font-size:12.5px;font-weight:600;color:var(--pf-mut);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-width:0;
+}
+#pfNav .pf-title b{color:var(--pf-ink);font-weight:700}
+
+#pfNav .pf-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex:none}
+
+#pfNav .pf-link{
+  display:inline-flex;align-items:center;gap:6px;
+  text-decoration:none;
+  background:var(--pf-accsoft);color:var(--pf-acc);
+  border:1px solid var(--pf-accline);
+  font-size:11.5px;font-weight:700;
+  padding:7px 12px;border-radius:9px;
+  transition:.15s;white-space:nowrap;
+}
+#pfNav .pf-link:hover{background:var(--pf-acc);color:#fff;border-color:var(--pf-acc)}
+#pfNav .pf-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+#pfNav .pf-switch{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--pf-ink);color:#fff;border:1px solid var(--pf-ink);
+  font-family:inherit;font-size:11.5px;font-weight:700;
+  padding:7px 12px;border-radius:9px;cursor:pointer;transition:.15s;
+  white-space:nowrap;
+}
+#pfNav .pf-switch:hover{background:var(--pf-acc);border-color:var(--pf-acc)}
+#pfNav .pf-switch svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
+#pfNav .pf-switch[aria-expanded="true"] svg{transform:rotate(180deg)}
+
+#pfMenu{
+  position:fixed;top:calc(var(--pf-navh) + 6px);right:12px;
+  width:290px;max-width:calc(100vw - 24px);
+  background:var(--pf-panel);
+  border:1px solid var(--pf-line);
+  border-radius:13px;
+  box-shadow:0 14px 44px rgba(15,23,42,.18);
+  padding:7px;
+  font-family:var(--pf-font);
+  z-index:100001;
+  display:none;
+  max-height:calc(100vh - var(--pf-navh) - 20px);
+  overflow-y:auto;
+}
+#pfMenu.open{display:block}
+#pfMenu .pf-mhead{
+  font-size:9.5px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;
+  color:var(--pf-acc);padding:8px 11px 6px;
+}
+#pfMenu a{
+  display:block;text-decoration:none;color:var(--pf-ink);
+  padding:9px 11px;border-radius:9px;transition:background .13s;
+}
+#pfMenu a:hover{background:var(--pf-card)}
+#pfMenu a.on{background:var(--pf-accsoft)}
+#pfMenu a.on .pf-mt{color:var(--pf-acc)}
+#pfMenu .pf-mt{font-size:12.5px;font-weight:700;letter-spacing:-.1px;display:block}
+#pfMenu .pf-ms{font-size:10.5px;color:var(--pf-mut);display:block;margin-top:2px;line-height:1.4}
+#pfMenu .pf-mdiv{height:1px;background:var(--pf-line);margin:6px 9px}
+
+/* Layout compensation. "app" pages are 100vh flex/grid dashboards; "page"
+   pages scroll normally. Both get pushed down by the nav bar. */
+html[data-pf-layout] body{margin-top:var(--pf-navh)!important}
+html[data-pf-layout="app"]{height:100vh!important;overflow:hidden!important}
+html[data-pf-layout="app"] body{
+  height:calc(100vh - var(--pf-navh))!important;
+  overflow:hidden!important;
+}
+@supports (height:100dvh){
+  html[data-pf-layout="app"]{height:100dvh!important}
+  html[data-pf-layout="app"] body{height:calc(100dvh - var(--pf-navh))!important}
+}
+
+@media(max-width:640px){
+  #pfNav{padding:0 10px;gap:8px}
+  #pfNav .pf-sep,#pfNav .pf-title{display:none}
+  #pfNav .pf-link .pf-lt{display:none}
+  #pfNav .pf-link{padding:7px 9px}
+}
+
+/* --------------------------------------------------------------------------
+   2. Homepage
+   -------------------------------------------------------------------------- */
+
+.pf-home-body{
+  margin:0;background:var(--pf-bg);color:var(--pf-ink);
+  font-family:var(--pf-font);
+  -webkit-font-smoothing:antialiased;
+}
+.pf-wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+
+.pf-hero{padding:60px 0 34px}
+.pf-eyebrow{
+  font-size:10.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--pf-acc);
+}
+.pf-hero h1{
+  font-size:40px;font-weight:800;letter-spacing:-1.1px;line-height:1.1;
+  margin:9px 0 0;max-width:17ch;
+}
+.pf-hero .pf-lede{
+  margin-top:15px;max-width:62ch;
+  font-size:15px;line-height:1.65;color:var(--pf-mut);font-weight:500;
+}
+.pf-hero .pf-lede b{color:var(--pf-ink);font-weight:700}
+
+.pf-figures{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin-top:26px;
+}
+.pf-fig{
+  background:var(--pf-panel);border:1px solid var(--pf-line);
+  border-radius:12px;padding:14px 16px;
+}
+.pf-fig b{display:block;font-size:22px;font-weight:800;letter-spacing:-.7px;font-variant-numeric:tabular-nums}
+.pf-fig span{display:block;font-size:10.5px;color:var(--pf-mut);font-weight:600;margin-top:3px;line-height:1.35}
+
+.pf-sechead{
+  display:flex;align-items:baseline;gap:12px;
+  margin:46px 0 16px;padding-bottom:11px;
+  border-bottom:1px solid var(--pf-line);
+}
+.pf-sechead h2{font-size:16px;font-weight:800;letter-spacing:-.3px;margin:0}
+.pf-sechead span{font-size:11.5px;color:var(--pf-mut);font-weight:500}
+
+.pf-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:16px;
+}
+
+.pf-card{
+  display:flex;flex-direction:column;
+  background:var(--pf-panel);
+  border:1px solid var(--pf-line);
+  border-radius:14px;
+  overflow:hidden;
+  text-decoration:none;color:inherit;
+  transition:border-color .16s,box-shadow .16s,transform .16s;
+}
+.pf-card:hover{
+  border-color:var(--pf-line2);
+  box-shadow:0 10px 30px rgba(15,23,42,.09);
+  transform:translateY(-2px);
+}
+.pf-card:focus-visible{outline:2px solid var(--pf-acc);outline-offset:3px}
+
+.pf-plate{
+  height:118px;background:var(--pf-card);
+  border-bottom:1px solid var(--pf-line);
+  position:relative;overflow:hidden;
+}
+.pf-plate svg{position:absolute;inset:0;width:100%;height:100%}
+.pf-plate .pf-badge{
+  position:absolute;top:11px;left:13px;
+  font-size:9px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;
+  background:rgba(255,255,255,.93);
+  border:1px solid var(--pf-line);
+  color:var(--pf-mut);
+  padding:4px 8px;border-radius:7px;
+}
+
+.pf-body{padding:15px 17px 17px;display:flex;flex-direction:column;flex:1}
+.pf-body h3{font-size:15px;font-weight:800;letter-spacing:-.3px;margin:0;line-height:1.3}
+.pf-body .pf-sub{font-size:11px;color:var(--pf-acc);font-weight:700;margin-top:4px}
+.pf-body p{font-size:12.5px;line-height:1.6;color:var(--pf-mut);margin:9px 0 0;font-weight:500}
+
+.pf-meta{
+  display:flex;flex-wrap:wrap;gap:5px;margin-top:13px;padding-top:12px;
+  border-top:1px solid var(--pf-line);
+}
+.pf-tag{
+  font-size:9.5px;font-weight:700;letter-spacing:.2px;
+  background:var(--pf-card);border:1px solid var(--pf-line);
+  color:var(--pf-mut);padding:4px 8px;border-radius:20px;
+}
+.pf-tag.acc{background:var(--pf-accsoft);border-color:var(--pf-accline);color:var(--pf-acc)}
+
+.pf-open{
+  margin-top:13px;display:inline-flex;align-items:center;gap:7px;
+  font-size:11.5px;font-weight:800;color:var(--pf-acc);
+}
+.pf-open svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .16s}
+.pf-card:hover .pf-open svg{transform:translateX(3px)}
+
+.pf-note{
+  background:var(--pf-accsoft);border:1px solid var(--pf-accline);
+  border-radius:12px;padding:15px 18px;margin-top:22px;
+  font-size:12.5px;line-height:1.65;color:var(--pf-mut);font-weight:500;
+}
+.pf-note b{color:var(--pf-ink);font-weight:700}
+
+.pf-foot{
+  margin-top:52px;padding:22px 0 40px;border-top:1px solid var(--pf-line);
+  font-size:11px;color:var(--pf-faint);line-height:1.7;
+}
+.pf-foot a{color:var(--pf-mut);text-decoration:none;font-weight:600}
+.pf-foot a:hover{color:var(--pf-acc)}
+
+@media(max-width:780px){
+  .pf-wrap{padding:0 18px}
+  .pf-hero{padding:40px 0 26px}
+  .pf-hero h1{font-size:30px;letter-spacing:-.8px}
+  .pf-hero .pf-lede{font-size:14px}
+  .pf-figures{grid-template-columns:1fr 1fr}
+  .pf-grid{grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .pf-card,.pf-open svg,#pfNav .pf-switch svg{transition:none}
+  .pf-card:hover{transform:none}
+}

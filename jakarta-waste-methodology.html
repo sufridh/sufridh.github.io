@@ -40,10 +40,18 @@ font-size:12.5px;font-weight:700;padding:9px 15px;border-radius:9px;transition:.
 #doc tbody tr:nth-child(even){background:var(--card)}
 #doc hr{border:none;border-top:1px solid var(--line);margin:26px 0}
 @media(max-width:880px){#wrap{grid-template-columns:1fr;gap:18px}#toc{position:static}#doc{padding:24px 20px 32px}#top h1{font-size:14px}}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="../assets/theme.css">
+<style>
+/* ---- portfolio theme overrides ---- */
+#top{top:var(--pf-navh)}
+#top .back{display:none}
+</style>
+<script defer src="../assets/shell.js" data-project="jakarta-waste-methodology" data-layout="page"></script>
+</head><body>
 <div id="top"><div class="in">
   <div><div class="eyebrow">DKI Jakarta · Solid Waste</div><h1>Methodology &amp; Data Sources</h1></div>
-  <a class="back" href="Jakarta_Waste_Dashboard.html"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to dashboard</a>
+  <a class="back" href="jakarta-waste.html"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to dashboard</a>
 </div></div>
 <div id="wrap">
   <nav id="toc"><b>On this page</b><a href="#1-population">1 · Population</a>

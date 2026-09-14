@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Perubahan Tata Guna Lahan Pulau Jawa 2000–2022</title>
@@ -9,39 +12,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/perliedman-leaflet-control-geocoder/3.3.1/Control.Geocoder.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/perliedman-leaflet-control-geocoder/3.3.1/Control.Geocoder.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:        #f5f2e9;
-    --bg-grad:   #efe9d8;
-    --surface:   #fffdf8;
-    --border:    #e2dbc8;
-    --border-strong: #d3c9ae;
-    --text:      #191810;
-    --muted:     #6e6650;
-    --faint:     #a89d80;
-    --blue:      #2f6690;
-    --green:     #1f5c3f;
-    --forest:    #1f5c3f;
-    --red:       #a3402a;
-    --amber:     #b1791f;
-    --brown:     #795548;
-    --purple:    #7b52ab;
+    --bg:        #eef1f5;
+    --bg-grad:   #e7ecf3;
+    --surface:   #ffffff;
+    --border:    #e4e9f0;
+    --border-strong: #cfd8e6;
+    --text:      #0f172a;
+    --muted:     #64748b;
+    --faint:     #94a3b8;
+    --blue:      #1d4ed8;
+    --green:     #16a34a;
+    --forest:    #16a34a;
+    --red:       #dc2626;
+    --amber:     #d97706;
+    --brown:     #92400e;
+    --purple:    #7c3aed;
     --radius:    12px;
-    --serif:     "Newsreader", Georgia, "Times New Roman", serif;
-    --sans:      "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --mono:      "Roboto Mono", ui-monospace, SFMono-Regular, monospace;
+    --serif:     'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --sans:      'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --mono:      'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   }
 
   body {
     font-family: var(--sans);
     overflow-x: hidden;
     background:
-      radial-gradient(ellipse 900px 500px at 8% -10%, rgba(31,92,63,0.06), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 8% -10%, rgba(22,163,74,0.06), transparent 60%),
       radial-gradient(ellipse 700px 500px at 100% 0%, rgba(163,64,42,0.05), transparent 55%),
       var(--bg);
     color: var(--text);
@@ -55,14 +55,14 @@
 
   .header { margin-bottom: 2.25rem; border-bottom: 1px solid var(--border-strong); padding-bottom: 1.5rem; position: relative; }
   .header-eyebrow { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; color: var(--forest); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-  .header-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--forest); display: inline-block; box-shadow: 0 0 0 3px rgba(31,92,63,0.15); }
+  .header-eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--forest); display: inline-block; box-shadow: 0 0 0 3px rgba(22,163,74,0.15); }
   .header h1 { font-family: var(--serif); font-size: 34px; font-weight: 500; letter-spacing: -0.01em; color: var(--text); margin-bottom: 10px; line-height: 1.12; }
   .header p { color: var(--muted); font-size: 13.5px; max-width: 780px; line-height: 1.6; }
 
   .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.75rem; }
   @media (max-width: 700px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.05rem 1.15rem; transition: border-color .15s, transform .15s, box-shadow .15s; }
-  .kpi:hover { border-color: var(--border-strong); transform: translateY(-1px); box-shadow: 0 6px 16px -8px rgba(25,24,16,0.18); }
+  .kpi:hover { border-color: var(--border-strong); transform: translateY(-1px); box-shadow: 0 6px 16px -8px rgba(15,23,42,0.18); }
   .kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 7px; font-weight: 500; }
   .kpi-val { font-family: var(--mono); font-size: 23px; font-weight: 500; line-height: 1; color: var(--text); letter-spacing: -0.01em; margin-bottom: 6px; }
   .kpi-delta { font-size: 11px; font-weight: 500; }
@@ -80,7 +80,7 @@
   @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
 
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.15rem 1.3rem; transition: border-color .15s, box-shadow .15s; }
-  .card:hover { border-color: var(--border-strong); box-shadow: 0 8px 22px -14px rgba(25,24,16,0.28); }
+  .card:hover { border-color: var(--border-strong); box-shadow: 0 8px 22px -14px rgba(15,23,42,0.28); }
   .card-title { font-family: var(--serif); font-size: 15.5px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
   .card-sub { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
 
@@ -102,7 +102,7 @@
   .explorer-bar label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
   .city-select-wrap { position: relative; flex: 1; min-width: 220px; max-width: 360px; }
   .city-select-wrap input { width: 100%; font-size: 14px; font-family: var(--sans); padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); transition: border-color .15s, box-shadow .15s; }
-  .city-select-wrap input:focus { outline: none; border-color: var(--forest); box-shadow: 0 0 0 3px rgba(31,92,63,0.12); }
+  .city-select-wrap input:focus { outline: none; border-color: var(--forest); box-shadow: 0 0 0 3px rgba(22,163,74,0.12); }
   .city-rank-chip { font-size: 11px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 5px 11px; }
   .explorer-kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
   @media (max-width: 700px) { .explorer-kpi-row { grid-template-columns: repeat(2, 1fr); } }
@@ -145,7 +145,7 @@
   .map-opacity-control--ntl:not(.enabled) { opacity: .35; pointer-events: none; }
   #landcoverMap, #landcoverMap2 { height: 480px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; font-family: var(--sans); }
   #densityMap { height: 520px; border-radius: 8px; border: 1px solid var(--border); background: #eef0ef; position: relative; font-family: var(--sans); }
-  .density-tooltip { font-family: var(--sans) !important; font-size: 11.5px !important; line-height: 1.5 !important; padding: 8px 10px !important; border: none !important; box-shadow: 0 4px 16px -4px rgba(25,24,16,0.35) !important; }
+  .density-tooltip { font-family: var(--sans) !important; font-size: 11.5px !important; line-height: 1.5 !important; padding: 8px 10px !important; border: none !important; box-shadow: 0 4px 16px -4px rgba(15,23,42,0.35) !important; }
   .density-tooltip b { font-size: 12.5px; }
   .mode-toggle { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
   .mode-btn { font-family: var(--sans); font-size: 11.5px; font-weight: 600; padding: 7px 12px; border-radius: 6px; border: none; background: transparent; color: var(--muted); cursor: pointer; transition: background .12s, color .12s; white-space: nowrap; }
@@ -188,7 +188,7 @@
     float: none;
     clear: none;
   }
-  .leaflet-control-geocoder { border-radius: 8px !important; border: 1px solid var(--border-strong) !important; box-shadow: 0 4px 14px -6px rgba(25,24,16,0.25) !important; overflow: hidden; background: var(--surface) !important; }
+  .leaflet-control-geocoder { border-radius: 8px !important; border: 1px solid var(--border-strong) !important; box-shadow: 0 4px 14px -6px rgba(15,23,42,0.25) !important; overflow: hidden; background: var(--surface) !important; }
   .leaflet-control-geocoder-form input { font-family: var(--sans) !important; font-size: 12.5px !important; color: var(--text) !important; width: 175px !important; }
   .leaflet-control-geocoder-icon { background-color: var(--surface) !important; }
   .leaflet-control-geocoder-alternatives { font-family: var(--sans); font-size: 12px; background: var(--surface); border-top: 1px solid var(--border); }
@@ -212,14 +212,14 @@
   /* ── Dark theme palette ── */
   html { scroll-behavior: smooth; }
   body[data-theme="dark"] {
-    --bg:        #14140f;
-    --bg-grad:   #1a1a14;
-    --surface:   #1e1e18;
-    --border:    #34301f;
-    --border-strong: #46402a;
-    --text:      #ece6d4;
-    --muted:     #a89d80;
-    --faint:     #756c52;
+    --bg:        #0b1220;
+    --bg-grad:   #0f172a;
+    --surface:   #141d2f;
+    --border:    #24304a;
+    --border-strong: #334155;
+    --text:      #e2e8f0;
+    --muted:     #94a3b8;
+    --faint:     #64748b;
   }
   body, .kpi, .card, .header, .footer, .era-chip, .gov-note, .city-select-wrap input,
   .level-btn, .map-toolbar, .map-icon-btn, .map-year-select, #landcoverMap, #landcoverMap2 {
@@ -228,20 +228,20 @@
 
   /* ── Scroll progress bar ── */
   .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 1000;
-    background: linear-gradient(90deg, var(--forest), var(--blue)); box-shadow: 0 0 8px rgba(31,92,63,0.4); }
+    background: linear-gradient(90deg, var(--forest), var(--blue)); box-shadow: 0 0 8px rgba(22,163,74,0.4); }
 
   /* ── Floating quick-nav / theme control ── */
   .fab-toggle { position: fixed; bottom: 22px; right: 22px; width: 52px; height: 52px; border-radius: 50%;
     background: var(--forest); color: #fff; border: none; cursor: pointer; z-index: 999;
     display: flex; align-items: center; justify-content: center; font-size: 20px;
-    box-shadow: 0 10px 24px -8px rgba(25,24,16,0.45); transition: transform .18s ease, box-shadow .18s ease; }
-  .fab-toggle:hover { transform: scale(1.07); box-shadow: 0 14px 30px -8px rgba(25,24,16,0.55); }
+    box-shadow: 0 10px 24px -8px rgba(15,23,42,0.45); transition: transform .18s ease, box-shadow .18s ease; }
+  .fab-toggle:hover { transform: scale(1.07); box-shadow: 0 14px 30px -8px rgba(15,23,42,0.55); }
   .fab-toggle svg { width: 20px; height: 20px; transition: transform .25s ease; }
   .fab-toggle.open svg { transform: rotate(45deg); }
 
   .fab-panel { position: fixed; bottom: 84px; right: 22px; width: 248px; max-width: calc(100vw - 40px);
     max-height: 72vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; box-shadow: 0 20px 44px -14px rgba(25,24,16,0.4); padding: 10px; z-index: 999;
+    border-radius: 14px; box-shadow: 0 20px 44px -14px rgba(15,23,42,0.4); padding: 10px; z-index: 999;
     opacity: 0; transform: translateY(10px) scale(.97); pointer-events: none;
     transition: opacity .16s ease, transform .16s ease; }
   .fab-panel.open { opacity: 1; transform: none; pointer-events: auto; }
@@ -270,6 +270,38 @@
     .fab-toggle, .fab-panel, .scroll-progress { display: none !important; }
   }
 </style>
+
+<link rel="stylesheet" href="../assets/theme.css">
+<style>
+/* ---- portfolio theme overrides ---- */
+.scroll-progress{top:var(--pf-navh)}
+.header-eyebrow{color:var(--pf-acc);font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+.header h1,.kpi-val{letter-spacing:-.5px}
+.kpi-val{font-variant-numeric:tabular-nums}
+.fab-toggle{background:var(--pf-ink)}
+.fab-toggle:hover{background:var(--pf-acc)}
+
+/* the shared nav follows this page into dark mode */
+body[data-theme="dark"] .fab-toggle{background:var(--pf-acc)}
+body[data-theme="dark"] #pfNav{
+  background:rgba(15,23,42,.96);border-bottom-color:#24304a;
+}
+body[data-theme="dark"] #pfNav .pf-home{color:#e2e8f0}
+body[data-theme="dark"] #pfNav .pf-home:hover{background:#1e293b;color:#93b4fc}
+body[data-theme="dark"] #pfNav .pf-sep{background:#24304a}
+body[data-theme="dark"] #pfNav .pf-title{color:#94a3b8}
+body[data-theme="dark"] #pfNav .pf-title b{color:#e2e8f0}
+body[data-theme="dark"] #pfNav .pf-switch{
+  background:#1d4ed8;border-color:#1d4ed8;color:#fff;
+}
+body[data-theme="dark"] #pfMenu{background:#141d2f;border-color:#24304a}
+body[data-theme="dark"] #pfMenu a{color:#e2e8f0}
+body[data-theme="dark"] #pfMenu a:hover{background:#1e293b}
+body[data-theme="dark"] #pfMenu a.on{background:#1e2b47}
+body[data-theme="dark"] #pfMenu a.on .pf-mt{color:#93b4fc}
+body[data-theme="dark"] #pfMenu .pf-mdiv{background:#24304a}
+</style>
+<script defer src="../assets/shell.js" data-project="perubahan-lahan-jawa" data-layout="page"></script>
 </head>
 <body>
 
@@ -1949,7 +1981,7 @@ function createLandcoverExplorer(cfg) {
     loadBoundaries().then(geojson => {
       state.boundaryLayer = L.geoJSON(geojson, {
         style: {
-          color: '#191810',
+          color: '#0f172a',
           weight: 1,
           opacity: 0.55,
           fillOpacity: 0,
@@ -1958,8 +1990,8 @@ function createLandcoverExplorer(cfg) {
         onEachFeature: (feature, layer) => {
           const name = feature.properties.n;
           layer.bindTooltip(name, { sticky: true, className: 'boundary-tooltip', direction: 'top' });
-          layer.on('mouseover', () => layer.setStyle({ weight: 2.4, opacity: 0.9, color: '#1f5c3f' }));
-          layer.on('mouseout', () => layer.setStyle({ weight: 1, opacity: 0.55, color: '#191810' }));
+          layer.on('mouseover', () => layer.setStyle({ weight: 2.4, opacity: 0.9, color: '#16a34a' }));
+          layer.on('mouseout', () => layer.setStyle({ weight: 1, opacity: 0.55, color: '#0f172a' }));
         }
       });
       if (state.boundaryOn) state.boundaryLayer.addTo(state.map);
@@ -2199,7 +2231,7 @@ function createDensityMap() {
     const rec = densityRecord(name, state.year);
     const val = rec ? currentValue(rec) : null;
     return {
-      color: '#191810',
+      color: '#0f172a',
       weight: state.selectedName === name ? 2.6 : 0.7,
       opacity: state.selectedName === name ? 0.95 : 0.45,
       fillColor: (val === null || val === undefined) ? '#cfcabb' : densityColorFor(val, state.breaks),
@@ -2404,8 +2436,8 @@ const LPP_LPAP_PERIODS = {
   '2000-2020': { y0: 2000, y1: 2020, years: 20, label: '2000–2020' }
 };
 const LPP_LPAP_PROV_COLORS = {
-  'Banten': '#2f6690', 'DI Yogyakarta': '#7b52ab', 'DKI Jakarta': '#a3402a',
-  'Jawa Barat': '#b1791f', 'Jawa Tengah': '#1f5c3f', 'Jawa Timur': '#795548'
+  'Banten': '#1d4ed8', 'DI Yogyakarta': '#7c3aed', 'DKI Jakarta': '#dc2626',
+  'Jawa Barat': '#d97706', 'Jawa Tengah': '#16a34a', 'Jawa Timur': '#92400e'
 };
 
 function lppLpapPopForYear(name, year) {

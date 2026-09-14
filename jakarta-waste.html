@@ -124,6 +124,16 @@ font-weight:800;font-size:12.5px;border:2.5px solid #fff;box-shadow:0 2px 8px rg
  #head h1{font-size:15.5px}
 }
 </style>
+
+<link rel="stylesheet" href="../assets/theme.css">
+<style>
+/* ---- portfolio theme overrides ---- */
+/* the sidebar sheet on mobile is measured against the shortened viewport */
+@media(max-width:780px){
+  #side{max-height:calc(92vh - var(--pf-navh))}
+}
+</style>
+<script defer src="../assets/shell.js" data-project="jakarta-waste" data-layout="app"></script>
 </head>
 <body>
 <div id="side">
@@ -132,14 +142,14 @@ font-weight:800;font-size:12.5px;border:2.5px solid #fff;box-shadow:0 2px 8px rg
     <div class="eyebrow">DKI Jakarta · Solid Waste</div>
     <h1>Waste Infrastructure Dashboard</h1>
     <p>Where Jakarta's waste collection reaches — and where it doesn't. Built from the city's own records of collection points, equipment, roads and population. Hover any district for its scorecard, click any point for detail.</p>
-    <a id="docsLink" href="Jakarta_Waste_Dashboard_Readme.html" target="_blank" rel="noopener">
+    <a id="docsLink" href="jakarta-waste-methodology.html" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10l2 2h6.5A1.5 1.5 0 0 1 20 7.5v11A1.5 1.5 0 0 1 18.5 20h-13A1.5 1.5 0 0 1 4 18.5z"/></svg>
       Methodology &amp; data sources</a>
   </div>
   <div id="kpis"></div>
   <div id="tabs"></div>
   <div id="content"></div>
-  <div id="foot">Sources: DKI Jakarta open data (collection points, Bank Sampah, public housing, roads, land use), BPS population, WorldPop 2021. Waste volumes follow the Indonesian national standard SNI 8632:2018. Full method and assumptions on the <a href="Jakarta_Waste_Dashboard_Readme.html" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">methodology page</a>. Basemap © Esri / OpenStreetMap.</div>
+  <div id="foot">Sources: DKI Jakarta open data (collection points, Bank Sampah, public housing, roads, land use), BPS population, WorldPop 2021. Waste volumes follow the Indonesian national standard SNI 8632:2018. Full method and assumptions on the <a href="jakarta-waste-methodology.html" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">methodology page</a>. Basemap © Esri / OpenStreetMap.</div>
 </div>
 <div id="map"></div>
 <div id="kecCard"></div>
@@ -333,7 +343,7 @@ function setView(i){
   <h2 style="margin-top:14px">Least-covered districts</h2>
   <p class="desc">Share of residents living inside a TPS catchment, worst first. Grey shows the average distance waste travels to reach a TPS. Click any bar to zoom.</p>
   ${bars(D.rank_acc,(d,mx)=>ramp(0.9-0.55*d[1]/mx),d=>d[1],d=>`zoomKec("${d[0]}")`,d=>` <span style="color:#94a3b8;font-weight:500">${d[2]} m</span>`)}
-  <div class="note"><b>The clearest fix isn't building more.</b> Pademangan has 16 cart-served TPS and just one on motor sampah; Cilandak has none at all. A motor sampah reaches about 2.5&times; further than a hand cart, so upgrading rounds extends coverage without constructing anything.<br><br>Distances follow real streets and alleys, not straight lines. Coverage percentages depend on how far each vehicle is assumed to travel, so the district <i>ranking</i> is more reliable than the exact figure. <a href="Jakarta_Waste_Dashboard_Readme.html" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">See how this was calculated →</a></div>`;}
+  <div class="note"><b>The clearest fix isn't building more.</b> Pademangan has 16 cart-served TPS and just one on motor sampah; Cilandak has none at all. A motor sampah reaches about 2.5&times; further than a hand cart, so upgrading rounds extends coverage without constructing anything.<br><br>Distances follow real streets and alleys, not straight lines. Coverage percentages depend on how far each vehicle is assumed to travel, so the district <i>ranking</i> is more reliable than the exact figure. <a href="jakarta-waste-methodology.html" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">See how this was calculated →</a></div>`;}
  if(i===1){ choroOn=true;kecLayer.setStyle(kecStyle);show([layRaster]);
   C.innerHTML=`<h2>Where does waste outpace capacity?</h2>
   <p class="desc">How much waste each area produces, against how much its collection points can actually clear once emptying frequency is taken into account. Darker means a wider shortfall for the land area.</p>

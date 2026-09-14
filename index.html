@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Geospatial Analysis — Portfolio</title>
+<meta name="description" content="Interactive geospatial dashboards on waste infrastructure, land use change, coastal population, public housing and food security."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  /* hero plate motifs share one stroke language across all six cards */
+  .pf-plate .ln{fill:none;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body class="pf-home-body">
+
+<main class="pf-wrap">
+
+  <header class="pf-hero">
+    <div class="pf-eyebrow">Geospatial Analysis</div>
+    <h1>Maps that answer a question, not just show a place</h1>
+    <p class="pf-lede">Five interactive analyses built from open government data — waste
+    infrastructure, land use change, coastal population, public housing and food security.
+    Each one runs entirely in the browser: <b>click, filter and zoom to read the argument
+    for yourself</b>. <i>Lima analisis interaktif dari data terbuka, seluruhnya berjalan di peramban.</i></p>
+
+    <div class="pf-figures">
+      <div class="pf-fig"><b>2.279</b><span>Waste collection points mapped<br>Titik TPS terpetakan</span></div>
+      <div class="pf-fig"><b>13,2 jt ha</b><span>Land cover tracked, 2000–2022<br>Tutupan lahan Pulau Jawa</span></div>
+      <div class="pf-fig"><b>1.032</b><span>Rusunawa projects located<br>Proyek rusunawa, 34 provinsi</span></div>
+      <div class="pf-fig"><b>22 thn</b><span>Longest time series<br>Rentang waktu terpanjang</span></div>
+    </div>
+  </header>
+
+  <div class="pf-sechead">
+    <h2>Analyses</h2>
+    <span>Analisis · open each in a new tab to keep this page handy</span>
+  </div>
+
+  <div class="pf-grid">
+
+    <!-- ============ Jakarta waste ============ -->
+    <a class="pf-card" href="projects/jakarta-waste.html">
+      <div class="pf-plate">
+        <svg viewBox="0 0 320 118" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g stroke="#cfdcfa" class="ln" stroke-width="1">
+            <path d="M0 34h320M0 66h320M0 96h320"/>
+            <path d="M70 0v118M150 0v118M232 0v118"/>
+          </g>
+          <circle cx="70" cy="34" r="21" fill="#1d4ed8" opacity=".09"/>
+          <circle cx="150" cy="66" r="27" fill="#1d4ed8" opacity=".09"/>
+          <circle cx="232" cy="34" r="18" fill="#1d4ed8" opacity=".09"/>
+          <circle cx="112" cy="96" r="23" fill="#dc2626" opacity=".1"/>
+          <g fill="#1d4ed8">
+            <circle cx="70" cy="34" r="4"/><circle cx="150" cy="66" r="4.5"/>
+            <circle cx="232" cy="34" r="3.5"/><circle cx="196" cy="88" r="3"/>
+            <circle cx="42" cy="72" r="3"/><circle cx="270" cy="74" r="3"/>
+          </g>
+          <circle cx="112" cy="96" r="5" fill="#dc2626"/>
+        </svg>
+        <span class="pf-badge">DKI Jakarta</span>
+      </div>
+      <div class="pf-body">
+        <h3>Jakarta Waste Infrastructure</h3>
+        <div class="pf-sub">Infrastruktur persampahan DKI Jakarta</div>
+        <p>Where waste outpaces the capacity to collect it. Maps 2.279 collection points against
+        population and land use, then ranks districts by how far residents actually have to carry
+        their rubbish along real streets.</p>
+        <div class="pf-meta">
+          <span class="pf-tag acc">Leaflet</span>
+          <span class="pf-tag">Network analysis</span>
+          <span class="pf-tag">SNI 8632:2018</span>
+          <span class="pf-tag">WorldPop</span>
+        </div>
+        <span class="pf-open">Open dashboard
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- ============ Land use ============ -->
+    <a class="pf-card" href="projects/perubahan-lahan-jawa.html">
+      <div class="pf-plate">
+        <svg viewBox="0 0 320 118" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect x="0" y="0" width="320" height="26" fill="#16a34a" opacity=".16"/>
+          <rect x="0" y="26" width="320" height="30" fill="#16a34a" opacity=".28"/>
+          <rect x="0" y="56" width="320" height="28" fill="#d97706" opacity=".22"/>
+          <rect x="0" y="84" width="320" height="34" fill="#dc2626" opacity=".16"/>
+          <path class="ln" d="M0 26C70 26 120 18 180 14 240 10 280 8 320 8"
+                stroke="#16a34a" stroke-width="2.2"/>
+          <path class="ln" d="M0 56C70 58 130 62 190 68 250 74 290 78 320 80"
+                stroke="#d97706" stroke-width="2.2"/>
+          <path class="ln" d="M0 84C70 88 130 94 190 100 250 106 290 108 320 110"
+                stroke="#dc2626" stroke-width="2.2"/>
+        </svg>
+        <span class="pf-badge">Pulau Jawa · 2000–2022</span>
+      </div>
+      <div class="pf-body">
+        <h3>Perubahan Tata Guna Lahan Jawa</h3>
+        <div class="pf-sub">Land use change across Java</div>
+        <p>Twenty-two years of urbanisation, deforestation and farmland conversion across 119
+        regencies and cities. Settlements gained 616k ha while paddy fields lost 517k ha and
+        mining expanded fourteenfold.</p>
+        <div class="pf-meta">
+          <span class="pf-tag acc">Chart.js</span>
+          <span class="pf-tag">Scrollytelling</span>
+          <span class="pf-tag">KLHK</span>
+          <span class="pf-tag">Dark mode</span>
+        </div>
+        <span class="pf-open">Open analysis
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- ============ Coastal population ============ -->
+    <a class="pf-card" href="projects/pesisir-utara.html">
+      <div class="pf-plate">
+        <svg viewBox="0 0 320 118" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <path d="M0 46C48 40 84 52 126 50 172 48 206 36 250 40 284 43 304 50 320 48V118H0Z"
+                fill="#1d4ed8" opacity=".07"/>
+          <path class="ln" d="M0 46C48 40 84 52 126 50 172 48 206 36 250 40 284 43 304 50 320 48"
+                stroke="#0d9488" stroke-width="2.4"/>
+          <path class="ln" d="M0 32C48 26 84 38 126 36 172 34 206 22 250 26 284 29 304 36 320 34"
+                stroke="#bfdbfe" stroke-width="1.6"/>
+          <g fill="#dc2626" opacity=".85">
+            <circle cx="54" cy="62" r="9"/><circle cx="132" cy="70" r="13"/>
+            <circle cx="212" cy="58" r="7"/><circle cx="272" cy="66" r="10"/>
+          </g>
+          <g fill="#1d4ed8" opacity=".55">
+            <circle cx="92" cy="84" r="5"/><circle cx="176" cy="88" r="6"/>
+            <circle cx="244" cy="86" r="4"/><circle cx="26" cy="80" r="4"/>
+          </g>
+        </svg>
+        <span class="pf-badge">Jakarta – Jawa Timur</span>
+      </div>
+      <div class="pf-body">
+        <h3>Populasi Pesisir Utara</h3>
+        <div class="pf-sub">Population of Java's north coast</div>
+        <p>Who actually lives on the north coast, counted village by village. Search, filter by
+        province and regency, and switch between kecamatan, kabupaten and coastal desa to see
+        density concentrate along the shoreline.</p>
+        <div class="pf-meta">
+          <span class="pf-tag acc">Choropleth</span>
+          <span class="pf-tag">Dukcapil</span>
+          <span class="pf-tag">Multi-level</span>
+        </div>
+        <span class="pf-open">Open map
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- ============ Rusunawa ============ -->
+    <a class="pf-card" href="projects/rusunawa.html">
+      <div class="pf-plate">
+        <svg viewBox="0 0 320 118" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g fill="#1d4ed8" opacity=".14">
+            <rect x="18" y="62" width="14" height="42" rx="2"/>
+            <rect x="38" y="48" width="14" height="56" rx="2"/>
+            <rect x="58" y="70" width="14" height="34" rx="2"/>
+            <rect x="88" y="40" width="14" height="64" rx="2"/>
+            <rect x="108" y="58" width="14" height="46" rx="2"/>
+            <rect x="128" y="30" width="14" height="74" rx="2"/>
+            <rect x="148" y="52" width="14" height="52" rx="2"/>
+            <rect x="178" y="66" width="14" height="38" rx="2"/>
+            <rect x="198" y="44" width="14" height="60" rx="2"/>
+            <rect x="228" y="72" width="14" height="32" rx="2"/>
+            <rect x="248" y="56" width="14" height="48" rx="2"/>
+            <rect x="278" y="68" width="14" height="36" rx="2"/>
+          </g>
+          <g fill="#1d4ed8">
+            <rect x="128" y="30" width="14" height="16" rx="2"/>
+            <rect x="88" y="40" width="14" height="12" rx="2"/>
+            <rect x="198" y="44" width="14" height="12" rx="2"/>
+          </g>
+          <path class="ln" d="M0 104h320" stroke="#cfd8e6" stroke-width="1.6"/>
+        </svg>
+        <span class="pf-badge">34 provinsi · 2019–2022</span>
+      </div>
+      <div class="pf-body">
+        <h3>Rusunawa Nasional</h3>
+        <div class="pf-sub">Public rental housing, unit cost and reach</div>
+        <p>Every rusunawa built between 2019 and 2022 — 1.032 projects, 56.639 units, Rp 15,8
+        trillion. Each marker compares its cost per unit against the Rp 293 million national
+        average, so overspend shows up on the map rather than in a table.</p>
+        <div class="pf-meta">
+          <span class="pf-tag acc">Folium</span>
+          <span class="pf-tag">Marker clusters</span>
+          <span class="pf-tag">Cost efficiency</span>
+          <span class="pf-tag">PUPR</span>
+        </div>
+        <span class="pf-open">Open map
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- ============ Gaza ============ -->
+    <a class="pf-card" href="projects/gaza-food-security.html">
+      <div class="pf-plate">
+        <svg viewBox="0 0 320 118" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <path d="M0 96C50 92 96 86 142 74 190 62 236 44 320 28V118H0Z" fill="#dc2626" opacity=".14"/>
+          <path d="M0 104C50 102 96 98 142 92 190 86 236 74 320 62V118H0Z" fill="#d97706" opacity=".2"/>
+          <path class="ln" d="M0 96C50 92 96 86 142 74 190 62 236 44 320 28"
+                stroke="#dc2626" stroke-width="2.4"/>
+          <path class="ln" d="M0 104C50 102 96 98 142 92 190 86 236 74 320 62"
+                stroke="#d97706" stroke-width="2"/>
+          <g stroke="#cfd8e6" class="ln" stroke-width="1" stroke-dasharray="3 5">
+            <path d="M80 0v118M160 0v118M240 0v118"/>
+          </g>
+          <circle cx="240" cy="43" r="5.5" fill="#dc2626"/>
+          <circle cx="240" cy="43" r="11" fill="#dc2626" opacity=".2"/>
+        </svg>
+        <span class="pf-badge">IPC phases</span>
+      </div>
+      <div class="pf-body">
+        <h3>Gaza Food Security</h3>
+        <div class="pf-sub">Krisis pangan Jalur Gaza</div>
+        <p>IPC acute food insecurity classifications tracked period by period for 2,1 million
+        people. Drag the timeline to watch phase boundaries move and famine thresholds get
+        crossed.</p>
+        <div class="pf-meta">
+          <span class="pf-tag acc">Time series</span>
+          <span class="pf-tag">IPC</span>
+          <span class="pf-tag">Humanitarian</span>
+        </div>
+        <span class="pf-open">Open dashboard
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+    <!-- ============ Methodology ============ -->
+    <a class="pf-card" href="projects/jakarta-waste-methodology.html">
+      <div class="pf-plate">
+        <svg viewBox="0 0 320 118" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g stroke="#cfd8e6" class="ln" stroke-width="3">
+            <path d="M56 30h132M56 46h168M56 62h104M56 78h150M56 94h88"/>
+          </g>
+          <g stroke="#1d4ed8" class="ln" stroke-width="3">
+            <path d="M56 46h62M56 78h46"/>
+          </g>
+          <path class="ln" d="M36 16v88" stroke="#1d4ed8" stroke-width="2.5"/>
+        </svg>
+        <span class="pf-badge">Documentation</span>
+      </div>
+      <div class="pf-body">
+        <h3>Methodology &amp; Data Sources</h3>
+        <div class="pf-sub">Metodologi dan sumber data</div>
+        <p>How the waste dashboard was built: which datasets feed it, how volumes are estimated
+        from population and land use, and which assumptions to treat with caution when reading
+        the rankings.</p>
+        <div class="pf-meta">
+          <span class="pf-tag">Assumptions</span>
+          <span class="pf-tag">Sources</span>
+          <span class="pf-tag">Caveats</span>
+        </div>
+        <span class="pf-open">Read the notes
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="pf-note">
+    <b>Every page is a single self-contained HTML file.</b> Data is embedded rather than fetched,
+    so the dashboards work offline and need no server beyond static hosting — only the basemap
+    tiles and the typeface come from the network.
+    <i>Setiap halaman adalah satu berkas HTML mandiri; data tertanam di dalamnya.</i>
+  </div>
+
+  <footer class="pf-foot">
+    Sources: DKI Jakarta open data · BPS · WorldPop · Ministry of Environment and Forestry (KLHK)
+    land cover · Ditjen Dukcapil Kemendagri · Ministry of Public Works and Housing (PUPR) ·
+    IPC Acute Food Insecurity classifications.<br>
+    Basemaps © CARTO, © OpenStreetMap contributors, Esri World Imagery.
+  </footer>
+
+</main>
+
+</body>
+</html>

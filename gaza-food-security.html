@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gaza Strip — Food Security Crisis Analysis</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg: #080c14;
-  --surface: #0e1420;
-  --surface2: #141b28;
-  --surface3: #1a2234;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --text-primary: #f0f4ff;
-  --text-secondary: #8899bb;
-  --text-muted: #4a5875;
-  --phase5: #c0392b;
-  --phase5-glow: rgba(192,57,43,0.35);
-  --phase4: #d4810a;
-  --phase4-glow: rgba(212,129,10,0.3);
-  --phase3: #1d6da5;
-  --phase3-glow: rgba(29,109,165,0.3);
-  --accent: #e55a4e;
-  --accent2: #f0a050;
-  --gold: #f5c842;
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'Inter', -apple-system, sans-serif;
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --surface2: #f7f9fc;
+  --surface3: #eef2f8;
+  --border: #e4e9f0;
+  --border2: #d7dfea;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --phase5: #dc2626;
+  --phase5-glow: rgba(220,38,38,0.35);
+  --phase4: #d97706;
+  --phase4-glow: rgba(217,119,6,0.3);
+  --phase3: #1d4ed8;
+  --phase3-glow: rgba(29,78,216,0.3);
+  --accent: #dc2626;
+  --accent2: #d97706;
+  --gold: #ca8a04;
+  --mono: 'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sans: 'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -119,23 +120,23 @@ body {
 #map {
   width: 100%;
   height: 100%;
-  background: #050912;
+  background: #e9edf3;
 }
 
 /* Leaflet overrides */
-.leaflet-container { background: #050912 !important; }
+.leaflet-container { background: #e9edf3 !important; }
 .leaflet-popup-content-wrapper {
-  background: rgba(14,20,32,0.97);
+  background: rgba(255,255,255,0.97);
   color: var(--text-primary);
   border: 1px solid var(--border2);
   border-radius: 8px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+  box-shadow: 0 12px 40px rgba(15,23,42,0.16);
   backdrop-filter: blur(12px);
 }
-.leaflet-popup-tip { background: rgba(14,20,32,0.97); }
+.leaflet-popup-tip { background: rgba(255,255,255,0.97); }
 .leaflet-popup-content { margin: 11px 15px; font-size: 12px; line-height: 1.55; }
 .leaflet-control-attribution {
-  background: rgba(5,9,18,0.85) !important;
+  background: rgba(255,255,255,0.9) !important;
   color: var(--text-muted) !important;
   font-size: 9px;
 }
@@ -152,7 +153,7 @@ body {
   top: 12px;
   left: 12px;
   z-index: 800;
-  background: rgba(8,12,20,0.88);
+  background: rgba(255,255,255,0.94);
   border: 1px solid var(--border2);
   border-radius: 6px;
   padding: 7px 12px;
@@ -179,14 +180,14 @@ body {
   width: 14px; height: 14px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 0 rgba(200,60,50,0.7);
+  box-shadow: 0 0 0 0 rgba(220,38,38,0.7);
   animation: famine-pulse 2s infinite;
   position: relative;
 }
 @keyframes famine-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(200,60,50,0.7); }
-  70%  { box-shadow: 0 0 0 10px rgba(200,60,50,0); }
-  100% { box-shadow: 0 0 0 0 rgba(200,60,50,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(220,38,38,0.7); }
+  70%  { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+  100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); }
 }
 
 /* ─── SIDEBAR ─────────────────────────────────────── */
@@ -232,7 +233,7 @@ body {
   width: 14px; height: 14px;
   border-radius: 50%;
   background: var(--text-primary);
-  box-shadow: 0 0 8px rgba(200,100,80,0.6);
+  box-shadow: 0 0 8px rgba(220,38,38,0.35);
   cursor: pointer;
   transition: transform 0.15s;
 }
@@ -291,7 +292,7 @@ body {
 .layer-tab.active {
   color: var(--accent2);
   border-bottom-color: var(--accent2);
-  background: rgba(244,160,80,0.04);
+  background: rgba(29,78,216,0.05);
 }
 .layer-tab:hover:not(.active) { color: var(--text-secondary); }
 
@@ -478,8 +479,8 @@ body {
   font-family: var(--mono);
   font-size: 9px;
   color: var(--accent);
-  background: rgba(192,57,43,0.15);
-  border: 1px solid rgba(192,57,43,0.3);
+  background: rgba(220,38,38,0.15);
+  border: 1px solid rgba(220,38,38,0.3);
   padding: 2px 7px;
   border-radius: 12px;
 }
@@ -501,7 +502,7 @@ body {
   top: -5px;
   bottom: -5px;
   width: 2px;
-  background: rgba(255,255,255,0.6);
+  background: rgba(15,23,42,0.5);
   border-radius: 1px;
 }
 .meter-threshold::after {
@@ -512,7 +513,7 @@ body {
   transform: translateX(-50%);
   font-size: 8px;
   font-family: var(--mono);
-  color: rgba(255,255,255,0.4);
+  color: rgba(15,23,42,0.34);
   white-space: nowrap;
 }
 .muac-sub {
@@ -657,17 +658,17 @@ body {
 }
 .event-line {
   width: 1px;
-  background: rgba(100,200,100,0.4);
+  background: rgba(22,163,74,0.4);
   position: relative;
 }
 .event-label-box {
-  background: rgba(30,60,30,0.8);
-  border: 1px solid rgba(100,200,100,0.3);
+  background: rgba(220,252,231,0.95);
+  border: 1px solid rgba(22,163,74,0.3);
   border-radius: 4px;
   padding: 2px 6px;
   font-size: 9px;
   font-family: var(--mono);
-  color: rgba(150,230,150,0.9);
+  color: rgba(22,163,74,0.9);
   white-space: nowrap;
 }
 
@@ -697,8 +698,8 @@ body {
 
 /* Pulse animation for active famine periods */
 @keyframes border-pulse {
-  0%, 100% { border-color: rgba(192,57,43,0.3); }
-  50% { border-color: rgba(192,57,43,0.7); }
+  0%, 100% { border-color: rgba(220,38,38,0.3); }
+  50% { border-color: rgba(220,38,38,0.7); }
 }
 .famine-active {
   animation: border-pulse 2s ease infinite;
@@ -707,19 +708,19 @@ body {
 /* Warning banner */
 .famine-banner {
   flex-shrink: 0;
-  background: rgba(192,57,43,0.12);
-  border-bottom: 1px solid rgba(192,57,43,0.25);
+  background: rgba(220,38,38,0.12);
+  border-bottom: 1px solid rgba(220,38,38,0.25);
   padding: 5px 14px;
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 10.5px;
-  color: #e88;
+  color: #b91c1c;
   transition: all 0.3s;
 }
 .famine-banner.hidden { display: none; }
 .famine-icon { font-size: 12px; flex-shrink: 0; }
-.famine-banner b { color: #faa; }
+.famine-banner b { color: #dc2626; }
 
 /* Responsive tweaks */
 @media (max-width: 900px) {
@@ -727,6 +728,19 @@ body {
   .sidebar { height: 55vh; }
 }
 </style>
+
+<link rel="stylesheet" href="../assets/theme.css">
+<style>
+/* ---- portfolio theme overrides ---- */
+.header-eyebrow{color:var(--pf-acc);font-weight:800;letter-spacing:1.4px}
+.header-title{font-weight:800;letter-spacing:-.3px}
+.layer-tab.active{color:var(--pf-acc);border-bottom-color:var(--pf-acc);background:var(--pf-accsoft)}
+.leaflet-container{background:#e9edf3!important}
+.leaflet-popup-content-wrapper{backdrop-filter:none}
+.leaflet-control-zoom a{background:#fff!important;color:#0f172a!important}
+.hstat-val,.kpi b,.period-tick{font-variant-numeric:tabular-nums}
+</style>
+<script defer src="../assets/shell.js" data-project="gaza-food-security" data-layout="app"></script>
 </head>
 <body>
 
@@ -813,10 +827,10 @@ body {
     <!-- Legend -->
     <div class="legend-panel">
       <div class="legend-row">
-        <div class="leg-item"><div class="leg-swatch" style="background:#c0392b"></div>Phase 5 — Famine/Catastrophe</div>
-        <div class="leg-item"><div class="leg-swatch" style="background:#d4810a"></div>Phase 4 — Emergency</div>
-        <div class="leg-item"><div class="leg-swatch" style="background:#1d6da5"></div>Phase 3 — Crisis</div>
-        <div class="leg-item"><div class="leg-swatch" style="background:#374151"></div>Not assessed</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#dc2626"></div>Phase 5 — Famine/Catastrophe</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#d97706"></div>Phase 4 — Emergency</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#1d4ed8"></div>Phase 3 — Crisis</div>
+        <div class="leg-item"><div class="leg-swatch" style="background:#94a3b8"></div>Not assessed</div>
       </div>
     </div>
   </div><!-- /sidebar -->
@@ -975,9 +989,9 @@ let govLayer, muniLayer;
 let miniChart = null;
 let selectedGov = null;
 
-const PHASE_COLORS = { 5:'#c0392b', 4:'#d4810a', 3:'#1d6da5', 0:'#374151' };
-const PHASE_FILL   = { 5:'rgba(192,57,43,0.65)', 4:'rgba(212,129,10,0.6)', 3:'rgba(29,109,165,0.55)', 0:'rgba(55,65,81,0.4)' };
-const PHASE_GLOW   = { 5:'rgba(220,60,40,0.45)', 4:'rgba(220,140,20,0.35)', 3:'rgba(29,109,165,0.3)', 0:'transparent' };
+const PHASE_COLORS = { 5:'#dc2626', 4:'#d97706', 3:'#1d4ed8', 0:'#94a3b8' };
+const PHASE_FILL   = { 5:'rgba(220,38,38,0.65)', 4:'rgba(217,119,6,0.6)', 3:'rgba(29,78,216,0.55)', 0:'rgba(148,163,184,0.4)' };
+const PHASE_GLOW   = { 5:'rgba(220,38,38,0.45)', 4:'rgba(217,119,6,0.35)', 3:'rgba(29,78,216,0.3)', 0:'transparent' };
 
 // ══════════════════════════════════════════════════
 //  INIT PERIOD TICKS
@@ -1000,7 +1014,7 @@ const map = L.map('map', {
   attributionControl: true
 });
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution:'&copy; OSM &copy; CARTO',
   subdomains:'abcd',
   maxZoom:19
@@ -1016,7 +1030,7 @@ function makeGovStyle(feature) {
   return {
     fillColor: PHASE_FILL[p] || PHASE_FILL[0],
     fillOpacity: 1,
-    color: 'rgba(255,255,255,0.25)',
+    color: 'rgba(15,23,42,0.2)',
     weight: 1.5
   };
 }
@@ -1026,13 +1040,13 @@ function makeMuniStyle(feature) {
   return {
     fillColor: PHASE_FILL[p] || PHASE_FILL[0],
     fillOpacity: 1,
-    color: 'rgba(255,255,255,0.15)',
+    color: 'rgba(15,23,42,0.13)',
     weight: 0.7
   };
 }
 
 function highlightGov(e) {
-  e.target.setStyle({ weight:2.5, color:'rgba(255,255,255,0.8)', fillOpacity: 1 });
+  e.target.setStyle({ weight:2.5, color:'rgba(15,23,42,0.68)', fillOpacity: 1 });
   e.target.bringToFront();
   showTooltip(e);
 }
@@ -1043,7 +1057,7 @@ function resetGov(e) {
 }
 
 function highlightMuni(e) {
-  e.target.setStyle({ weight:2, color:'rgba(255,255,255,0.6)', fillOpacity: 1 });
+  e.target.setStyle({ weight:2, color:'rgba(15,23,42,0.5)', fillOpacity: 1 });
   e.target.bringToFront();
 }
 
@@ -1092,11 +1106,11 @@ function addGovLabels() {
     const clon = (Math.min(...lons)+Math.max(...lons))/2;
     const gov  = f.properties.governorate;
     const phase = getPhase(gov);
-    const clr = phase === 0 ? 'rgba(150,170,200,0.6)' : 'rgba(255,255,255,0.9)';
+    const clr = phase === 0 ? 'rgba(100,116,139,0.6)' : 'rgba(15,23,42,0.78)';
     const m = L.marker([clat,clon], {
       icon: L.divIcon({
         className:'',
-        html:`<div style="font-size:10.5px;font-weight:700;color:${clr};text-shadow:0 1px 4px rgba(0,0,0,0.95),0 0 10px rgba(0,0,0,0.8);pointer-events:none;white-space:nowrap;text-align:center;font-family:'Inter',sans-serif;letter-spacing:-0.01em;">${gov}</div>`,
+        html:`<div style="font-size:10.5px;font-weight:700;color:${clr};text-shadow:0 1px 4px rgba(0,0,0,0.95),0 0 10px rgba(0,0,0,0.8);pointer-events:none;white-space:nowrap;text-align:center;font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:-0.01em;">${gov}</div>`,
         iconAnchor:[45,8]
       }),
       interactive: false
@@ -1145,7 +1159,7 @@ function updateStripBars() {
     const per = d.periods[currentPeriod];
     const pct = per.p3plus_pct || 0;
     const phase = per.phase;
-    const clr = PHASE_COLORS[phase] || '#374151';
+    const clr = PHASE_COLORS[phase] || '#94a3b8';
     return `<div class="sbar-row">
       <div class="sbar-label">${name === 'Not assessed' ? '—' : name.replace(' Gaza','<br>Gaza')}</div>
       <div class="sbar-track"><div class="sbar-fill" style="width:${pct}%;background:${clr}"></div></div>
@@ -1214,8 +1228,8 @@ function phaseLabel(p) {
   return 'Not assessed';
 }
 function phasePillStyle(p) {
-  const bg = { 5:'rgba(192,57,43,0.18)', 4:'rgba(212,129,10,0.18)', 3:'rgba(29,109,165,0.18)', 0:'rgba(55,65,81,0.25)' };
-  const clr = { 5:'#e57373', 4:'#f0a050', 3:'#64b5f6', 0:'#8899bb' };
+  const bg = { 5:'rgba(220,38,38,0.18)', 4:'rgba(217,119,6,0.18)', 3:'rgba(29,78,216,0.18)', 0:'rgba(148,163,184,0.25)' };
+  const clr = { 5:'#ef4444', 4:'#d97706', 3:'#64b5f6', 0:'#475569' };
   return `background:${bg[p]||bg[0]};color:${clr[p]||clr[0]};border:1px solid ${clr[p]||clr[0]}33`;
 }
 
@@ -1238,16 +1252,16 @@ function showGovInfo(name) {
   <div class="breakdown-section">
     <div class="breakdown-title">Population by IPC phase — ${per.period}</div>
     <div class="stack-bar">
-      ${p5>0?`<div class="stack-seg" style="flex:${p5};background:#c0392b" title="Phase 5: ${p5}%"></div>`:''}
-      ${p4>0?`<div class="stack-seg" style="flex:${p4};background:#d4810a" title="Phase 4: ${p4}%"></div>`:''}
-      ${p3>0?`<div class="stack-seg" style="flex:${p3};background:#1d6da5" title="Phase 3: ${p3}%"></div>`:''}
-      ${rest>0?`<div class="stack-seg" style="flex:${rest};background:#374151" title="Phase 1/2: ${rest}%"></div>`:''}
+      ${p5>0?`<div class="stack-seg" style="flex:${p5};background:#dc2626" title="Phase 5: ${p5}%"></div>`:''}
+      ${p4>0?`<div class="stack-seg" style="flex:${p4};background:#d97706" title="Phase 4: ${p4}%"></div>`:''}
+      ${p3>0?`<div class="stack-seg" style="flex:${p3};background:#1d4ed8" title="Phase 3: ${p3}%"></div>`:''}
+      ${rest>0?`<div class="stack-seg" style="flex:${rest};background:#94a3b8" title="Phase 1/2: ${rest}%"></div>`:''}
     </div>
     <div class="stack-legend">
-      ${p5>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#c0392b"></div>P5 ${p5}%</div>`:''}
-      ${p4>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#d4810a"></div>P4 ${p4}%</div>`:''}
-      ${p3>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#1d6da5"></div>P3 ${p3}%</div>`:''}
-      ${rest>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#374151"></div>P1/2 ${rest}%</div>`:''}
+      ${p5>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#dc2626"></div>P5 ${p5}%</div>`:''}
+      ${p4>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#d97706"></div>P4 ${p4}%</div>`:''}
+      ${p3>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#1d4ed8"></div>P3 ${p3}%</div>`:''}
+      ${rest>0?`<div class="sleg-item"><div class="sleg-dot" style="background:#94a3b8"></div>P1/2 ${rest}%</div>`:''}
     </div>
   </div>` : '';
 
@@ -1262,7 +1276,7 @@ function showGovInfo(name) {
       <div class="muac-threshold-badge">▲ Famine threshold: 20%</div>
     </div>
     <div class="meter-track">
-      <div class="meter-fill" style="width:${Math.min(d.very_severe_hunger_pct*2.5, 100)}%;background:linear-gradient(90deg,#d4810a,#c0392b)"></div>
+      <div class="meter-fill" style="width:${Math.min(d.very_severe_hunger_pct*2.5, 100)}%;background:linear-gradient(90deg,#d97706,#dc2626)"></div>
       <div class="meter-threshold" style="left:50%"></div>
     </div>
     <div class="muac-sub">Peak recorded rate (Aug 2025 assessment) — threshold of 20% marks famine level</div>
@@ -1273,21 +1287,21 @@ function showGovInfo(name) {
   <div class="aid-grid">
     <div class="stat-card">
       <div class="stat-label">Avg Aid Trucks/Day</div>
-      <div class="stat-value" style="color:${d.aid_trucks_day===0?'#e57373':'var(--text-primary)'}">
+      <div class="stat-value" style="color:${d.aid_trucks_day===0?'#ef4444':'var(--text-primary)'}">
         ${d.aid_trucks_day === null ? '—' : d.aid_trucks_day === 0 ? '0' : d.aid_trucks_day}
       </div>
       <div class="stat-unit">${d.aid_trucks_day === 0 ? 'none entering' : d.aid_trucks_day === null ? 'data unavailable' : 'at peak relief'}</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Health Facilities</div>
-      <div class="stat-value" style="color:${(d.health_facilities_pct||0)<30?'#e57373':'var(--accent2)'}">
+      <div class="stat-value" style="color:${(d.health_facilities_pct||0)<30?'#ef4444':'var(--accent2)'}">
         ${d.health_facilities_pct != null ? d.health_facilities_pct+'%' : '—'}
       </div>
       <div class="stat-unit">functional (est.)</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Water Access</div>
-      <div class="stat-value" style="color:${(d.water_access_pct||0)<20?'#e57373':'var(--accent2)'}">
+      <div class="stat-value" style="color:${(d.water_access_pct||0)<20?'#ef4444':'var(--accent2)'}">
         ${d.water_access_pct != null ? d.water_access_pct+'%' : '—'}
       </div>
       <div class="stat-unit">of pre-war supply</div>
@@ -1317,7 +1331,7 @@ function showGovInfo(name) {
       </div>
       <div class="stat-card">
         <div class="stat-label">Phase 3+</div>
-        <div class="stat-value" style="color:${per.p3plus_pct>80?'#e57373':per.p3plus_pct>50?'var(--accent2)':'var(--text-primary)'}">
+        <div class="stat-value" style="color:${per.p3plus_pct>80?'#ef4444':per.p3plus_pct>50?'var(--accent2)':'var(--text-primary)'}">
           ${per.p3plus_pct > 0 ? per.p3plus_pct+'%' : 'N/A'}
         </div>
         <div class="stat-unit">crisis or worse</div>
@@ -1325,7 +1339,7 @@ function showGovInfo(name) {
       </div>
       <div class="stat-card">
         <div class="stat-label">Phase 5 share</div>
-        <div class="stat-value" style="color:${p5>20?'#e57373':'var(--accent2)'}">
+        <div class="stat-value" style="color:${p5>20?'#ef4444':'var(--accent2)'}">
           ${p5 > 0 ? p5+'%' : per.phase > 0 ? '<1%' : 'N/A'}
         </div>
         <div class="stat-unit">catastrophe</div>
@@ -1341,7 +1355,7 @@ function showGovInfo(name) {
         <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Context — ${per.period}</div>
         ${per.context}
       </div>
-      <div class="context-note" style="border-left-color:rgba(255,255,255,0.1)">
+      <div class="context-note" style="border-left-color:rgba(15,23,42,0.1)">
         <div style="font-family:var(--mono);font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Assessment note</div>
         ${d.note}
       </div>
@@ -1352,8 +1366,8 @@ function showGovInfo(name) {
     <div class="chart-header">
       <div class="chart-title">IPC Phase trend over time</div>
       <div class="chart-legend">
-        <div class="legend-dot-item"><div class="legend-dot" style="background:#c0392b"></div>Phase 5 %</div>
-        <div class="legend-dot-item"><div class="legend-dot" style="background:#f0a050"></div>Phase 3+ %</div>
+        <div class="legend-dot-item"><div class="legend-dot" style="background:#dc2626"></div>Phase 5 %</div>
+        <div class="legend-dot-item"><div class="legend-dot" style="background:#d97706"></div>Phase 3+ %</div>
       </div>
     </div>
     <div class="chart-wrap"><canvas id="miniChart"></canvas></div>
@@ -1378,23 +1392,23 @@ function showGovInfo(name) {
         {
           label:'Phase 5 %',
           data: p5data,
-          borderColor:'#c0392b',
-          backgroundColor:'rgba(192,57,43,0.15)',
+          borderColor:'#dc2626',
+          backgroundColor:'rgba(220,38,38,0.15)',
           fill:true,
           tension:0.35,
           pointRadius: p5data.map((_,i)=>i===currentPeriod?5:2.5),
-          pointBackgroundColor: p5data.map((_,i)=>i===currentPeriod?'#e57373':'#c0392b'),
+          pointBackgroundColor: p5data.map((_,i)=>i===currentPeriod?'#ef4444':'#dc2626'),
           borderWidth:2
         },
         {
           label:'Phase 3+ %',
           data: p3pdata,
-          borderColor:'#d4810a',
-          backgroundColor:'rgba(212,129,10,0.08)',
+          borderColor:'#d97706',
+          backgroundColor:'rgba(217,119,6,0.08)',
           fill:false,
           tension:0.35,
           pointRadius: p3pdata.map((_,i)=>i===currentPeriod?5:2),
-          pointBackgroundColor: p3pdata.map((_,i)=>i===currentPeriod?'#f0a050':'#d4810a'),
+          pointBackgroundColor: p3pdata.map((_,i)=>i===currentPeriod?'#d97706':'#d97706'),
           borderWidth:1.5,
           borderDash:[5,3]
         }
@@ -1406,11 +1420,11 @@ function showGovInfo(name) {
       plugins:{
         legend:{display:false},
         tooltip:{
-          backgroundColor:'rgba(14,20,32,0.95)',
-          borderColor:'rgba(255,255,255,0.1)',
+          backgroundColor:'rgba(255,255,255,0.97)',
+          borderColor:'rgba(15,23,42,0.1)',
           borderWidth:1,
-          titleColor:'#f0f4ff',
-          bodyColor:'#8899bb',
+          titleColor:'#0f172a',
+          bodyColor:'#475569',
           padding:8,
           callbacks:{
             label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%`
@@ -1419,8 +1433,8 @@ function showGovInfo(name) {
         annotation: {}
       },
       scales:{
-        x:{ ticks:{color:'#4a5875',font:{size:8},maxRotation:30}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.06)'} },
-        y:{ ticks:{color:'#4a5875',font:{size:8},callback:v=>v+'%'}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'rgba(255,255,255,0.06)'}, min:0, max:110 }
+        x:{ ticks:{color:'#64748b',font:{size:8},maxRotation:30}, grid:{color:'rgba(15,23,42,0.05)'}, border:{color:'rgba(15,23,42,0.07)'} },
+        y:{ ticks:{color:'#64748b',font:{size:8},callback:v=>v+'%'}, grid:{color:'rgba(15,23,42,0.05)'}, border:{color:'rgba(15,23,42,0.07)'}, min:0, max:110 }
       },
       interaction:{ mode:'index', intersect:false }
     }
