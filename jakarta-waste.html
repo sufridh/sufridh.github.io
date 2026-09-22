@@ -132,6 +132,20 @@ font-weight:800;font-size:12.5px;border:2.5px solid #fff;box-shadow:0 2px 8px rg
 @media(max-width:780px){
   #side{max-height:calc(92vh - var(--pf-navh))}
 }
+/* the kecamatan scorecard and basemap picker sit inside the map, which starts
+   below the site nav — offset them by the nav height so nothing is hidden under it */
+#kecCard{
+  top:calc(var(--pf-navh, 0px) + 14px);
+  max-height:calc(100vh - var(--pf-navh, 0px) - 28px);
+  overflow-y:auto;
+}
+@media(max-width:780px){
+  #kecCard{
+    top:calc(var(--pf-navh, 0px) + 8px);
+    max-height:calc(100vh - var(--pf-navh, 0px) - 16px);
+  }
+  #basemapCtl{top:calc(var(--pf-navh, 0px) + 8px)}
+}
 </style>
 <script defer src="shell.js" data-base="" data-dir="" data-project="jakarta-waste" data-layout="app"></script>
 </head>
