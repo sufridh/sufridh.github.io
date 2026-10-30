@@ -738,7 +738,7 @@ section[hidden]{display:none}input{accent-color:var(--acc)}
 .bd{flex:none;min-width:30px;height:30px;padding:0 4px;border-radius:50%;color:#fff;font:700 12px/30px system-ui;text-align:center;font-style:normal}
 .cand.done{opacity:.65}.cand.done b::before{content:none}.cand.done .bd{background:#2a9d4a!important;font-size:0}.cand.done .bd::after{content:"\2713";font-size:14px}
 .cand:active,.ucand:active{background:var(--accb)}
-#bStart{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:600}#bStart.on{background:#b3261e;border-color:#b3261e;color:#fff}
+#bStart{font-weight:600}#bRec.on{background:#b3261e;border-color:#b3261e;color:#fff}
 .btns{flex-wrap:wrap}.btns button{min-width:calc(50% - 4px)}
 .gstat{background:var(--bg);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:13px}
 .fabs{position:absolute;left:calc(100% + 12px);bottom:24px;display:flex;flex-direction:column;gap:10px}
@@ -774,10 +774,16 @@ section[hidden]{display:none}input{accent-color:var(--acc)}
 <h2>Titik tambahan surveyor</h2><p class="sub">Temuan di luar daftar (IPAL, TPS liar, titik banjir, dll).</p>
 <div class="btns"><button id="bAddMap">+ Tambah di peta</button><button id="bAddGps">+ Di posisi GPS</button></div><div id="userList"></div></section>
 <section id="p-layer" hidden><h2>Jalan</h2><div id="lyRoad"></div><h2>Rencana &amp; kawasan</h2><div id="lyPlan"></div><h2>Data KMZ (usulan trase &amp; Flood West Java)</h2><div id="lyKmz"></div><h2>Titik &amp; fasilitas</h2><div id="lyPts"></div></section>
-<section id="p-gps" hidden><h2>Pelacak GPS</h2><div id="gps"><div class="btns"><button id="bStart" style="min-width:100%">Mulai lacak</button><button id="bFollow" disabled>Ikuti posisi: mati</button><button id="bClr" disabled>Hapus jejak</button></div>
-<div id="gstat" class="gstat">Belum aktif. Tekan "Mulai lacak" dan izinkan lokasi.</div>
+<section id="p-gps" hidden><h2>Posisi saya</h2><div id="gps"><div class="btns"><button id="bStart" style="min-width:100%">Posisi saya: mati</button><button id="bFollow" disabled style="min-width:100%">Ikuti posisi: mati</button></div>
+<div id="gstat" class="gstat">Mencari posisi...</div>
+<h2>Rekam jejak (opsional)</h2><p class="sub">Posisi Anda selalu tampil di peta. Jejak rute hanya direkam bila diaktifkan di sini.</p><div class="btns"><button id="bRec" disabled>Rekam jejak: mati</button><button id="bClr" disabled>Hapus jejak</button></div>
 <h2>Ekspor &amp; data</h2><div class="btns"><button id="bGpx" disabled>Ekspor GPX</button><button id="bJson">Ekspor titik + catatan</button><button id="bRst" style="min-width:100%">Kembalikan posisi awal semua pin</button></div></div></section>
-<section id="p-info" hidden><h2>Panduan</h2><p class="sub">Dibuat dari GPKG RTRW/toponimi, shapefile jalan, titik exit tol, dan paparan 2020 + slide hotspot. Statis, tanpa server.</p><div class="btns"><button id="bBrief" style="min-width:100%">Baca panduan surveyor</button></div><h2>Catatan data</h2>
+<section id="p-info" hidden><h2>Panduan</h2><p class="sub">Dibuat dari GPKG RTRW/toponimi, shapefile jalan, titik exit tol, dan paparan 2020 + slide hotspot. Statis, tanpa server.</p><div class="btns"><button id="bBrief" style="min-width:100%">Baca panduan surveyor</button></div><h2>Layar mati &amp; keamanan data</h2>
+<div class="note"><b>Aman saat layar mati:</b> catatan lapangan, tanda dikunjungi, koreksi posisi pin, titik tambahan, dan titik jejak yang sudah terekam tersimpan otomatis di browser.</div>
+<div class="note"><b>Tidak terekam saat layar mati:</b> posisi dan jejak GPS terhenti ketika layar terkunci atau browser berada di latar belakang, sehingga jejak ada celah. Saat halaman dibuka lagi, posisi menyala kembali otomatis. Data yang sudah tersimpan tidak hilang.</div>
+<div class="note"><b>Agar jejak utuh:</b> biarkan browser di depan selama merekam. Layar ditahan menyala otomatis saat Rekam jejak aktif.</div>
+<div class="note"><b>Data bisa hilang jika:</b> data browser/situs dihapus, memakai mode samaran (incognito), pindah browser atau HP, atau membuka file dari WhatsApp (bukan link https). Ekspor GeoJSON dan GPX saat istirahat siang dan di akhir hari.</div>
+<h2>Catatan data</h2>
 <div class="note">Dasar penentuan posisi tiap titik S32-S41 tercantum di popup masing-masing. Titik S32-S41 (persampahan, penyamakan, Cimanuk) ditambahkan dari catatan; koordinatnya <b>perkiraan</b>. Titik S42-S51 (Flood West Java) memakai koordinat dari KMZ (tanpa data spasial), geser/koreksi saat di lapangan. Status TPA Pasir Bajing (kebakaran, penolakan warga) berasal dari pemberitaan Okt 2026.</div>
 <div class="note">Verifikasi: banjir bandang 2016/2022 (sempadan, tanggul, relokasi, kolam retensi), kekumuhan & sanitasi area penyamakan, status IPAL komunal Sukaregang (5-6 unit, rusak) dan rencana IPAL terpusat + IPLT utara. Cantumkan foto sungai Cimanuk.</div>
 <div class="note">Arteri primer berasal dari <i>06_TRANSPORTASI_LN.shp</i>; kolektor dari layer RTRW. Beberapa ruas berbeda kelas antar sumber (mis. Jl. Cimanuk, Jl. Suherman, Jl. Raya Samarang), perlu konfirmasi ke Bina Marga.</div>
@@ -860,7 +866,7 @@ function setPos(id,y,x,src){const m=mk[id],ci=cInfo[id];ci.y=y;ci.x=x;m.setLatLn
 function disarm(id){const m=mk[id];if(m.dragging&&m.dragging.enabled())m.dragging.disable();paintPin(id)}
 window.setNote=(id,v)=>{if(v.trim())notes[id]=v;else delete notes[id];save('garut_notes',notes)};
 window.armDrag=id=>{const m=mk[id];m.dragging.enable();paintPin(id);m.closePopup();$('gstat').innerHTML='Mode geser: seret pin <b>'+id+'</b> ke lokasi sebenarnya, lalu lepas.';toast('Seret pin '+id+' ke lokasi sebenarnya')};
-window.moveGps=id=>{if(!lastFix){toast('Aktifkan "Mulai lacak" dan tunggu sinyal GPS dulu.');return}
+window.moveGps=id=>{if(!lastFix){toast('Nyalakan "Posisi saya" (tab GPS) dan tunggu sinyal GPS dulu.');return}
   if(lastFix.acc>30&&!confirm('Akurasi GPS masih ±'+Math.round(lastFix.acc)+' m. Tetap pindahkan pin ke posisi ini?'))return;
   setPos(id,lastFix.lat,lastFix.lon,'gps')};
 window.resetPos=id=>{if(confirm('Kembalikan '+id+' ke posisi awal?'))setPos(id,cInfo[id].y0,cInfo[id].x0,'reset')};
@@ -959,7 +965,7 @@ toggle('lyPts','user','Titik tambahan surveyor (T01...)','#c2185b','dot',uL);
 document.getElementById('bAddMap').onclick=()=>{const b=document.getElementById('bAddMap');if(b.classList.contains('on')){b.classList.remove('on');map.off('click',addClick);map.getContainer().style.cursor='';return}
   peek();toast('Ketuk lokasi di peta untuk menaruh titik');b.classList.add('on');b.textContent='Ketuk lokasi di peta...';map.getContainer().style.cursor='crosshair';map.on('click',addClick)};
 function addClick(e){const b=document.getElementById('bAddMap');b.classList.remove('on');b.textContent='+ Tambah di peta';map.off('click',addClick);map.getContainer().style.cursor='';uForm(null,e.latlng.lat,e.latlng.lng)}
-document.getElementById('bAddGps').onclick=()=>{if(!lastFix){toast('Aktifkan "Mulai lacak" dan tunggu sinyal GPS dulu.');return}uForm(null,lastFix.lat,lastFix.lon)};
+document.getElementById('bAddGps').onclick=()=>{if(!lastFix){toast('Nyalakan "Posisi saya" (tab GPS) dan tunggu sinyal GPS dulu.');return}uForm(null,lastFix.lat,lastFix.lon)};
 const userFeats=()=>userPts.map(u=>({type:'Feature',properties:{id:u.id,nama:u.nama,kategori:u.kat,sumber:'tambahan surveyor',catatan_lapangan:u.cat||null,waktu:u.t},geometry:{type:'Point',coordinates:[u.lon,u.lat]}}));
 
 /* ===== Briefing popup ===== */
@@ -986,7 +992,8 @@ function showBrief(first){
   <ul><li>Jangan menyentuh air limbah penyamakan dan jangan turun ke tebing atau air sungai; ambil foto dari tepi yang aman.</li>
    <li>Minta izin sebelum memotret pekarangan atau fasilitas; hindari memotret wajah warga tanpa izin.</li></ul>
   <h4>5. Menyimpan data</h4>
-  <ul><li>Koreksi posisi, catatan, titik tambahan, dan jejak GPS <b>hanya tersimpan di browser perangkat ini</b>. Jangan hapus data browser dan jangan pindah ke browser lain di tengah survei.</li>
+  <ul><li>Layar mati: catatan dan tanda kunjungan tetap aman, tetapi <b>posisi dan jejak GPS terhenti</b> selama layar terkunci. Biarkan browser di depan saat merekam; posisi menyala lagi otomatis saat halaman dibuka kembali.</li>
+   <li>Koreksi posisi, catatan, titik tambahan, dan jejak GPS <b>hanya tersimpan di browser perangkat ini</b>. Jangan hapus data browser dan jangan pindah ke browser lain di tengah survei.</li>
    <li>Di akhir hari tekan <b>Ekspor titik + catatan</b> (GeoJSON) dan <b>Ekspor GPX</b>, lalu kirim ke koordinator.</li></ul>`,
   first?`<label style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input type="checkbox" id="bkOk"> Saya sudah membaca dan memahami panduan ini</label><div class="btns"><button id="bkGo" disabled>Mulai survei</button></div>`:`<div class="btns"><button id="bkGo">Tutup</button></div>`);
   const go=o.querySelector('#bkGo'),ck=o.querySelector('#bkOk');
@@ -1006,7 +1013,7 @@ function hav(a,b,c,d){const R=6371000,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.s
 function trackLen(){let s=0;for(let i=1;i<track.length;i++)s+=hav(track[i-1].lat,track[i-1].lon,track[i].lat,track[i].lon);return s}
 const fmt=m=>m>=1000?(m/1000).toFixed(2)+' km':Math.round(m)+' m';
 function gpsUpdate(){
-  let h='';
+  let h=watchId!=null&&!lastFix?'Mencari sinyal GPS...<br>':'';
   if(lastFix){h+=`Akurasi <b>±${Math.round(lastFix.acc)} m</b>`+(lastFix.spd!=null&&lastFix.spd>0?` &middot; <b>${(lastFix.spd*3.6).toFixed(1)} km/j</b>`:'')+'<br>';
     let best=null;for(const id in cInfo){if(visited[id])continue;const d=hav(lastFix.lat,lastFix.lon,cInfo[id].y,cInfo[id].x);if(!best||d<best.d)best={id,d}}
     if(best)h+=`Terdekat (belum dikunjungi): <b>${best.id} ${esc(cInfo[best.id].nama)}</b> &mdash; ${fmt(best.d)}<br>`;}
@@ -1014,31 +1021,38 @@ function gpsUpdate(){
   const nv=Object.keys(visited).length;h+=` &middot; Dikunjungi: <b>${nv}/${Object.keys(cInfo).length}</b>`;
   $('gstat').innerHTML=h;
   $('pv').textContent=nv+'/'+Object.keys(cInfo).length;$('pbar').style.width=(nv/Object.keys(cInfo).length*100)+'%';
-  const on=watchId!=null;$('gchip').textContent=on&&lastFix?'GPS ±'+Math.round(lastFix.acc)+' m':on?'GPS mencari…':'GPS mati';$('gchip').className='gchip '+(on&&lastFix?(lastFix.acc<=30?'g':'y'):'');$('fLoc').classList.toggle('on',on);
+  const on=watchId!=null;$('gchip').textContent=(on&&lastFix?'GPS ±'+Math.round(lastFix.acc)+' m':on?'GPS mencari…':'GPS mati')+(on&&rec?' · REC':'');$('gchip').className='gchip '+(on&&lastFix?(lastFix.acc<=30?'g':'y'):'');$('fLoc').classList.toggle('on',on);
   $('bGpx').disabled=!track.length&&!nv&&!Object.keys(moved).length&&!userPts.length;$('bClr').disabled=!track.length;
 }
 function onPos(p){
   const c=p.coords;lastFix={lat:c.latitude,lon:c.longitude,acc:c.accuracy,spd:c.speed};
   const ll=[c.latitude,c.longitude];
-  if(!meM){meM=L.marker(ll,{icon:L.divIcon({className:'',html:'<div class="me"></div>',iconSize:[16,16]}),zIndexOffset:1000}).addTo(map);accC=L.circle(ll,{radius:c.accuracy,color:'#1a73e8',weight:1,fillOpacity:.1}).addTo(map);peek();map.setView(ll,Math.max(map.getZoom(),17));toast('Posisi ditemukan (±'+Math.round(c.accuracy)+' m)')}
+  if(!meM){meM=L.marker(ll,{icon:L.divIcon({className:'',html:'<div class="me"></div>',iconSize:[16,16]}),zIndexOffset:1000}).addTo(map);accC=L.circle(ll,{radius:c.accuracy,color:'#1a73e8',weight:1,fillOpacity:.1}).addTo(map);if(AREA.contains(ll)){map.setView(ll,Math.max(map.getZoom(),17));toast('Posisi ditemukan (±'+Math.round(c.accuracy)+' m)')}else toast('Posisi Anda di luar area survei Garut')}
   else{meM.setLatLng(ll);accC.setLatLng(ll).setRadius(c.accuracy)}
   const prev=track[track.length-1];
-  if(c.accuracy<=50&&(!prev||hav(prev.lat,prev.lon,ll[0],ll[1])>=5)){
+  if(rec&&c.accuracy<=50&&(!prev||hav(prev.lat,prev.lon,ll[0],ll[1])>=5)){
     track.push({lat:c.latitude,lon:c.longitude,ele:c.altitude,t:new Date(p.timestamp).toISOString()});line.addLatLng(ll);
     try{localStorage.setItem('garut_track',JSON.stringify(track))}catch(e){}}
   if(follow)map.setView(ll,Math.max(map.getZoom(),17));
   gpsUpdate();
 }
 function onErr(e){const m={1:'izin lokasi ditolak',2:'posisi tidak tersedia (coba di tempat terbuka)',3:'waktu habis, mencoba lagi'}[e.code]||e.message;
-  $('gstat').textContent='GPS gagal: '+m+'.';toast('GPS gagal: '+m);$('gchip').textContent='GPS error';$('gchip').className='gchip y';
-  if(e.code===1&&watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null;$('bStart').textContent='Mulai lacak';$('bStart').classList.remove('on');$('fLoc').classList.remove('on');keepAwake(false)}}
+  $('gstat').textContent='GPS gagal: '+m+'.';toast('GPS gagal: '+m);
+  if(e.code===1&&watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null;keepAwake(false);uiLoc()}
+  $('gchip').textContent='GPS error';$('gchip').className='gchip y'}
 async function keepAwake(on){try{if(on&&navigator.wakeLock)wake=await navigator.wakeLock.request('screen');else if(wake){wake.release();wake=null}}catch(e){}}
-$('bStart').onclick=()=>{
-  if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null;$('bStart').textContent='Mulai lacak';$('bStart').classList.remove('on');keepAwake(false);gpsUpdate();return}
+const AREA=L.geoJSON(D.arteri).getBounds().pad(.6);
+let rec=false,locWanted=true;try{rec=localStorage.getItem('garut_rec')==='1';locWanted=localStorage.getItem('garut_loc_off')!=='1'}catch(e){}
+const lset=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+function uiLoc(){const on=watchId!=null;$('bStart').textContent='Posisi saya: '+(on?'nyala':'mati');$('bStart').classList.toggle('on',on);$('bFollow').disabled=!on;$('bRec').disabled=!on;$('bRec').textContent='Rekam jejak: '+(rec?'nyala':'mati');$('bRec').classList.toggle('on',rec)}
+function startLoc(){if(watchId!=null)return;
   if(!navigator.geolocation||!window.isSecureContext){const m=navigator.geolocation?'GPS butuh https. Buka lewat alamat https (mis. github.io), bukan file lokal/WhatsApp.':'Browser tidak mendukung geolokasi.';$('gstat').textContent=m;toast(m);return}
   watchId=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:2000,timeout:20000});
-  $('bStart').textContent='Hentikan lacak';$('bStart').classList.add('on');$('bFollow').disabled=false;$('gstat').textContent='Mencari sinyal GPS...';$('gchip').textContent='GPS mencari…';$('fLoc').classList.add('on');keepAwake(true);
-};
+  uiLoc();gpsUpdate();keepAwake(rec)}
+function stopLoc(){if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null}lastFix=null;keepAwake(false);uiLoc();gpsUpdate()}
+$('bStart').onclick=()=>{if(watchId!=null){locWanted=false;stopLoc()}else{locWanted=true;startLoc()}lset('garut_loc_off',locWanted?'0':'1')};
+$('bRec').onclick=()=>{rec=!rec;lset('garut_rec',rec?'1':'0');uiLoc();gpsUpdate();keepAwake(rec&&watchId!=null);toast(rec?'Merekam jejak. Biarkan layar menyala.':'Rekam jejak dihentikan (jejak tersimpan).')};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible'||!locWanted)return;if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null}startLoc();if(rec)keepAwake(true)});
 $('bFollow').onclick=()=>{follow=!follow;$('bFollow').textContent='Ikuti posisi: '+(follow?'nyala':'mati');$('bFollow').classList.toggle('on',follow);if(follow&&lastFix)map.setView([lastFix.lat,lastFix.lon],Math.max(map.getZoom(),17))};
 $('bClr').onclick=()=>{if(!confirm('Hapus seluruh jejak GPS tersimpan?'))return;track=[];line.setLatLngs([]);try{localStorage.removeItem('garut_track')}catch(e){}gpsUpdate()};
 $('bGpx').onclick=()=>{
@@ -1058,7 +1072,8 @@ $('bRst').onclick=()=>{const ids=Object.keys(moved);if(!ids.length){toast('Belum
   if(!confirm('Kembalikan '+ids.length+' pin ke posisi awal? Catatan lapangan tidak dihapus.'))return;
   ids.forEach(id=>{const ci=cInfo[id];ci.y=ci.y0;ci.x=ci.x0;mk[id].setLatLng([ci.y0,ci.x0]);delete moved[id];paintPin(id)});save('garut_moved',moved);map.closePopup();gpsUpdate()};
 gpsUpdate();
-$('fLoc').onclick=()=>{if(watchId==null){$('bStart').click();if(watchId!=null){if(!follow)$('bFollow').click();toast('Mencari sinyal GPS…')}return}
+$('fLoc').onclick=()=>{if(watchId==null){locWanted=true;lset('garut_loc_off','0');startLoc();if(watchId!=null)toast('Mencari sinyal GPS…');return}
   if(lastFix){peek();map.setView([lastFix.lat,lastFix.lon],Math.max(map.getZoom(),17))}else toast('Masih mencari sinyal GPS…')};
 $('fAdd').onclick=()=>$('bAddMap').click();
+uiLoc();if(locWanted)startLoc();
 </script></body></html>
