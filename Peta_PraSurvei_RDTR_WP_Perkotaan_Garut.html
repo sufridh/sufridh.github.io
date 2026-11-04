@@ -762,6 +762,23 @@ section[hidden]{display:none}input{accent-color:var(--acc)}
  .leaflet-control-zoom{display:none}
 }
 @media (pointer:coarse){.chip{min-height:38px}.fab{min-height:0}}
+
+/* ===== Foto titik ===== */
+.pin{position:relative}
+.pin.hp::after{content:"";position:absolute;right:-6px;top:-6px;width:10px;height:10px;border-radius:50%;background:#1a73e8;border:2px solid #fff;box-shadow:0 0 0 1px #0006}
+.pop .ph .strip{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px}
+.pop .ph .strip:empty{display:none}
+.pop .pth{flex:none;width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid #bbb;background:#eee;cursor:pointer}
+.pop .pcn{display:inline;color:#222}
+@media (max-width:720px){.pop{max-height:min(62dvh,480px)}}
+.lb{position:fixed;inset:0;z-index:3500;background:#000;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+.lbt{padding:10px 14px;color:#fff;font-size:14px;flex:none}
+.lbi{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.lbi img{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px}
+.lbf{flex:none;background:var(--panel);color:var(--ink);padding:10px 14px calc(10px + env(safe-area-inset-bottom));border-radius:14px 14px 0 0}
+.lbf .sub{margin:0 0 6px}
+.lbf input[type=text]{width:100%;font:inherit;font-size:16px;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;margin-bottom:6px}
+.lbf .btns button{min-width:0}
 </style></head><body>
 <aside>
 <div class="fabs"><button class="fab" id="fAdd" aria-label="Tambah titik">+</button><button class="fab" id="fLoc" aria-label="Lokasi saya"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button></div>
@@ -777,11 +794,12 @@ section[hidden]{display:none}input{accent-color:var(--acc)}
 <section id="p-gps" hidden><h2>Posisi saya</h2><div id="gps"><div class="btns"><button id="bStart" style="min-width:100%">Posisi saya: mati</button><button id="bFollow" disabled style="min-width:100%">Ikuti posisi: mati</button></div>
 <div id="gstat" class="gstat">Mencari posisi...</div>
 <h2>Rekam jejak (opsional)</h2><p class="sub">Posisi Anda selalu tampil di peta. Jejak rute hanya direkam bila diaktifkan di sini.</p><div class="btns"><button id="bRec" disabled>Rekam jejak: mati</button><button id="bClr" disabled>Hapus jejak</button></div>
-<h2>Ekspor &amp; data</h2><div class="btns"><button id="bGpx" disabled>Ekspor GPX</button><button id="bJson">Ekspor titik + catatan</button><button id="bRst" style="min-width:100%">Kembalikan posisi awal semua pin</button></div></div></section>
+<h2>Ekspor &amp; data</h2><div class="btns"><button id="bGpx" disabled>Ekspor GPX</button><button id="bJson">Ekspor titik + catatan</button><button id="bPhoto" style="min-width:100%">Ekspor foto (ZIP)</button><button id="bRst" style="min-width:100%">Kembalikan posisi awal semua pin</button></div></div></section>
 <section id="p-info" hidden><h2>Panduan</h2><p class="sub">Dibuat dari GPKG RTRW/toponimi, shapefile jalan, titik exit tol, dan paparan 2020 + slide hotspot. Statis, tanpa server.</p><div class="btns"><button id="bBrief" style="min-width:100%">Baca panduan surveyor</button></div><h2>Layar mati &amp; keamanan data</h2>
-<div class="note"><b>Aman saat layar mati:</b> catatan lapangan, tanda dikunjungi, koreksi posisi pin, titik tambahan, dan titik jejak yang sudah terekam tersimpan otomatis di browser.</div>
+<div class="note"><b>Aman saat layar mati:</b> catatan lapangan, tanda dikunjungi, koreksi posisi pin, titik tambahan, foto, dan titik jejak yang sudah terekam tersimpan otomatis di browser.</div>
 <div class="note"><b>Tidak terekam saat layar mati:</b> posisi dan jejak GPS terhenti ketika layar terkunci atau browser berada di latar belakang, sehingga jejak ada celah. Saat halaman dibuka lagi, posisi menyala kembali otomatis. Data yang sudah tersimpan tidak hilang.</div>
 <div class="note"><b>Agar jejak utuh:</b> biarkan browser di depan selama merekam. Layar ditahan menyala otomatis saat Rekam jejak aktif.</div>
+<div class="note"><b>Foto:</b> diambil atau dipilih dari popup tiap titik, diperkecil otomatis (maks. 1600 px) dan disimpan di browser perangkat ini. Nama berkas otomatis, mis. S38_01.jpg. Data EXIF/geotag kamera tidak ikut tersimpan; koordinat GPS saat memotret (bila GPS menyala) dicatat di <i>foto_index.csv</i> dalam ZIP. Ekspor foto di tab GPS saat istirahat siang dan di akhir hari.</div>
 <div class="note"><b>Data bisa hilang jika:</b> data browser/situs dihapus, memakai mode samaran (incognito), pindah browser atau HP, atau membuka file dari WhatsApp (bukan link https). Ekspor GeoJSON dan GPX saat istirahat siang dan di akhir hari.</div>
 <h2>Catatan data</h2>
 <div class="note">Dasar penentuan posisi tiap titik S32-S41 tercantum di popup masing-masing. Titik S32-S41 (persampahan, penyamakan, Cimanuk) ditambahkan dari catatan; koordinatnya <b>perkiraan</b>. Titik S42-S51 (Flood West Java) memakai koordinat dari KMZ (tanpa data spasial), geser/koreksi saat di lapangan. Status TPA Pasir Bajing (kebakaran, penolakan warga) berasal dari pemberitaan Okt 2026.</div>
@@ -837,6 +855,7 @@ const cc={'Flood West Java (FMNJP)':'#00838f','Persampahan':'#7b5e2b','Industri 
 const cL=L.layerGroup(),box=document.getElementById('cands'),mk={},rowEl={},cInfo={};
 let visited={};try{visited=JSON.parse(localStorage.getItem('garut_visit')||'{}')}catch(e){}
 let moved={},notes={};
+const pm={};/* foto: pid -> [meta] */
 try{moved=JSON.parse(localStorage.getItem('garut_moved')||'{}')}catch(e){}
 try{notes=JSON.parse(localStorage.getItem('garut_notes')||'{}')}catch(e){}
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -844,7 +863,7 @@ const wpRing=D.wp.features[0].geometry.coordinates[0][0];
 function inWP(x,y){let c=false;for(let i=0,j=wpRing.length-1;i<wpRing.length;j=i++){const a=wpRing[i],b=wpRing[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c}return c}
 const P={};
 function pinEl(id){const m=mk[id];return m&&m._icon?m._icon.firstChild:null}
-function paintPin(id){const el=pinEl(id);if(el){el.classList.toggle('mv',!!moved[id]);el.classList.toggle('dg',!!(mk[id].dragging&&mk[id].dragging.enabled()))}}
+function paintPin(id){const el=pinEl(id);if(el){el.classList.toggle('mv',!!moved[id]);el.classList.toggle('dg',!!(mk[id].dragging&&mk[id].dragging.enabled()));el.classList.toggle('hp',(pm[id]||[]).length>0)}}
 function popHTML(id){
   const p=P[id],ci=cInfo[id],mv=moved[id],inside=inWP(ci.x,ci.y);
   let h=`<div class="pop"><b>${esc(p.id)} - ${esc(p.nama)}</b><span class="tag">${esc(p.kat)}</span><br>${esc(p.alasan)}`;
@@ -855,6 +874,7 @@ function popHTML(id){
   else if(p.perk)h+=`<div class="dasar"><b>Posisi perkiraan</b>${esc(p.dasar||'')}</div>`;
   h+=`<div class="lbl">Delineasi WP: ${inside?'<span class="ok">di dalam</span>':'<span class="no">di luar</span>'} &middot; ${ci.y.toFixed(5)}, ${ci.x.toFixed(5)}</div>`;
   h+=`<div class="lbl">Catatan lapangan (tersimpan otomatis)</div><textarea oninput="setNote('${id}',this.value)" placeholder="Hasil observasi, nama narasumber, nomor foto...">${esc(notes[id]||'')}</textarea>`;
+  h+=photoBlock(id);
   h+=`<button class="vbtn pri" onclick="toggleVisit('${id}')">${visited[id]?'Batalkan tanda dikunjungi':'Tandai sudah dikunjungi'}</button>`;
   h+=`<div class="btns"><button onclick="moveGps('${id}')">Pindah ke posisi GPS saya</button><button onclick="armDrag('${id}')">Geser pin</button></div>`;
   if(mv)h+=`<button class="vbtn" onclick="resetPos('${id}')">Kembalikan posisi awal</button>`;
@@ -877,8 +897,8 @@ D.cand.features.forEach(f=>{
   cInfo[p.id]={y:mv?mv.lat:y,x:mv?mv.lon:x,y0:y,x0:x,nama:p.nama};
   m.on('dragend',()=>{const ll=m.getLatLng();setPos(p.id,ll.lat,ll.lng,'drag')});
   m.on('add',()=>setTimeout(()=>paintPin(p.id),0));
-  m.bindPopup(()=>popHTML(p.id),{maxWidth:320}).addTo(cL);mk[p.id]=m;
-  const e=document.createElement('div');e.className='cand';e.innerHTML=`<i class="bd" style="background:${c}">${esc(p.id.slice(1))}</i><span><b>${esc(p.nama)}</b><small>${esc(p.kat)}</small></span>`;
+  m.bindPopup(()=>popEl(popHTML(p.id)),{maxWidth:320}).addTo(cL);mk[p.id]=m;
+  const e=document.createElement('div');e.className='cand';e.innerHTML=`<i class="bd" style="background:${c}">${esc(p.id.slice(1))}</i><span><b>${esc(p.nama)}</b><small>${esc(p.kat)}<span class="pcl"></span></small></span>`;
   e.onclick=()=>{peek();const ll=m.getLatLng();map.setView(ll,16);m.openPopup()};box.appendChild(e);rowEl[p.id]=e;
 });
 toggle('lyPts','cand','Kandidat titik survei (S01-S51)','#0f6b6b','dot',cL);
@@ -931,14 +951,14 @@ function catColor(k){if(cc[k])return cc[k];let h=0;for(const ch of k)h=(h*31+ch.
 let userPts=[];try{userPts=JSON.parse(localStorage.getItem('garut_user')||'[]')}catch(e){}
 const uMk={},uL=L.layerGroup();
 const saveU=()=>save('garut_user',userPts);
-function uPop(u){return `<div class="pop"><b>${esc(u.id)} - ${esc(u.nama)}</b><span class="tag" style="background:${catColor(u.kat)};color:#fff">${esc(u.kat)}</span><br>${esc(u.cat||'(tanpa catatan)')}<div class="lbl">${u.lat.toFixed(5)}, ${u.lon.toFixed(5)} &middot; ${esc(u.t.slice(0,16).replace('T',' '))}</div><div class="btns"><button onclick="uEdit('${u.id}')">Ubah</button><button onclick="uDrag('${u.id}')">Geser pin</button><button onclick="uDel('${u.id}')">Hapus</button></div></div>`}
+function uPop(u){return `<div class="pop"><b>${esc(u.id)} - ${esc(u.nama)}</b><span class="tag" style="background:${catColor(u.kat)};color:#fff">${esc(u.kat)}</span><br>${esc(u.cat||'(tanpa catatan)')}<div class="lbl">${u.lat.toFixed(5)}, ${u.lon.toFixed(5)} &middot; ${esc(u.t.slice(0,16).replace('T',' '))}</div>${photoBlock(u.id)}<div class="btns"><button onclick="uEdit('${u.id}')">Ubah</button><button onclick="uDrag('${u.id}')">Geser pin</button><button onclick="uDel('${u.id}')">Hapus</button></div></div>`}
 function uRender(u){
   if(uMk[u.id])uL.removeLayer(uMk[u.id]);
-  const m=L.marker([u.lat,u.lon],{icon:L.divIcon({className:'',html:`<div class="pin" style="background:${catColor(u.kat)};border-radius:4px">${esc(u.id)}</div>`,iconSize:[26,22]}),draggable:false});
-  m.bindPopup(()=>uPop(u)).on('dragend',()=>{const ll=m.getLatLng();u.lat=ll.lat;u.lon=ll.lng;m.dragging.disable();saveU();uList();m.openPopup()});
-  uMk[u.id]=m;uL.addLayer(m)}
+  const m=L.marker([u.lat,u.lon],{icon:L.divIcon({className:'',html:`<div class="pin${(pm[u.id]||[]).length?' hp':''}" style="background:${catColor(u.kat)};border-radius:4px">${esc(u.id)}</div>`,iconSize:[26,22]}),draggable:false});
+  m.bindPopup(()=>popEl(uPop(u))).on('dragend',()=>{const ll=m.getLatLng();u.lat=ll.lat;u.lon=ll.lng;m.dragging.disable();saveU();uList();m.openPopup()});
+  uMk[u.id]=m;m.on('add',()=>setTimeout(()=>paintHP(u.id),0));uL.addLayer(m)}
 function uList(){const el=document.getElementById('userList');el.innerHTML=userPts.length?'':'<p class="sub">Belum ada titik tambahan.</p>';
-  userPts.forEach(u=>{const d=document.createElement('div');d.className='ucand';d.innerHTML=`<i class="bd" style="background:${catColor(u.kat)};border-radius:8px">${esc(u.id)}</i><span><b>${esc(u.nama)}</b><small>${esc(u.kat)}</small></span>`;d.onclick=()=>{peek();map.setView([u.lat,u.lon],17);uMk[u.id].openPopup()};el.appendChild(d)})}
+  userPts.forEach(u=>{const d=document.createElement('div');d.className='ucand';d.innerHTML=`<i class="bd" style="background:${catColor(u.kat)};border-radius:8px">${esc(u.id)}</i><span><b>${esc(u.nama)}</b><small>${esc(u.kat)}${pcl(u.id)}</small></span>`;d.onclick=()=>{peek();map.setView([u.lat,u.lon],17);uMk[u.id].openPopup()};el.appendChild(d)})}
 function uForm(u,lat,lon){
   const cats=catList().concat(['Lainnya (ketik sendiri)']);const cur=u?u.kat:cats[0];
   const o=openModal(`<h3>${u?'Ubah titik '+esc(u.id):'Titik baru'}</h3><div class="sub">${lat.toFixed(5)}, ${lon.toFixed(5)}</div>
@@ -959,14 +979,14 @@ function uForm(u,lat,lon){
 }
 window.uEdit=id=>{const u=userPts.find(x=>x.id===id);map.closePopup();uForm(u,u.lat,u.lon)};
 window.uDrag=id=>{uMk[id].dragging.enable();map.closePopup();document.getElementById('gstat').innerHTML='Seret pin <b>'+id+'</b> ke lokasi yang benar.'};
-window.uDel=id=>{if(!confirm('Hapus titik '+id+'?'))return;userPts=userPts.filter(x=>x.id!==id);uL.removeLayer(uMk[id]);delete uMk[id];saveU();uList();map.closePopup()};
+window.uDel=id=>{if(!confirm('Hapus titik '+id+((pm[id]||[]).length?' beserta '+pm[id].length+' fotonya':'')+'?'))return;userPts=userPts.filter(x=>x.id!==id);delPhotosOf(id);uL.removeLayer(uMk[id]);delete uMk[id];saveU();uList();map.closePopup()};
 userPts.forEach(uRender);uList();
 toggle('lyPts','user','Titik tambahan surveyor (T01...)','#c2185b','dot',uL);
 document.getElementById('bAddMap').onclick=()=>{const b=document.getElementById('bAddMap');if(b.classList.contains('on')){b.classList.remove('on');map.off('click',addClick);map.getContainer().style.cursor='';return}
   peek();toast('Ketuk lokasi di peta untuk menaruh titik');b.classList.add('on');b.textContent='Ketuk lokasi di peta...';map.getContainer().style.cursor='crosshair';map.on('click',addClick)};
 function addClick(e){const b=document.getElementById('bAddMap');b.classList.remove('on');b.textContent='+ Tambah di peta';map.off('click',addClick);map.getContainer().style.cursor='';uForm(null,e.latlng.lat,e.latlng.lng)}
 document.getElementById('bAddGps').onclick=()=>{if(!lastFix){toast('Nyalakan "Posisi saya" (tab GPS) dan tunggu sinyal GPS dulu.');return}uForm(null,lastFix.lat,lastFix.lon)};
-const userFeats=()=>userPts.map(u=>({type:'Feature',properties:{id:u.id,nama:u.nama,kategori:u.kat,sumber:'tambahan surveyor',catatan_lapangan:u.cat||null,waktu:u.t},geometry:{type:'Point',coordinates:[u.lon,u.lat]}}));
+const userFeats=()=>userPts.map(u=>({type:'Feature',properties:{id:u.id,nama:u.nama,kategori:u.kat,sumber:'tambahan surveyor',catatan_lapangan:u.cat||null,waktu:u.t,jumlah_foto:(pm[u.id]||[]).length,foto:(pm[u.id]||[]).map(x=>x.name)},geometry:{type:'Point',coordinates:[u.lon,u.lat]}}));
 
 /* ===== Briefing popup ===== */
 const BRIEF_KEY='garut_brief_ok_v1';
@@ -985,16 +1005,16 @@ function showBrief(first){
    <li><b>Lokasi Flood West Java / FMNJP (S42-S51):</b> paket bendung CM-0C, paket CM-4a/4b/4c, dan segmen peninggian tanggul CM-7. Cocokkan polygon di peta dengan kondisi nyata (sudah ada pekerjaan atau belum, permukiman dan lahan di dalamnya, jalan akses).</li>
    <li><b>Sungai Cimanuk (S40-S41):</b> sempadan, permukiman di bantaran, kondisi tanggul, kolam retensi/relokasi, jejak banjir bandang 2016 dan 2022, serta foto kondisi air.</li></ul>
   <h4>3. Dokumentasi</h4><ul>
-   <li>Aktifkan geotag kamera. Beri nama foto <b>ID titik + nomor urut</b>, mis. <i>S38_01.jpg</i>; untuk titik tambahan <i>T01_01.jpg</i>.</li>
-   <li>Ambil foto lebar dan foto detail, dan catat nomor foto di kolom Catatan lapangan.</li></ul>
+   <li>Foto diambil langsung dari popup titik: tekan <b>Ambil foto</b> (kamera) atau <b>Pilih dari galeri</b>. Nama berkas otomatis <b>ID titik + nomor urut</b>, mis. <i>S38_01.jpg</i>; untuk titik tambahan <i>T01_01.jpg</i>.</li>
+   <li>Ambil foto lebar dan foto detail. Ketuk gambar kecil untuk memperbesar, memberi keterangan, atau menghapus. Pin yang sudah ada fotonya diberi titik biru.</li></ul>
   <h4>4. Keselamatan dan etika</h4>
   <div class="warn">TPA Pasir Bajing baru terbakar (Okt 2026) dan warga sekitar sedang menolak pembuangan sampah. Jangan mendekati area asap/terbakar, pakai masker, dan lapor dulu ke aparat desa atau pengelola sebelum masuk.</div>
   <ul><li>Jangan menyentuh air limbah penyamakan dan jangan turun ke tebing atau air sungai; ambil foto dari tepi yang aman.</li>
    <li>Minta izin sebelum memotret pekarangan atau fasilitas; hindari memotret wajah warga tanpa izin.</li></ul>
   <h4>5. Menyimpan data</h4>
   <ul><li>Layar mati: catatan dan tanda kunjungan tetap aman, tetapi <b>posisi dan jejak GPS terhenti</b> selama layar terkunci. Biarkan browser di depan saat merekam; posisi menyala lagi otomatis saat halaman dibuka kembali.</li>
-   <li>Koreksi posisi, catatan, titik tambahan, dan jejak GPS <b>hanya tersimpan di browser perangkat ini</b>. Jangan hapus data browser dan jangan pindah ke browser lain di tengah survei.</li>
-   <li>Di akhir hari tekan <b>Ekspor titik + catatan</b> (GeoJSON) dan <b>Ekspor GPX</b>, lalu kirim ke koordinator.</li></ul>`,
+   <li>Koreksi posisi, catatan, foto, titik tambahan, dan jejak GPS <b>hanya tersimpan di browser perangkat ini</b>. Jangan hapus data browser dan jangan pindah ke browser lain di tengah survei.</li>
+   <li>Di akhir hari tekan <b>Ekspor titik + catatan</b> (GeoJSON), <b>Ekspor GPX</b>, dan <b>Ekspor foto (ZIP)</b>, lalu kirim ke koordinator.</li></ul>`,
   first?`<label style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input type="checkbox" id="bkOk"> Saya sudah membaca dan memahami panduan ini</label><div class="btns"><button id="bkGo" disabled>Mulai survei</button></div>`:`<div class="btns"><button id="bkGo">Tutup</button></div>`);
   const go=o.querySelector('#bkGo'),ck=o.querySelector('#bkOk');
   if(ck)ck.onchange=()=>go.disabled=!ck.checked;
@@ -1018,7 +1038,7 @@ function gpsUpdate(){
     let best=null;for(const id in cInfo){if(visited[id])continue;const d=hav(lastFix.lat,lastFix.lon,cInfo[id].y,cInfo[id].x);if(!best||d<best.d)best={id,d}}
     if(best)h+=`Terdekat (belum dikunjungi): <b>${best.id} ${esc(cInfo[best.id].nama)}</b> &mdash; ${fmt(best.d)}<br>`;}
   h+=`Jejak: <b>${track.length}</b> titik, <b>${fmt(trackLen())}</b>`;
-  const nv=Object.keys(visited).length;h+=` &middot; Dikunjungi: <b>${nv}/${Object.keys(cInfo).length}</b>`;
+  const nv=Object.keys(visited).length;h+=` &middot; Dikunjungi: <b>${nv}/${Object.keys(cInfo).length}</b>`;const ptt=photoTotal();if(ptt.n)h+=`<br>Foto: <b>${ptt.n}</b> &middot; ${fmtB(ptt.b)}`;
   $('gstat').innerHTML=h;
   $('pv').textContent=nv+'/'+Object.keys(cInfo).length;$('pbar').style.width=(nv/Object.keys(cInfo).length*100)+'%';
   const on=watchId!=null;$('gchip').textContent=(on&&lastFix?'GPS ±'+Math.round(lastFix.acc)+' m':on?'GPS mencari…':'GPS mati')+(on&&rec?' · REC':'');$('gchip').className='gchip '+(on&&lastFix?(lastFix.acc<=30?'g':'y'):'');$('fLoc').classList.toggle('on',on);
@@ -1065,7 +1085,7 @@ $('bGpx').onclick=()=>{
   g+='</gpx>';const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([g],{type:'application/gpx+xml'}));a.download='survei_garut_'+new Date().toISOString().slice(0,10)+'.gpx';a.click();
 };
 $('bJson').onclick=()=>{
-  const fc={type:'FeatureCollection',features:userFeats().concat(D.cand.features.map(f=>{const p=f.properties,ci=cInfo[p.id];return{type:'Feature',properties:{id:p.id,nama:p.nama,kategori:p.kat,dikunjungi:visited[p.id]?visited[p.id].t:null,posisi_dikoreksi:moved[p.id]?moved[p.id].src:null,koordinat_awal:[ci.x0,ci.y0],di_dalam_delineasi_wp:inWP(ci.x,ci.y),catatan_lapangan:notes[p.id]||null},geometry:{type:'Point',coordinates:[ci.x,ci.y]}}}))};
+  const fc={type:'FeatureCollection',features:userFeats().concat(D.cand.features.map(f=>{const p=f.properties,ci=cInfo[p.id];return{type:'Feature',properties:{id:p.id,nama:p.nama,kategori:p.kat,dikunjungi:visited[p.id]?visited[p.id].t:null,posisi_dikoreksi:moved[p.id]?moved[p.id].src:null,koordinat_awal:[ci.x0,ci.y0],di_dalam_delineasi_wp:inWP(ci.x,ci.y),catatan_lapangan:notes[p.id]||null,jumlah_foto:(pm[p.id]||[]).length,foto:(pm[p.id]||[]).map(x=>x.name)},geometry:{type:'Point',coordinates:[ci.x,ci.y]}}}))};
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(fc,null,1)],{type:'application/geo+json'}));a.download='titik_survei_garut_'+new Date().toISOString().slice(0,10)+'.geojson';a.click();
 };
 $('bRst').onclick=()=>{const ids=Object.keys(moved);if(!ids.length){toast('Belum ada pin yang dikoreksi.');return}
@@ -1075,5 +1095,152 @@ gpsUpdate();
 $('fLoc').onclick=()=>{if(watchId==null){locWanted=true;lset('garut_loc_off','0');startLoc();if(watchId!=null)toast('Mencari sinyal GPS…');return}
   if(lastFix){peek();map.setView([lastFix.lat,lastFix.lon],Math.max(map.getZoom(),17))}else toast('Masih mencari sinyal GPS…')};
 $('fAdd').onclick=()=>$('bAddMap').click();
+/* ===== Foto per titik (IndexedDB) ===== */
+const PHOTO_MAX=1600,PHOTO_Q=.82,THUMB_MAX=180;
+const PDB=(()=>{let db=null;
+  const open=()=>db?Promise.resolve(db):new Promise((res,rej)=>{
+    if(!window.indexedDB){rej(new Error('Penyimpanan foto tidak tersedia di browser ini'));return}
+    let r;try{r=indexedDB.open('garut_foto',1)}catch(e){rej(e);return}
+    r.onupgradeneeded=()=>{const s=r.result.createObjectStore('p',{keyPath:'id',autoIncrement:true});s.createIndex('pid','pid')};
+    r.onsuccess=()=>{db=r.result;db.onclose=()=>{db=null};res(db)};r.onerror=()=>rej(r.error||new Error('IndexedDB gagal dibuka'));r.onblocked=()=>rej(new Error('IndexedDB terblokir'))});
+  const run=(mode,fn)=>open().then(d=>new Promise((res,rej)=>{const t=d.transaction('p',mode),s=t.objectStore('p');let out;const q=fn(s);if(q)q.onsuccess=()=>{out=q.result};t.oncomplete=()=>res(out);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error||new Error('Transaksi dibatalkan'))}));
+  return{add:r=>run('readwrite',s=>s.add(r)),put:r=>run('readwrite',s=>s.put(r)),get:id=>run('readonly',s=>s.get(id)),del:id=>run('readwrite',s=>s.delete(id)),byPid:p=>run('readonly',s=>s.index('pid').getAll(p)),all:()=>run('readonly',s=>s.getAll())}})();
+
+function meta(r){return{id:r.id,pid:r.pid,seq:r.seq,name:r.name,t:r.t,size:r.size||0,cap:r.cap||'',lat:r.lat==null?null:r.lat,lon:r.lon==null?null:r.lon,acc:r.acc==null?null:r.acc,src:r.src||''}}
+function pcl(id){const n=(pm[id]||[]).length;return n?' \u00b7 '+n+' foto':''}
+function fmtB(b){return b>=1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB'}
+function fmtT(t){try{return new Date(t).toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){return t}}
+function photoTotal(){let n=0,b=0;for(const k in pm)pm[k].forEach(m=>{n++;b+=m.size||0});return{n,b}}
+function paintHP(pid){const m=mk[pid]||uMk[pid],el=m&&m._icon&&m._icon.firstChild;if(el&&el.classList)el.classList.toggle('hp',(pm[pid]||[]).length>0)}
+function photoBlock(pid){
+  return `<div class="lbl">Foto lapangan <b class="pcn"></b></div><div class="ph" data-pid="${pid}"><div class="strip"></div></div><div class="btns"><button onclick="addPhoto('${pid}','cam')">Ambil foto</button><button onclick="addPhoto('${pid}','gal')">Pilih dari galeri</button></div>`}
+function popEl(html){const w=document.createElement('div');w.innerHTML=html;const root=w.firstElementChild;root.querySelectorAll('.ph').forEach(renderStrip);return root}
+
+async function renderStrip(el){
+  const pid=el.dataset.pid,strip=el.querySelector('.strip'),pop=el.closest('.pop'),lab=pop&&pop.querySelector('.pcn'),tk=el._tk=(el._tk||0)+1;
+  const n=(pm[pid]||[]).length;if(lab)lab.textContent=n?'('+n+')':'';
+  (el._u||[]).forEach(u=>URL.revokeObjectURL(u));el._u=[];
+  if(!n){strip.innerHTML='';return}
+  let recs;try{recs=await PDB.byPid(pid)}catch(e){return}
+  if(el._tk!==tk)return;
+  recs.sort((a,b)=>a.seq-b.seq);strip.innerHTML='';
+  recs.forEach((r,i)=>{const u=URL.createObjectURL(r.thumb||r.blob);el._u.push(u);const im=document.createElement('img');im.className='pth';im.src=u;im.alt=r.name;im.title=r.name;im.onclick=()=>openLB(pid,i);strip.appendChild(im)});
+  try{const po=(mk[pid]||uMk[pid]).getPopup();if(po&&po._map&&po._adjustPan)po._adjustPan()}catch(e){}
+}
+map.on('popupclose',e=>{try{const el=e.popup.getElement().querySelector('.ph');if(el&&el._u){el._u.forEach(u=>URL.revokeObjectURL(u));el._u=[]}}catch(_){}});
+
+function repaintAllPhotos(){
+  Object.keys(rowEl).forEach(id=>{const s=rowEl[id].querySelector('.pcl');if(s)s.textContent=pcl(id)});
+  uList();Object.keys(pm).forEach(paintHP);gpsUpdate()}
+function photoChanged(pid){
+  const e=rowEl[pid];if(e){const s=e.querySelector('.pcl');if(s)s.textContent=pcl(pid)}
+  if(uMk[pid])uList();
+  paintHP(pid);
+  document.querySelectorAll('.ph[data-pid="'+pid+'"]').forEach(renderStrip);
+  gpsUpdate()}
+function delPhotosOf(pid){const l=pm[pid]||[];delete pm[pid];l.forEach(m=>PDB.del(m.id).catch(()=>{}));gpsUpdate()}
+
+async function prep(file){
+  let bmp,url;
+  try{bmp=await createImageBitmap(file,{imageOrientation:'from-image'})}
+  catch(e){bmp=await new Promise((res,rej)=>{url=URL.createObjectURL(file);const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Format foto tidak didukung'));i.src=url})}
+  try{
+    const w0=bmp.width||bmp.naturalWidth,h0=bmp.height||bmp.naturalHeight;
+    const enc=(max,q)=>{const s=Math.min(1,max/Math.max(w0,h0)),w=Math.max(1,Math.round(w0*s)),h=Math.max(1,Math.round(h0*s)),c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,w,h);g.drawImage(bmp,0,0,w,h);return new Promise((res,rej)=>c.toBlob(b=>b?res(b):rej(new Error('Gagal memperkecil foto')),'image/jpeg',q))};
+    return{full:await enc(PHOTO_MAX,PHOTO_Q),thumb:await enc(THUMB_MAX,.7)}
+  }finally{if(bmp.close)bmp.close();if(url)URL.revokeObjectURL(url)}
+}
+let persistAsked=false;
+async function ingest(pid,files,src){
+  if(!persistAsked){persistAsked=true;try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist().catch(()=>{})}catch(e){}}
+  const fix=(src==='kamera'&&lastFix)?{lat:lastFix.lat,lon:lastFix.lon,acc:Math.round(lastFix.acc)}:{lat:null,lon:null,acc:null};
+  let ok=0,err=null;toast('Menyimpan foto\u2026');
+  for(const f of files){
+    try{
+      const {full,thumb}=await prep(f);
+      const list=pm[pid]||(pm[pid]=[]),seq=list.reduce((a,x)=>Math.max(a,x.seq),0)+1;
+      const rec={pid,seq,name:pid+'_'+String(seq).padStart(2,'0')+'.jpg',t:new Date().toISOString(),lat:fix.lat,lon:fix.lon,acc:fix.acc,src,cap:'',size:full.size,blob:full,thumb};
+      rec.id=await PDB.add(rec);list.push(meta(rec));ok++;
+    }catch(e){err=e}
+  }
+  if(pm[pid]&&!pm[pid].length)delete pm[pid];
+  if(ok)photoChanged(pid);
+  if(err)toast(err.name==='QuotaExceededError'?'Penyimpanan penuh. Ekspor foto (tab GPS), lalu hapus sebagian.':'Gagal menyimpan foto: '+(err.message||err));
+  else toast(ok+' foto disimpan ke '+pid)}
+
+let photoTarget=null;
+function mkInput(cam){const i=document.createElement('input');i.type='file';i.accept='image/*';i.style.display='none';if(cam)i.setAttribute('capture','environment');else i.multiple=true;
+  i.onchange=()=>{const fs=[...i.files];i.value='';if(fs.length&&photoTarget)ingest(photoTarget,fs,cam?'kamera':'galeri')};document.body.appendChild(i);return i}
+const fCam=mkInput(true),fGal=mkInput(false);
+window.addPhoto=(pid,mode)=>{photoTarget=pid;(mode==='cam'?fCam:fGal).click()};
+
+/* lightbox */
+let lb=null,lbURL=null,lbPid=null,lbI=0,capT=null;
+const lbCur=()=>(pm[lbPid]||[])[lbI];
+function flushCap(){clearTimeout(capT);capT=null;const m=lbCur();if(!m)return;const id=m.id,cap=m.cap||'';PDB.get(id).then(r=>{if(r&&(r.cap||'')!==cap){r.cap=cap;return PDB.put(r)}}).catch(()=>{})}
+function lbKey(e){if(e.key==='Escape')closeLB();else if(e.target.tagName!=='INPUT'){if(e.key==='ArrowLeft')lbGo(-1);else if(e.key==='ArrowRight')lbGo(1)}}
+function lbGo(d){flushCap();lbShow(lbI+d)}
+function closeLB(){if(!lb)return;flushCap();document.removeEventListener('keydown',lbKey);if(lbURL){URL.revokeObjectURL(lbURL);lbURL=null}lb.remove();lb=null}
+async function lbShow(i){
+  const list=pm[lbPid]||[];if(!list.length){closeLB();return}
+  lbI=(i+list.length)%list.length;const m=list[lbI];
+  const r=await PDB.get(m.id).catch(()=>null);if(!lb)return;
+  if(!r){toast('Foto tidak ditemukan');return}
+  if(lbURL)URL.revokeObjectURL(lbURL);lbURL=URL.createObjectURL(r.blob);
+  lb.querySelector('img').src=lbURL;
+  lb.querySelector('#lbN').textContent=m.name+'  ('+(lbI+1)+'/'+list.length+')';
+  lb.querySelector('#lbM').textContent=fmtT(m.t)+(m.lat!=null?' \u00b7 '+m.lat.toFixed(5)+', '+m.lon.toFixed(5)+(m.acc!=null?' (\u00b1'+m.acc+' m)':''):'')+' \u00b7 '+m.src+' \u00b7 '+fmtB(m.size);
+  lb.querySelector('#lbC').value=m.cap||''}
+async function lbDel(){const m=lbCur();if(!m||!confirm('Hapus foto '+m.name+'?'))return;
+  clearTimeout(capT);capT=null;
+  try{await PDB.del(m.id)}catch(e){toast('Gagal menghapus foto');return}
+  const pid=lbPid;pm[pid].splice(lbI,1);if(!pm[pid].length)delete pm[pid];photoChanged(pid);
+  if(!pm[pid]){closeLB();return}lbShow(Math.min(lbI,pm[pid].length-1))}
+function openLB(pid,i){
+  if(lb)return;lbPid=pid;lbI=i;
+  lb=document.createElement('div');lb.className='lb';
+  lb.innerHTML='<div class="lbt"><b id="lbN"></b></div><div class="lbi"><img alt=""></div><div class="lbf"><div id="lbM" class="sub"></div><input type="text" id="lbC" placeholder="Keterangan foto (opsional)" maxlength="200"><div class="btns"><button id="lbP" aria-label="Sebelumnya">\u2039</button><button id="lbD">Hapus</button><button id="lbT" class="on">Tutup</button><button id="lbNx" aria-label="Berikutnya">\u203a</button></div></div>';
+  document.body.appendChild(lb);document.addEventListener('keydown',lbKey);
+  lb.querySelector('#lbT').onclick=closeLB;lb.querySelector('#lbP').onclick=()=>lbGo(-1);lb.querySelector('#lbNx').onclick=()=>lbGo(1);lb.querySelector('#lbD').onclick=lbDel;
+  lb.querySelector('#lbC').oninput=e=>{const m=lbCur();if(m){m.cap=e.target.value;clearTimeout(capT);capT=setTimeout(flushCap,500)}};
+  const im=lb.querySelector('.lbi');im.onclick=e=>{if(e.target===im)closeLB()};
+  let x0=null;im.addEventListener('touchstart',e=>{x0=e.touches.length===1?e.touches[0].clientX:null},{passive:true});
+  im.addEventListener('touchend',e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)>60)lbGo(d<0?1:-1)});
+  lbShow(i)}
+
+/* export ZIP (tanpa kompresi, JPEG sudah terkompresi) */
+const crcT=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=crcT[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+function dosDT(d){if(isNaN(d))d=new Date();return{t:(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),d:((Math.max(1980,d.getFullYear())-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate()}}
+function zipBlob(files){
+  const enc=new TextEncoder(),parts=[],cen=[];let off=0;
+  files.forEach(f=>{
+    const nm=enc.encode(f.name),dt=dosDT(f.date),lh=new DataView(new ArrayBuffer(30)),ch=new DataView(new ArrayBuffer(46));
+    lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(10,dt.t,true);lh.setUint16(12,dt.d,true);lh.setUint32(14,f.crc,true);lh.setUint32(18,f.size,true);lh.setUint32(22,f.size,true);lh.setUint16(26,nm.length,true);
+    ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(12,dt.t,true);ch.setUint16(14,dt.d,true);ch.setUint32(16,f.crc,true);ch.setUint32(20,f.size,true);ch.setUint32(24,f.size,true);ch.setUint16(28,nm.length,true);ch.setUint32(42,off,true);
+    parts.push(lh,nm,f.data);cen.push(ch,nm);off+=30+nm.length+f.size});
+  const cs=cen.reduce((a,b)=>a+b.byteLength,0),end=new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cs,true);end.setUint32(16,off,true);
+  return new Blob([...parts,...cen,end],{type:'application/zip'})}
+function ptInfo(pid){if(cInfo[pid])return{nama:P[pid].nama,lat:cInfo[pid].y,lon:cInfo[pid].x};const u=userPts.find(x=>x.id===pid);return u?{nama:u.nama,lat:u.lat,lon:u.lon}:{nama:'',lat:'',lon:''}}
+$('bPhoto').onclick=async()=>{
+  if(!photoTotal().n){toast('Belum ada foto.');return}
+  const b=$('bPhoto'),lab=b.textContent;b.disabled=true;
+  try{
+    const recs=await PDB.all();recs.sort((a,z)=>a.pid<z.pid?-1:a.pid>z.pid?1:a.seq-z.seq);
+    const files=[],q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"',rows=[['file','titik','nama_titik','waktu_utc','lat_foto','lon_foto','akurasi_m','sumber','titik_lat','titik_lon','keterangan'].join(',')];
+    for(let i=0;i<recs.length;i++){const r=recs[i];b.textContent='Menyusun '+(i+1)+'/'+recs.length+'\u2026';
+      const u=new Uint8Array(await r.blob.arrayBuffer()),pt=ptInfo(r.pid);
+      files.push({name:r.name,data:r.blob,size:u.length,crc:crc32(u),date:new Date(r.t)});
+      rows.push([r.name,r.pid,pt.nama,r.t,r.lat,r.lon,r.acc,r.src,pt.lat,pt.lon,r.cap].map(q).join(','))}
+    const csv=new TextEncoder().encode('\ufeff'+rows.join('\r\n')+'\r\n');
+    files.push({name:'foto_index.csv',data:csv,size:csv.length,crc:crc32(csv),date:new Date()});
+    const a=document.createElement('a');a.href=URL.createObjectURL(zipBlob(files));a.download='foto_survei_garut_'+new Date().toISOString().slice(0,10)+'.zip';document.body.appendChild(a);a.click();a.remove();
+    toast(recs.length+' foto diekspor')
+  }catch(e){toast('Gagal ekspor foto: '+(e.message||e))}
+  finally{b.disabled=false;b.textContent=lab}};
+
+PDB.all().then(rs=>{rs.sort((a,z)=>a.seq-z.seq);rs.forEach(r=>{(pm[r.pid]||(pm[r.pid]=[])).push(meta(r))});repaintAllPhotos()}).catch(()=>{});
+
 uiLoc();if(locWanted)startLoc();
 </script></body></html>
