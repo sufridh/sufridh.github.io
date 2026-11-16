@@ -38,6 +38,12 @@
       sub: "Public housing units and cost efficiency, 2019–2022"
     },
     {
+      id: "ujung-kulon",
+      file: "ujung-kulon.html",
+      title: "Badak Jawa: Ujung Kulon atau Alas Purwo?",
+      sub: "Bahaya tsunami, habitat, dan tambang dari peta resmi pemerintah"
+    },
+    {
       id: "gaza-food-security",
       file: "gaza-food-security.html",
       title: "Gaza Food Security",
@@ -57,6 +63,10 @@
 
   document.documentElement.setAttribute("data-pf-layout", layout);
 
+  // Main GitHub Pages homepage (change here if the address differs)
+  var SITE_HOME = "https://sufridh.github.io/";
+  var ICON_HOME =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>';
   var ICON_BACK =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>';
   var ICON_DOC =
@@ -111,6 +121,9 @@
     }
 
     html +=
+      '<a class="pf-link" href="' + SITE_HOME + '">' + ICON_HOME + '<span class="pf-lt">Home</span></a>';
+
+    html +=
       '<button class="pf-switch" id="pfSwitch" type="button" aria-expanded="false" aria-controls="pfMenu">Projects' +
       ICON_CHEV +
       "</button></span>";
@@ -137,7 +150,8 @@
     m +=
       '<div class="pf-mdiv"></div><a href="' +
       base +
-      'index.html"><span class="pf-mt">Portfolio home</span><span class="pf-ms">Overview of every project</span></a>';
+      'index.html"><span class="pf-mt">Portfolio home</span><span class="pf-ms">Overview of every project</span></a>' +
+      '<a href="' + SITE_HOME + '"><span class="pf-mt">sufridh.github.io</span><span class="pf-ms">Main homepage</span></a>';
     menu.innerHTML = m;
 
     document.body.insertBefore(nav, document.body.firstChild);

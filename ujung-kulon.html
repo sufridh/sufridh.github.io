@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Perlukah badak jawa dipindah ke Alas Purwo? Tsunami, habitat, dan tambang</title>
+<title>Perlukah badak jawa dipindahkan ke Alas Purwo? Tsunami, habitat, dan tambang</title>
 <meta name="description" content="Ujung Kulon atau Alas Purwo: bahaya tsunami, bentang alam, tata ruang, dan izin tambang dilihat dari peta resmi pemerintah.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -137,8 +137,121 @@ pre{background:#0f172a;color:#e2e8f0;border-radius:9px;padding:10px 11px;overflo
 .verdict p{color:#e2e8f0;margin:0;font-size:13px;line-height:1.6}
 .verdict b{color:#fff}
 .hyp p{margin:0}
+html,body{height:100%}
+body{display:block!important;overflow:hidden}
+main.story{position:relative;height:100%;width:100%}
+main.story #map{position:absolute;inset:0}
+#card{position:absolute;z-index:1100;top:16px;left:16px;width:420px;max-height:calc(100% - 32px);display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 40px rgba(15,23,42,.18);overflow:hidden}
+.cardtop{display:flex;gap:10px;align-items:center;padding:12px 20px 0;font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--mut)}
+#stepLbl{background:var(--ink);color:#fff;border-radius:6px;padding:2px 7px;letter-spacing:.5px}
+#stepName{color:var(--acc)}
+#slides{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.slide{display:none;padding:12px 20px 16px}
+.slide.on{display:block;animation:sIn .5s ease both}
+@keyframes sIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.slide h1{font-size:23px;margin:6px 0 10px}
+.slide h2{display:block;font-size:20px;line-height:1.25;font-weight:800;letter-spacing:-.4px;text-transform:none;color:var(--ink);margin:4px 0 10px}
+.slide p{font-size:13.5px;line-height:1.65;margin:0 0 10px;color:#334155}
+.slide p.note{font-size:11.5px;color:var(--mut)}
+.slide .hint{background:var(--card);border-left:3px solid var(--acc);border-radius:8px;padding:9px 12px;color:var(--ink);font-weight:600}
+.hero{margin:0 0 12px}
+.hero img{display:block;width:100%;aspect-ratio:1200/728;object-fit:cover;border-radius:12px}
+.hero figcaption{font-size:10.5px;color:var(--mut);text-align:right;margin-top:5px}
+.start{display:inline-flex;align-items:center;gap:8px;font-family:inherit;font-size:13px;font-weight:800;background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;margin-top:4px}
+.start svg,.cardnav svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 12px}
+.mini div{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+.mini b{display:block;font-size:22px;letter-spacing:-.6px;line-height:1.1}
+.mini span{display:block;font-size:11px;color:var(--mut);line-height:1.4;margin-top:4px}
+.mini b span{display:inline;font-size:inherit;color:inherit;margin:0;line-height:inherit}
+#card{transition:width .35s ease}
+#card.wide{width:520px}
+#card.wide~#hz{}
+html body .leaflet-bottom.leaflet-left{transition:left .35s}
+.slide .chartbox{height:150px;margin:6px 0 4px}
+.slide .hyp{margin-bottom:9px;padding:11px 13px}
+.slide .hyp h3{font-size:13.5px;margin:4px 0 4px}
+.slide .hyp p{font-size:12.5px;margin:0}
+.slide .hyp .chip{margin:0}
+.cardnav{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line);background:#fbfcfe}
+.cardnav button{font-family:inherit;cursor:pointer}
+#prev{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);display:grid;place-items:center}
+#prev:disabled,#next:disabled{opacity:.35;cursor:default}
+#next{margin-left:auto;display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 15px;border-radius:10px;border:0;background:var(--ink);color:#fff;font-size:12.5px;font-weight:800}
+#dots{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+#dots button{width:8px;height:8px;padding:0;border-radius:5px;border:0;background:var(--line2);transition:all .25s}
+#dots button.done{background:#94a3b8}
+#dots button.on{width:22px;background:var(--acc)}
+#dots button:focus-visible,#next:focus-visible,#prev:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.leaflet-bottom.leaflet-left{left:452px}
+#layers{top:12px;right:12px}
+#layers{padding:0;overflow:hidden;width:236px}
+#layers .lx{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;font-size:9.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--acc)}
+#layers .lx svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;transition:transform .2s}
+#layers .lx.closed svg{transform:rotate(180deg)}
+#layers #lbody{padding:0 12px 10px}
+#layers .lt{font-size:9.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-top:8px}
+#hz .lg2{margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
+#hz #hzLeg[hidden]+.lg2{margin-top:0;padding-top:0;border-top:0}
+#hz .rl i{width:12px;height:10px}
+#hz [hidden]{display:none!important}
+.leaflet-tooltip.htip{font-family:var(--font);font-weight:700;font-size:11.5px;border-radius:8px;padding:4px 8px;border:0;box-shadow:0 4px 14px rgba(15,23,42,.18)}
+.leaflet-tooltip.plbl{background:#0f172a;color:#fff;border:0;border-radius:7px;font-family:var(--font);font-weight:800;font-size:11px;padding:4px 8px;box-shadow:0 3px 10px rgba(15,23,42,.25)}
+.leaflet-tooltip.plbl:before{display:none}
+.leaflet-control-scale-line{font-family:var(--font);font-size:10px;border-color:#475569;background:rgba(255,255,255,.85)}
+.homelinks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.homelinks .hl{display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:10px 11px;text-decoration:none;color:var(--ink);background:var(--card)}
+.homelinks .hl:hover{border-color:var(--accline);background:var(--accsoft)}
+.homelinks .hl svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--acc);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.homelinks .hl b{display:block;font-size:12.5px}
+.homelinks .hl small{display:block;font-size:10.5px;color:var(--mut)}
+.slide .src{max-height:none}
+@media(max-width:900px){
+  #card{top:auto;left:0;right:0;bottom:0;width:auto;max-height:52%;border-radius:16px 16px 0 0;border-bottom:0}
+  .leaflet-bottom.leaflet-left{display:none}
+  .leaflet-bottom.leaflet-right{top:0;bottom:auto}
+  .leaflet-control-attribution{font-size:9px}
+  #hz{display:none}
+  #layers{display:none}
+  #layers.open{display:block;top:52px}
+  #lbtn{display:block}
+  .slide h1{font-size:20px}.slide h2{font-size:17px}
+  .hero img{aspect-ratio:16/8}
+}
 .callout.warn{border-left-color:#b91c1c;background:#fef2f2;border-color:#fecaca;margin-top:10px}
 .callout.warn b{color:#991b1b}
+#views{flex-wrap:wrap;max-width:calc(100% - 290px)}
+#views button.on{background:var(--ink);color:#fff}
+#views .vsep{width:1px;background:var(--line);margin:5px 3px}
+#views .fol{color:var(--mut);display:inline-flex;align-items:center;gap:6px}
+#views .fol:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--faint)}
+#views .fol.act{color:var(--acc)}
+#views .fol.act:before{background:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.18)}
+#caption{top:64px;left:12px;width:300px;padding:11px 13px;opacity:0;transform:translateY(-4px);transition:opacity .25s,transform .25s;pointer-events:none}
+#caption.show{opacity:1;transform:none}
+#caption .ct{font-weight:800;font-size:12.5px;margin-bottom:3px}
+#caption .cb{font-size:11.5px;line-height:1.5;color:#334155}
+#layers{padding:0;overflow:hidden}
+#layers .lx{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;font-size:9.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--acc)}
+#layers .lx svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;transition:transform .2s}
+#layers .lx.closed svg{transform:rotate(180deg)}
+#layers #lbody{padding:0 12px 10px}
+#layers .lt{font-size:9.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-top:8px}
+#hz .lg2{margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
+#hz .rl i{width:12px;height:10px}
+#hz [hidden]{display:none!important}
+.leaflet-tooltip.htip{font-family:var(--font);font-weight:700;font-size:11.5px;border-radius:8px;padding:4px 8px;border:0;box-shadow:0 4px 14px rgba(15,23,42,.18)}
+.leaflet-tooltip.plbl{background:#0f172a;color:#fff;border:0;border-radius:7px;font-family:var(--font);font-weight:800;font-size:11px;padding:4px 8px;box-shadow:0 3px 10px rgba(15,23,42,.25)}
+.leaflet-tooltip.plbl:before{display:none}
+.leaflet-control-scale-line{font-family:var(--font);font-size:10px;border-color:#475569;background:rgba(255,255,255,.85)}
+.hyp .hn{font-size:9.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+.homelinks{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.homelinks .hl{display:flex;gap:9px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:11px 12px;text-decoration:none;color:var(--ink);background:var(--card);transition:.15s}
+.homelinks .hl:hover{border-color:var(--accline);background:var(--accsoft)}
+.homelinks .hl svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--acc);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.homelinks .hl b{display:block;font-size:12.5px}
+.homelinks .hl small{display:block;font-size:10.5px;color:var(--mut)}
+@media(max-width:900px){#caption{display:none}#views{display:none}}
 .tl:before{left:58px}.tl li{grid-template-columns:58px 1fr}.tl li:after{left:55px}
 table.ck{font-size:11.3px;margin-top:4px;table-layout:fixed}
 table.ck th{font-size:9.5px;letter-spacing:.4px;text-align:left;vertical-align:bottom;padding:6px 4px}
@@ -156,123 +269,118 @@ table.ck .cell span{color:#334155}
 <script defer src="shell.js" data-base="" data-dir="" data-project="ujung-kulon" data-layout="app"></script>
 </head>
 <body>
-<aside>
-  <section class="sec">
-    <div class="eyebrow">Badak jawa · Ujung Kulon, Banten → Alas Purwo, Jawa Timur</div>
-    <h1>Perlukah badak jawa terakhir dipindah ke Alas Purwo?</h1>
-    <p class="lede">Pada 12 November 2026, utusan khusus presiden melontarkan wacana memindahkan sebagian badak jawa <b>sekitar <span data-v="distKm">1.020</span> km ke timur</b>, dari Ujung Kulon ke Alas Purwo, agar aman dari tsunami. Wacana ini diuji dengan peta-peta resmi pemerintah: bahaya tsunami, bentang alam, rencana tata ruang, dan izin tambang.</p>
-    <div class="verdict">
-      <div class="vt">Singkatnya</div>
-      <p>Alas Purwo <b>tidak jauh lebih aman dari tsunami</b> dibanding rumah badak sekarang. Wilayahnya juga <b>jauh lebih kering dan berbukit</b>, dan jaraknya lebih dari <b>1.000 km</b>. Pilihan yang lebih aman justru sudah ada di dalam Ujung Kulon sendiri. Soal tambang, belum ada izin di dalam taman nasional. Namun sisi Gunung Honje <b>berbatasan langsung dengan tambang emas</b> yang sedang butuh cadangan baru, sehingga sisi inilah yang paling rentan jika perlindungan Ujung Kulon dilonggarkan.</p>
-    </div>
-  </section>
+<main class="story">
+  <div id="map" role="region" aria-label="Peta Ujung Kulon dan Alas Purwo"></div>
 
-  <section class="sec">
-    <h2><span class="n">1</span>Duduk perkaranya</h2>
-    <ul class="facts">
-      <li><b>Satu rumah, satu risiko.</b> Seluruh badak jawa liar yang tersisa hidup di Taman Nasional Ujung Kulon, di ujung barat Pulau Jawa. Pemerintah mencatat 87–100 ekor, sementara IUCN memperkirakan paling sedikit sekitar 50 ekor.<sup><a href="#s6">1</a></sup></li>
-      <li><b>Rencana A sudah berjalan.</b> Sejak 2025, pemerintah memindahkan beberapa badak ke area penangkaran berpagar, <b>JRSCA</b>, di ujung lain taman nasional yang sama, sekitar 14 km lewat laut. Tujuan utamanya mencegah perkawinan sedarah.<sup><a href="#s1">2</a></sup> Badak pertama yang dipindah, Musofa, mati dua hari setelah tiba.<sup><a href="#s4">3</a></sup></li>
-      <li><b>Wacana baru.</b> Pada 12 November 2026, Hashim Djojohadikusumo, Utusan Khusus Presiden Bidang Iklim dan Energi, mengusulkan Taman Nasional Alas Purwo di Jawa Timur sebagai rumah kedua. Alasannya, tsunami akibat Anak Krakatau bisa memusnahkan badak jawa.<sup><a href="#s19">4</a></sup></li>
-      <li><b>Tanggapan kementerian.</b> Kementerian Kehutanan menyebut usulan ini masih wacana. Alas Purwo harus dikaji dulu soal pakan dan air sepanjang tahun, tempat berkubang, luas habitat, serta risiko konflik dengan warga, persaingan dengan satwa lain, dan penularan penyakit.<sup><a href="#s20">5</a></sup></li>
-    </ul>
-  </section>
+  <article id="card" aria-live="polite">
+    <div class="cardtop"><span id="stepLbl">1 / 12</span><span id="stepName"></span></div>
+    <div id="slides">
 
-  <section class="sec">
-    <h2><span class="n">2</span>Benarkah Alas Purwo lebih aman dari tsunami?</h2>
-    <div class="kpis">
-      <div class="kpi" data-fly="Peninsula"><div class="v"><span data-v="penMH">–</span><small>%</small></div><div class="k"><span class="sw" style="background:var(--z-pen)"></span>Rumah badak sekarang</div><div class="s">Semenanjung Ujung Kulon: bagian daratan di zona bahaya tsunami sedang–tinggi</div></div>
-      <div class="kpi" data-fly="Gunung Honje"><div class="v"><span data-v="honMH">–</span><small>%</small></div><div class="k"><span class="sw" style="background:var(--z-hon)"></span>Rencana A: sisi JRSCA</div><div class="s">Gunung Honje, masih di dalam Ujung Kulon</div></div>
-      <div class="kpi" data-fly="alaspurwo"><div class="v"><span data-v="apMH">–</span><small>%</small></div><div class="k"><span class="sw" style="background:var(--z-ap)"></span>Alas Purwo</div><div class="s">Usulan rumah baru di Jawa Timur</div></div>
-      <div class="kpi" data-fly="both"><div class="v"><span data-v="distKm">–</span><small>km</small></div><div class="k"><span class="sw" style="background:#475569"></span>Jarak</div><div class="s">Antara kedua taman nasional, garis lurus</div></div>
-    </div>
-    <p style="margin-top:12px">Jika dilihat dari peta bahaya tsunami InaRISK milik BNPB, Alas Purwo ternyata <b>hampir sama rawannya</b> dengan rumah badak sekarang, dan <b>lebih dari dua kali lipat</b> lebih rawan dibanding lokasi Rencana A.</p>
-    <div class="legend"><span><i style="background:var(--h1)"></i>Rendah</span><span><i style="background:var(--h2)"></i>Sedang</span><span><i style="background:var(--h3)"></i>Tinggi</span><span><i style="background:var(--h0)"></i>Nyaris tidak ada</span></div>
-    <div class="chartbox"><canvas id="cZone" aria-label="Persentase daratan per kelas bahaya tsunami"></canvas></div>
-    <button class="tbtn" id="tToggle" aria-expanded="false">Lihat angkanya</button>
-    <div id="tWrap" hidden></div>
-    <p style="margin-top:12px"><b>Kenapa begitu?</b> Ancaman utama Ujung Kulon memang Anak Krakatau, yang longsorannya memicu tsunami 2018. Namun Alas Purwo menghadap langsung ke Samudra Hindia, tepat di atas Palung Jawa. Sumber tsunaminya berbeda, tapi bahayanya tetap ada. Tsunami dari palung inilah yang menewaskan 238 orang di Banyuwangi pada 1994.<sup><a href="#s22">6</a></sup> Dalam skenario terburuk, gelombang di pantai selatan Jawa Timur bisa mencapai sekitar 12 meter.<sup><a href="#s21">7</a></sup> Memindahkan badak ke sana sama saja menukar satu risiko tsunami dengan risiko tsunami lainnya.</p>
-  </section>
+      <section class="slide cover" data-view="java" data-layers="parks,poi,hazard" data-name="Pembuka">
+        <figure class="hero">
+          <img src="badak-jawa.jpg" alt="Badak jawa sedang berendam di sungai di Taman Nasional Ujung Kulon" loading="eager">
+          <figcaption>Foto: © David Herman Jaya / Javan Rhino Expedition</figcaption>
+        </figure>
+        <div class="eyebrow">Badak jawa · Ujung Kulon → Alas Purwo</div>
+        <h1>Perlukah badak jawa dipindahkan ke Alas Purwo?</h1>
+        <p>Pemerintah sedang menimbang untuk memindahkan sebagian badak jawa dari Ujung Kulon ke Alas Purwo, sekitar <b><span data-v="distKm">1.020</span> km</b> ke timur, agar badak tidak punah jika Ujung Kulon diterjang tsunami. Mari lihat apa kata peta-peta resmi pemerintah tentang rencana ini.</p>
+        <button class="start" data-go="next">Mulai cerita <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      </section>
 
-  <section class="sec">
-    <h2><span class="n">3</span>Bisakah badak hidup nyaman di sana?</h2>
-    <p>Ketiga lokasi dibandingkan dengan daftar syarat yang disebut kementerian sendiri.<sup><a href="#s20">5</a></sup> Tanda ✓ berarti datanya mendukung, ✕ berarti ada tanda bahaya, dan ? berarti belum pernah diukur.</p>
-    <div class="cmp" id="cmpTab"></div>
-    <p class="note" style="margin-top:8px">Data bentang alam dari peta elevasi DEMNAS (BIG). Di Ujung Kulon, badak lebih banyak memakai dataran rendah yang landai, dekat sungai, kubangan, dan area terbuka.<sup><a href="#s17">13</a>,<a href="#s18">14</a></sup></p>
-  </section>
+      <section class="slide" data-view="uk" data-layers="parks,poi" data-name="Habitat terakhir">
+        <h2>Satu-satunya habitat yang tersisa</h2>
+        <p>Semua badak jawa liar di dunia hidup di Taman Nasional Ujung Kulon, di ujung barat Pulau Jawa. Sebagian besar menghuni <b>Semenanjung Ujung Kulon</b>, kawasan yang ditandai warna hijau di peta.</p>
+        <p>Jumlahnya masih diperdebatkan. Pemerintah mencatat ada 87–100 ekor, sedangkan IUCN memperkirakan paling sedikit sekitar 50 ekor.<sup><a href="#s6">1</a></sup></p>
+        <p class="hint">Karena semuanya berada di satu tempat, satu bencana besar bisa memusnahkan seluruh spesies ini.</p>
+      </section>
 
-  <section class="sec">
-    <h2><span class="n">4</span>Bagaimana kalau pesisirnya saja yang dilindungi?</h2>
-    <p>Jika dilihat dari petanya, bahaya tsunami di Ujung Kulon hanya berupa <b>jalur sempit di sepanjang pantai</b>, bukan seluruh kawasan. Lebih dari sepertiga rumah badak sekarang (<b><span data-v="penGt50">–</span>%</b>) berada di atas 50 meter dari permukaan laut, dataran tinggi yang sudah bisa mereka jangkau.</p>
-    <p>Hutan pantai dan mangrove yang sehat bisa meredam gelombang tsunami dan memperpendek jangkauannya. Memang tidak bisa menahan gelombang raksasa, dan kurang efektif jika jalur hutannya tipis atau terputus sungai dan jalan.<sup><a href="#s7">15</a>,<a href="#s8">16</a></sup></p>
-    <p>Titik lemahnya ada di <b>leher daratan selebar <span data-v="isthKm">–</span> km</b> yang menghubungkan rumah badak dengan sisi JRSCA. Seluruh bagiannya masuk zona bahaya tinggi. Menjaga hutan di jalur ini tetap utuh, dan membuka jalan dari dataran rendah ke perbukitan, akan melindungi badak di kedua sisi.</p>
-  </section>
+      <section class="slide" data-view="jrsca" data-layers="parks,poi" data-name="Translokasi ke JRSCA">
+        <h2>Translokasi ke JRSCA sudah berjalan</h2>
+        <p>Sejak 2025, pemerintah memindahkan beberapa badak ke <b>JRSCA</b>, area penangkaran berpagar di Gunung Honje (warna toska). Lokasinya masih di dalam Ujung Kulon, sekitar 14 km lewat laut dari Semenanjung.</p>
+        <p>Tujuan utamanya adalah mencegah perkawinan sedarah dan membentuk populasi kedua pada 2029.<sup><a href="#s1">2</a></sup></p>
+        <p>Sayangnya, badak pertama yang dipindahkan, <b>Musofa</b>, mati dua hari setelah tiba pada November 2025.<sup><a href="#s4">3</a></sup></p>
+      </section>
 
-  <section class="sec">
-    <h2><span class="n">5</span>Bagaimana dengan tambang?</h2>
-    <p>Jika dilihat dari <b><span data-v="iupRows">–</span></b> izin tambang di peta nasional Kementerian ESDM, saat ini belum ada satu pun izin yang masuk ke dalam kedua taman nasional. RTRW Banten juga masih menetapkan <b>100%</b> daratan Ujung Kulon sebagai kawasan konservasi. Tapi ceritanya belum selesai di situ.</p>
-    <ul class="facts">
-      <li><b>Tambang emas menempel di batas taman.</b> Izin tambang emas Antam di Cibaliung berjarak hanya <b><span data-v="antamM">–</span> meter</b> dari batas Ujung Kulon. Sepanjang <b><span data-v="edgeKm">–</span> km</b> garis batas taman nasional berada kurang dari 500 meter dari area izin ini.</li>
-      <li><b>Tambangnya butuh cadangan baru.</b> Buletin Kementerian ESDM tahun 2020 mencatat tambang ini sudah mencapai puncak produksi dan perlu mencari cadangan baru di sekitarnya.<sup><a href="#s12">17</a></sup> Batuan emasnya berada di kompleks Gunung Honje yang sama dengan sisi timur taman nasional.</li>
-      <li><b>Hutan yang paling dekat.</b> Dalam radius 5 km dari area izin terdapat <b><span data-v="buf5">–</span> ha</b> hutan Gunung Honje, atau <b><span data-v="buf5pct">–</span>%</b> dari seluruh sisi Honje.</li>
-      <li><b>Masa izinnya sudah lewat.</b> Di basis data ESDM, izin ini tercatat berakhir pada Maret 2025. Artinya, keputusan perpanjangan atau perluasan bisa jadi sedang atau akan dibahas.</li>
-    </ul>
-    <div class="callout warn">
-      <p><b>Skenario yang perlu diwaspadai.</b> Kehadiran badak jawa adalah alasan terkuat Ujung Kulon dijaga seketat sekarang. Jika badak dipindahkan dan perlindungan atau status kawasannya dilonggarkan, misalnya lewat perubahan batas, zonasi, atau fungsi kawasan, sisi Gunung Honje yang menempel dengan tambang emas inilah yang paling mungkin terbuka lebih dulu.</p>
-    </div>
-    <p class="note" style="margin-top:8px">Catatan: ini skenario risiko yang ditarik dari kedekatan lokasi dan kebutuhan cadangan tambang, bukan bukti adanya rencana. Untuk memastikannya, perlu dokumen resmi: riwayat perubahan batas taman nasional, status perpanjangan izin Antam, dan rencana revisi tata ruang. Di Alas Purwo, izin emas terdekat (sekitar Tumpang Pitu) berjarak <span data-v="tpKm">–</span> km, dan RTRW Jawa Timur menetapkan <span data-v="apRtrw">–</span>% kawasannya sebagai konservasi.</p>
-  </section>
+      <section class="slide" data-view="java" data-layers="parks,poi" data-name="Usulan Alas Purwo">
+        <h2>Lalu muncul usulan Alas Purwo</h2>
+        <p>Pada 12 November 2026, Utusan Khusus Presiden Bidang Iklim dan Energi, Hashim Djojohadikusumo, mengusulkan <b>Taman Nasional Alas Purwo</b> di Banyuwangi sebagai habitat kedua. Menurutnya, tsunami akibat Anak Krakatau bisa memusnahkan badak jawa di Ujung Kulon.<sup><a href="#s19">4</a></sup></p>
+        <p>Kementerian Kehutanan menyebut usulan ini masih wacana. Alas Purwo perlu dikaji dulu, mulai dari pakan, air, dan tempat berkubang, hingga risiko konflik dengan warga dan penularan penyakit.<sup><a href="#s20">5</a></sup></p>
+      </section>
 
-  <section class="sec">
-    <h2><span class="n">6</span>Kesimpulan untuk tiap dugaan</h2>
+      <section class="slide" data-view="uk" data-layers="parks,poi,hazard" data-name="Tsunami di Ujung Kulon">
+        <h2>Seberapa rawan tsunami di Ujung Kulon?</h2>
+        <p>Warna kuning hingga merah di peta adalah zona bahaya tsunami menurut InaRISK dari BNPB. Bahayanya terpusat di sepanjang pantai.</p>
+        <div class="mini">
+          <div><b><span data-v="penMH">–</span>%</b><span>daratan Semenanjung di zona bahaya sedang–tinggi</span></div>
+          <div><b><span data-v="honMH">–</span>%</b><span>daratan Gunung Honje, lokasi JRSCA</span></div>
+        </div>
+        <p>Pada Desember 2018, longsoran Anak Krakatau memicu tsunami yang menerjang pantai Ujung Kulon. Badak selamat, tetapi dua petugas taman nasional meninggal dunia.<sup><a href="#s16">6</a></sup></p>
+      </section>
 
-    <div class="hyp">
-      <h3>“Melindungi pesisir lebih efektif daripada memindahkan badak”</h3>
-      <span class="chip mx"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></svg>Sebagian benar</span>
-      <p>Untuk urusan <b>tsunami</b>, benar. Hutan pantai, dataran tinggi yang aman, dan leher daratan yang terjaga bisa menekan risiko di tempat badak tinggal sekarang, sementara pindah ke Alas Purwo nyaris tidak mengurangi risikonya. Namun populasi kedua juga dibutuhkan untuk mengatasi <b>perkawinan sedarah, penyakit, dan perburuan</b>, dan perlindungan pesisir tidak bisa menjawab itu. Langkah terbaik adalah menjalankan keduanya: lindungi pesisir Ujung Kulon, lalu bangun populasi kedua di tempat yang benar-benar lebih aman.</p>
-    </div>
+      <section class="slide" data-view="ap" data-layers="parks,hazard" data-name="Tsunami di Alas Purwo">
+        <h2>Apakah Alas Purwo lebih aman?</h2>
+        <p>Ternyata tidak jauh berbeda. <b><span data-v="apMH">–</span>%</b> daratan Alas Purwo berada di zona bahaya sedang–tinggi, hampir sama dengan Semenanjung dan lebih dari dua kali lipat dibanding JRSCA.</p>
+        <div class="chartbox"><canvas id="cZone" aria-label="Persentase daratan per kelas bahaya tsunami"></canvas></div>
+        <div class="legend"><span><i style="background:var(--h1)"></i>Rendah</span><span><i style="background:var(--h2)"></i>Sedang</span><span><i style="background:var(--h3)"></i>Tinggi</span><span><i style="background:var(--h0)"></i>Hampir tidak ada</span></div>
+        <p>Pantai selatannya menghadap langsung Palung Jawa. Tsunami dari palung inilah yang menewaskan 238 orang di Banyuwangi pada 1994,<sup><a href="#s22">7</a></sup> dan dalam skenario terburuk gelombangnya bisa mencapai sekitar 12 meter.<sup><a href="#s21">8</a></sup></p>
+        <button class="tbtn" id="tToggle" aria-expanded="false">Lihat angkanya</button>
+        <div id="tWrap" hidden></div>
+      </section>
 
-    <div class="hyp">
-      <h3>“Alas Purwo tidak cocok untuk badak jawa”</h3>
-      <span class="chip mx"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></svg>Kemungkinan benar, perlu dicek di lapangan</span>
-      <p>Tanda bahayanya cukup banyak. Curah hujannya jauh lebih sedikit dengan kemarau panjang, tanahnya berbukit kapur dan bukan dataran rendah yang basah, rawan kebakaran saat kemarau, dan perjalanannya lebih dari 1.000 km untuk satwa yang mudah stres. Ketersediaan pakan, air, dan kubangan belum pernah disurvei, dan kementerian sendiri mengakui hal itu.</p>
-    </div>
+      <section class="slide" data-view="ap" data-basemap="sat" data-layers="parks" data-wide="1" data-name="Kecocokan habitat">
+        <h2>Cocokkah Alas Purwo sebagai habitat badak?</h2>
+        <p>Perbandingan berdasarkan syarat dari Kementerian Kehutanan.<sup><a href="#s20">5</a></sup> ✓ mendukung, ✕ bermasalah, ? belum ada data.</p>
+        <div class="cmp" id="cmpTab"></div>
+        <p class="note">Penelitian di Ujung Kulon menunjukkan badak lebih sering berada di dataran rendah yang landai, dekat sungai dan kubangan.<sup><a href="#s17">14</a>,<a href="#s18">15</a></sup></p>
+      </section>
 
-    <div class="hyp">
-      <h3>“Pemindahan badak membuka jalan bagi tambang”</h3>
-      <span class="chip mx"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>Belum terjadi, tapi rentan</span>
-      <p>Saat ini belum ada izin tambang di dalam taman nasional, dan tata ruangnya masih melindungi kawasan ini. Namun tambang emas Antam menempel di batas sisi Honje, sedang butuh cadangan baru, dan masa izinnya sudah lewat. Jika badak pergi dan perlindungan Ujung Kulon melemah, sisi Honje adalah wilayah yang paling mungkin dilirik. Risiko ini layak diawasi sejak sekarang.</p>
-    </div>
-  </section>
+      <section class="slide" data-view="neck" data-layers="parks,hazard" data-name="Alternatif pesisir">
+        <h2>Alternatif: melindungi pesisir Ujung Kulon</h2>
+        <p>Garis merah di peta adalah <b>tanah genting selebar <span data-v="isthKm">–</span> km</b>, satu-satunya jalur darat antara Semenanjung dan Gunung Honje. Seluruhnya berada di zona bahaya tinggi.</p>
+        <p>Di sisi lain, <b><span data-v="penGt50">–</span>%</b> daratan Semenanjung berada di atas 50 meter. Badak sebenarnya sudah punya dataran tinggi untuk menyelamatkan diri.</p>
+        <p>Hutan pantai dan mangrove yang terjaga bisa meredam gelombang dan memperpendek jangkauannya, meski tidak mampu menahan gelombang yang sangat besar.<sup><a href="#s7">16</a>,<a href="#s8">17</a></sup> Menjaga hutan di tanah genting dan jalur menuju perbukitan bisa melindungi badak di kedua sisi.</p>
+      </section>
 
-  <section class="sec">
-    <h2><span class="n">7</span>Linimasa</h2>
-    <ul class="tl">
-      <li><span class="y">1980-an</span><span>Gagasan rumah kedua untuk badak jawa pertama kali muncul.<sup><a href="#s20">5</a></sup></span></li>
-      <li><span class="y">1994</span><span>3 Juni: tsunami dari Palung Jawa menerjang Banyuwangi dan menewaskan 238 orang.<sup><a href="#s22">6</a></sup></span></li>
-      <li><span class="y">2009</span><span>Pembangunan JRSCA, area berpagar di sisi Gunung Honje, dimulai.<sup><a href="#s3">18</a></sup></span></li>
-      <li><span class="y">2010</span><span>Tambang emas Cibaliung mulai berproduksi.<sup><a href="#s15">19</a></sup></span></li>
-      <li class="k"><span class="y">2018</span><span>22 Desember: longsoran Anak Krakatau memicu tsunami ke Ujung Kulon. Badak selamat, tetapi dua petugas taman nasional meninggal.<sup><a href="#s16">20</a></sup></span></li>
-      <li><span class="y">2019</span><span>Cikepuh di Jawa Barat batal jadi rumah kedua karena dipakai untuk latihan militer.<sup><a href="#s6">1</a></sup></span></li>
-      <li><span class="y">2025</span><span>Maret: masa izin tambang emas Antam di Cibaliung tercatat berakhir di basis data ESDM.</span></li>
-      <li class="k"><span class="y">2025</span><span>Rencana A dimulai. Musofa dipindah ke JRSCA pada 5 November dan mati pada 7 November.<sup><a href="#s4">3</a>,<a href="#s5">21</a></sup></span></li>
-      <li><span class="y">2026</span><span>September: Anak Krakatau erupsi, dan badak dilaporkan aman.<sup><a href="#s6">1</a></sup></span></li>
-      <li class="k"><span class="y">2026</span><span>12 November: Alas Purwo diusulkan di COP31. Pada 14–16 November, kementerian menyebutnya masih wacana yang perlu dikaji.<sup><a href="#s19">4</a>,<a href="#s20">5</a></sup></span></li>
-    </ul>
-  </section>
+      <section class="slide" data-view="mine" data-layers="parks,poi,iup,buf" data-name="Tambang emas">
+        <h2>Tambang emas di batas Gunung Honje</h2>
+        <p>Dari <span data-v="iupRows">–</span> izin tambang di peta Kementerian ESDM, belum ada yang masuk ke dalam taman nasional. Namun, izin tambang emas Antam di Cibaliung hanya berjarak <b><span data-v="antamM">–</span> meter</b> dari batas Ujung Kulon.</p>
+        <div class="mini">
+          <div><b><span data-v="edgeKm">–</span> km</b><span>batas taman nasional berjarak kurang dari 500 m dari area izin</span></div>
+          <div><b><span data-v="buf5">–</span> ha</b><span>hutan Gunung Honje dalam radius 5 km (garis merah putus-putus)</span></div>
+        </div>
+        <p>Menurut buletin ESDM tahun 2020, tambang ini sudah mencapai puncak produksi dan perlu mencari cadangan baru di sekitarnya.<sup><a href="#s12">18</a></sup> Masa berlaku izinnya pun tercatat berakhir pada Maret 2025.</p>
+      </section>
 
-  <section class="sec">
-    <h2>Cara analisis ini dibuat</h2>
-    <p class="note"><b>Bahaya tsunami:</b> peta InaRISK BNPB. Petanya cukup kasar (kotak sekitar 800 m), jadi dihaluskan dengan cara yang sama untuk kedua taman nasional. Hasil Ujung Kulon selisih kurang dari 1 poin persen dengan pengolahan data Banten sebelumnya untuk kelas sedang–tinggi. Peta ini menunjukkan tingkat bahaya <i>relatif</i>, bukan kedalaman air. <b>Bentang alam:</b> peta elevasi DEMNAS dari BIG (~8 m). <b>Batas taman nasional:</b> peta kawasan hutan Kementerian Kehutanan edisi 2026. Ujung Kulon dibagi menjadi Semenanjung dan Gunung Honje di titik daratan tersempitnya. <b>Tata ruang:</b> RTRW Banten dan RTRW Jawa Timur (Perda 5/2012). <b>Tambang:</b> peta wilayah izin usaha pertambangan (WIUP) nasional Kementerian ESDM, unduhan lengkap. <b>Keterbatasan:</b> belum ada batas pasti JRSCA, data sebaran badak, maupun survei lapangan soal pakan dan air di Alas Purwo.</p>
-  </section>
+      <section class="slide" data-view="mine" data-layers="parks,iup,buf,rtrw" data-name="Skenario risiko">
+        <h2>Skenario yang perlu diwaspadai</h2>
+        <p>Saat ini tata ruang Banten masih menetapkan <b>100%</b> daratan Ujung Kulon sebagai kawasan konservasi. Area izin tambang sendiri berada di lahan pertanian dalam RTRW.</p>
+        <div class="callout warn"><p>Keberadaan badak jawa menjadi alasan utama Ujung Kulon dilindungi dengan ketat. Jika badak dipindahkan, lalu perlindungannya dilonggarkan melalui perubahan batas, zonasi, atau fungsi kawasan, <b>Gunung Honje yang berbatasan dengan tambang emas menjadi bagian yang paling mungkin terdampak lebih dulu</b>.</p></div>
+        <p class="note">Skenario ini disusun dari kedekatan lokasi dan kebutuhan cadangan tambang, bukan bukti adanya rencana. Untuk memastikannya, dibutuhkan riwayat perubahan batas taman nasional, status perpanjangan izin Antam, dan rencana revisi tata ruang.</p>
+      </section>
 
-  <section class="sec">
-    <h2>Sumber</h2>
-    <ol class="src">
+      <section class="slide" data-view="java" data-layers="parks,poi,hazard" data-name="Kesimpulan">
+        <h2>Kesimpulan</h2>
+        <div class="hyp"><span class="chip mx"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></svg>Sebagian benar</span>
+          <h3>Melindungi pesisir lebih efektif daripada memindahkan badak</h3>
+          <p>Untuk menghadapi tsunami, ya. Namun populasi kedua tetap dibutuhkan untuk mencegah perkawinan sedarah dan wabah penyakit. Idealnya keduanya dijalankan bersamaan.</p></div>
+        <div class="hyp"><span class="chip mx"><svg viewBox="0 0 24 24"><path d="M5 12l4 4L19 6"/></svg>Kemungkinan besar benar</span>
+          <h3>Alas Purwo tidak cocok sebagai habitat badak jawa</h3>
+          <p>Kawasannya lebih kering, berbukit kapur, rawan kebakaran, dan sama rawannya terhadap tsunami. Pakan dan kubangannya belum pernah disurvei.</p></div>
+        <div class="hyp"><span class="chip mx"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg>Belum terjadi, tapi rentan</span>
+          <h3>Pemindahan badak membuka jalan bagi tambang</h3>
+          <p>Belum ada izin di dalam taman nasional, tetapi tambang emas yang butuh cadangan baru berbatasan langsung dengan Gunung Honje. Risiko ini perlu diawasi sejak sekarang.</p></div>
+      </section>
+
+      <section class="slide" data-view="java" data-layers="parks,poi" data-name="Sumber dan metode">
+        <h2>Sumber dan metode</h2>
+        <p class="note"><b>Bahaya tsunami:</b> InaRISK (BNPB), dihaluskan dengan metode yang sama untuk kedua taman nasional; menunjukkan bahaya relatif, bukan kedalaman genangan. <b>Ketinggian:</b> DEMNAS (BIG). <b>Batas kawasan:</b> peta kawasan hutan Kementerian Kehutanan 2026. <b>Tata ruang:</b> RTRW Banten dan RTRW Jawa Timur. <b>Tambang:</b> peta WIUP Kementerian ESDM. <b>Belum tersedia:</b> batas pasti JRSCA, data sebaran badak, dan survei pakan serta air di Alas Purwo.</p>
+        <ol class="src">
       <li id="s6"><a href="https://news.mongabay.com/2026/09/javan-rhinos-survive-eruption-in-indonesia-but-single-habitat-leaves-species-vulnerable/" target="_blank" rel="noopener">Mongabay: Javan rhinos survive eruption, but single habitat leaves species vulnerable (Sep 2026)</a></li>
       <li id="s1"><a href="https://jatim.antaranews.com/amp/berita/964389/ministry-to-translocate-javan-rhinos-to-create-second-population" target="_blank" rel="noopener">Antara: Ministry to translocate Javan rhinos to create second population</a></li>
       <li id="s4"><a href="https://news.mongabay.com/2025/12/indonesias-1st-javan-rhino-translocation-ends-in-death-in-conservation-setback/" target="_blank" rel="noopener">Mongabay: Indonesia's 1st Javan rhino translocation ends in death (Dec 2025)</a></li>
       <li id="s19"><a href="https://www.cnnindonesia.com/nasional/20261115174833-20-1427417/kemenhut-alas-purwo-belum-pasti-layak-jadi-habitat-kedua-badak-jawa" target="_blank" rel="noopener">CNN Indonesia: Kemenhut: Alas Purwo belum pasti layak jadi habitat kedua badak jawa (15 Nov 2026)</a></li>
       <li id="s20"><a href="https://www.antaranews.com/berita/5856647/kemenhut-alas-purwo-potensial-dikaji-jadi-habitat-kedua-badak-jawa" target="_blank" rel="noopener">Antara: Kemenhut: Alas Purwo potensial dikaji jadi habitat kedua badak jawa (16 Nov 2026)</a></li>
+      <li id="s16"><a href="https://news.mongabay.com/2019/07/search-for-a-new-home-for-javan-rhinos-put-on-hold/" target="_blank" rel="noopener">Mongabay: Search for a new home for Javan rhinos put on hold (2019)</a></li>
       <li id="s22"><a href="https://jppipa.unram.ac.id/index.php/jppipa/article/download/8358/5925/48328" target="_blank" rel="noopener">Trisnawati et al.: Tsunami mitigation and evacuation routes in Pancer, Banyuwangi (citing BNPB)</a></li>
       <li id="s21"><a href="https://www.nature.com/articles/s41598-020-72142-z" target="_blank" rel="noopener">Widiyantoro et al.: Megathrust earthquakes and tsunamis from seismic gaps south of Java (Scientific Reports, 2020)</a></li>
       <li id="s23"><a href="https://thesalmons.org/lynn/wh-wcmc/Indonesia%20-%20Ujung%20Kulon.pdf" target="_blank" rel="noopener">UNEP-WCMC: Ujung Kulon National Park World Heritage datasheet</a></li>
@@ -285,36 +393,50 @@ table.ck .cell span{color:#334155}
       <li id="s7"><a href="https://www.fao.org/4/ai389e/ai389e04.htm" target="_blank" rel="noopener">FAO: The role of coastal forests in the mitigation of tsunami impacts</a></li>
       <li id="s8"><a href="https://www.naturebasedsolutionsinitiative.org/publications/vegetation-bioshields-for-tsunami-mitigation-review-of-effectiveness-limitations-construction-and-sustainable-management/" target="_blank" rel="noopener">Tanaka: Vegetation bioshields for tsunami mitigation (review)</a></li>
       <li id="s12"><a href="https://buletinsdg.geologi.esdm.go.id/index.php/bsdg/article/download/BSDG_VOL_15_NO_2_2020_1/272" target="_blank" rel="noopener">Buletin Sumber Daya Geologi 15(2), 2020: endapan emas Cibaliung</a></li>
-      <li id="s3"><a href="https://lestari.kompas.com/read/2025/08/05/194600586/sisa-87-ekor-dan-cuma-ada-di-indonesia-badak-jawa-di-ujung-kepunahan" target="_blank" rel="noopener">Kompas: Sisa 87 ekor, badak jawa di ujung kepunahan (Aug 2025)</a></li>
-      <li id="s15"><a href="https://finance.detik.com/berita-ekonomi-bisnis/d-1729048/emas-batangan-antam-dihasilkan-dari-tambang-pongkor" target="_blank" rel="noopener">detikFinance: Antam, tambang Cibaliung beroperasi sejak Mei 2010</a></li>
-      <li id="s16"><a href="https://news.mongabay.com/2019/07/search-for-a-new-home-for-javan-rhinos-put-on-hold/" target="_blank" rel="noopener">Mongabay: Search for a new home for Javan rhinos put on hold (2019)</a></li>
-      <li id="s5"><a href="https://katadata.co.id/amp/ekonomi-hijau/ekonomi-sirkular/692991789994b/translokasi-badak-akan-tetap-dilakukan-usai-evaluasi-kematian-badak-musofa/" target="_blank" rel="noopener">Katadata: Translokasi badak tetap dilakukan usai kematian Musofa (Nov 2025)</a></li>
     </ol>
-    <p class="note" style="margin-top:10px">Data: BNPB InaRISK · BIG DEMNAS · Kawasan hutan Kementerian Kehutanan/ATR · RTRW Banten &amp; Jawa Timur · WIUP Kementerian ESDM · OSM. Peta dasar © Esri, © kontributor OpenStreetMap.</p>
-  </section>
-</aside>
+        <p class="note">Foto: © David Herman Jaya / Javan Rhino Expedition. Peta dasar © Esri, © kontributor OpenStreetMap.</p>
+        <div class="homelinks">
+          <a class="hl" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span><b>Kembali ke portofolio</b><small>Analisis geospasial lainnya</small></span></a>
+          <a class="hl" href="https://sufridh.github.io/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span><b>Beranda</b><small>sufridh.github.io</small></span></a>
+        </div>
+      </section>
 
-<main>
-  <div id="map" role="region" aria-label="Peta Ujung Kulon dan Alas Purwo dengan bahaya tsunami"></div>
-  <div class="mpanel" id="views">
-    <button data-v="uk">Ujung Kulon</button><button data-v="ap">Alas Purwo</button><button data-v="java">Keduanya</button><button data-v="neck">Leher daratan</button><button data-v="mine">Honje &amp; tambang</button>
-  </div>
+    </div>
+    <nav class="cardnav" aria-label="Navigasi cerita">
+      <button id="prev" type="button" aria-label="Sebelumnya"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <div id="dots" role="tablist"></div>
+      <button id="next" type="button" class="primary"><span>Lanjut</span><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    </nav>
+  </article>
+
   <button id="lbtn" type="button" aria-controls="layers" aria-expanded="false">Lapisan</button>
   <div class="mpanel" id="layers">
-    <div class="t">Tampilkan di peta</div>
-    <label><input type="checkbox" data-l="hazard" checked><i style="background:linear-gradient(90deg,#dca031,#8a1430)"></i>Bahaya tsunami</label>
-    <div class="op"><span>Kepekatan</span><input type="range" id="op" min="0" max="100" value="85" aria-label="Kepekatan lapisan tsunami"></div>
-    <label><input type="checkbox" data-l="parks" checked><i style="background:var(--z-pen)"></i>Taman nasional</label>
-    <label><input type="checkbox" data-l="poi" checked><i style="background:#0f172a;border-radius:50%"></i>Lokasi penting</label>
-    <label><input type="checkbox" data-l="iup" checked><i style="background:#0f172a"></i>Izin tambang</label>
-    <label><input type="checkbox" data-l="buf"><i style="background:none;border:1.5px dashed #b91c1c"></i>Radius 5 km dari tambang</label>
-    <label><input type="checkbox" data-l="rtrw"><i style="background:linear-gradient(90deg,#f2d14b,#2e7d32)"></i>Tata ruang (Honje)</label>
-    <div class="row"><button data-b="light" class="on">Terang</button><button data-b="osm">Jalan</button><button data-b="sat">Satelit</button></div>
+    <button class="lx closed" id="lx" type="button" aria-expanded="false" aria-controls="lbody"><span>Lapisan peta</span><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button>
+    <div id="lbody" hidden>
+      <label><input type="checkbox" data-l="hazard"><i style="background:linear-gradient(90deg,#dca031,#8a1430)"></i>Bahaya tsunami</label>
+      <div class="op"><span>Kepekatan</span><input type="range" id="op" min="0" max="100" value="85" aria-label="Kepekatan lapisan tsunami"></div>
+      <label><input type="checkbox" data-l="parks"><i style="background:var(--z-pen)"></i>Taman nasional</label>
+      <label><input type="checkbox" data-l="poi"><i style="background:#0f172a;border-radius:50%"></i>Lokasi penting</label>
+      <label><input type="checkbox" data-l="iup"><i style="background:#334155"></i>Izin tambang</label>
+      <label><input type="checkbox" data-l="buf"><i style="background:none;border:1.5px dashed #b91c1c"></i>Radius 5 km dari tambang</label>
+      <label><input type="checkbox" data-l="rtrw"><i style="background:linear-gradient(90deg,#f2d14b,#2e7d32)"></i>Tata ruang (Gunung Honje)</label>
+      <div class="lt">Peta dasar</div>
+      <div class="row"><button data-b="light" class="on">Terang</button><button data-b="osm">Jalan</button><button data-b="sat">Satelit</button></div>
+    </div>
   </div>
   <div class="mpanel" id="hz">
-    <div class="t">Bahaya tsunami (InaRISK)</div>
-    <div class="bar"></div>
-    <div class="cl"><span style="color:#a16207">Rendah</span><span style="color:#c2410c">Sedang</span><span style="color:var(--h3)">Tinggi</span></div>
+    <div id="hzLeg">
+      <div class="t">Bahaya tsunami (InaRISK)</div>
+      <div class="bar"></div>
+      <div class="cl"><span style="color:#a16207">Rendah</span><span style="color:#c2410c">Sedang</span><span style="color:var(--h3)">Tinggi</span></div>
+    </div>
+    <div class="lg2">
+      <div class="rl"><i style="background:rgba(21,128,61,.18);border:1.5px solid #15803d"></i>Semenanjung (habitat badak)</div>
+      <div class="rl"><i style="background:rgba(13,148,136,.18);border:1.5px solid #0d9488"></i>Gunung Honje (JRSCA)</div>
+      <div class="rl"><i style="background:rgba(79,70,229,.18);border:1.5px solid #4f46e5"></i>Alas Purwo</div>
+      <div class="rl" data-lg="iup"><i style="background:rgba(15,23,42,.25);border:1.5px solid #0f172a"></i>Izin tambang</div>
+      <div class="rl" data-lg="buf"><i style="background:none;border:1.5px dashed #b91c1c"></i>Radius 5 km dari tambang</div>
+    </div>
     <div id="rtLeg" hidden style="margin-top:9px;padding-top:8px;border-top:1px solid var(--line)">
       <div class="t">Tata ruang (RTRW Banten)</div>
       <div class="rl"><i style="background:#2e7d32"></i>Konservasi</div>
@@ -323,9 +445,8 @@ table.ck .cell span{color:#334155}
       <div class="rl"><i style="background:#8bc34a"></i>Hutan produksi</div>
       <div class="rl"><i style="background:#f2d14b"></i>Pertanian</div>
       <div class="rl"><i style="background:#e57373"></i>Permukiman</div>
-      <div class="rl"><i style="background:#ff9800"></i>Pariwisata</div>
       <div class="rl"><i style="background:#4fc3f7"></i>Perikanan &amp; laut</div>
-      <div class="rl" style="color:var(--mut);font-weight:600;margin-top:3px">Tidak ada lahan khusus tambang</div>
+      <div class="rl" style="color:var(--mut);font-weight:600;margin-top:3px">Tidak ada peruntukan tambang</div>
     </div>
   </div>
 </main>
@@ -356,15 +477,15 @@ document.querySelectorAll("[data-v]").forEach(function(e){ if(e.tagName!=="BUTTO
 
 /* ---------- tsunami chart ---------- */
 var order = ["Peninsula","Gunung Honje","Alas Purwo"];
-var labels = ["Rumah badak sekarang","Rencana A (sisi JRSCA)","Alas Purwo"];
+var labels = ["Habitat saat ini","JRSCA (Gunung Honje)","Alas Purwo"];
 function pct(z,k){return S[z][k+"_ha"]/S[z].covered_ha*100;}
-var sets = [["Rendah","low"],["Sedang","medium"],["Tinggi","high"],["Nyaris tidak ada","none"]].map(function(c,i){
+var sets = [["Rendah","low"],["Sedang","medium"],["Tinggi","high"],["Hampir tidak ada","none"]].map(function(c,i){
   return {label:c[0], data:order.map(function(z){return +pct(z,c[1]).toFixed(1);}), backgroundColor:HC[i],
     borderColor:"#ffffff", borderWidth:{left:0,right:2,top:0,bottom:0}, borderSkipped:false, maxBarThickness:24, _k:c[1]};
 });
 Chart.defaults.font.family = "'Plus Jakarta Sans',system-ui,sans-serif";
 Chart.defaults.color = "#64748b";
-new Chart(document.getElementById("cZone"),{
+var zoneChart = new Chart(document.getElementById("cZone"),{
   type:"bar", data:{labels:labels, datasets:sets},
   options:{indexAxis:"y", responsive:true, maintainAspectRatio:false, animation:false,
     plugins:{legend:{display:false},
@@ -376,7 +497,7 @@ new Chart(document.getElementById("cZone"),{
 });
 (function(){
   var rows = order.concat(["Panaitan","Peucang & islets"]);
-  var nm = {"Peninsula":"Semenanjung Ujung Kulon","Gunung Honje":"Gunung Honje (sisi JRSCA)","Alas Purwo":"Alas Purwo","Panaitan":"Pulau Panaitan (TNUK)","Peucang & islets":"Pulau Peucang (TNUK)"};
+  var nm = {"Peninsula":"Semenanjung Ujung Kulon","Gunung Honje":"Gunung Honje (lokasi JRSCA)","Alas Purwo":"Alas Purwo","Panaitan":"Pulau Panaitan (TNUK)","Peucang & islets":"Pulau Peucang (TNUK)"};
   var h='<table><thead><tr><th>Lokasi</th><th>Daratan (ha)</th><th>Rendah</th><th>Sedang</th><th>Tinggi</th><th>Sedang+Tinggi</th></tr></thead><tbody>';
   rows.forEach(function(z){var s=S[z];
     h+='<tr><td>'+nm[z]+'</td><td>'+fmt(s.ha||s.covered_ha)+'</td><td>'+fmt(pct(z,"low"),0)+'%</td><td>'+fmt(pct(z,"medium"),0)+'%</td><td>'+fmt(pct(z,"high"),0)+'%</td><td><b>'+fmt(s.medhigh_pct,0)+'%</b></td></tr>';});
@@ -390,18 +511,15 @@ new Chart(document.getElementById("cZone"),{
   var G='<span class="ic g" aria-label="mendukung">✓</span>', B='<span class="ic b" aria-label="tanda bahaya">✕</span>', Q='<span class="ic q" aria-label="belum diketahui">?</span>', N='<span class="ic n" aria-label="netral">–</span>';
   var pen=S["Peninsula"], hon=S["Gunung Honje"], ap=AP.hazard;
   var R = [
-    ["Bahaya tsunami", [B,fmt(pen.medhigh_pct,0)+"% daratan di zona sedang–tinggi"], [G,fmt(hon.medhigh_pct,0)+"%"], [B,fmt(ap.medhigh_pct,0)+"%, menghadap samudra di atas Palung Jawa"]],
-    ["Air dan hujan sepanjang tahun", [G,"Basah: sekitar 3.250 mm hujan per tahun<sup><a href='#s23'>8</a></sup>"], [G,"Iklim basah yang sama"], [B,"Kemarau panjang;<sup><a href='#s25'>9</a></sup> sekitar 1.000–1.500 mm per tahun<sup><a href='#s24'>10</a></sup>"]],
-    ["Dataran rendah yang disukai badak", [G,"Kebanyakan rendah: ketinggian umum "+fmt(DZ["Peninsula"].median,0)+" m"], [B,"Berbukit: ketinggian umum "+fmt(DZ["Gunung Honje"].median,0)+" m"], [B,"Bukit kapur: ketinggian umum "+fmt(AP.stats.median,0)+" m"]],
-    ["Luas habitat", [G,fmt(Math.round(pen.ha/100)*100)+" ha"], [N,fmt(Math.round(hon.ha/100)*100)+" ha (JRSCA ± 5.100 ha)"], [G,fmt(Math.round(AP.stats.ha/100)*100)+" ha"]],
-    ["Pakan dan kubangan", [G,"Terbukti: badak hidup di sini"], [Q,"Baru sedikit badak; pemindahan pertama berujung kematian"], [Q,"Belum disurvei"]],
-    ["Satwa pesaing", [N,"Ada banteng"], [N,"Ada banteng"], [N,"Ada banteng<sup><a href='#s27'>11</a></sup>"]],
-    ["Kebakaran hutan", [N,"–"], [N,"–"], [B,"Rawan terbakar saat kemarau<sup><a href='#s26'>12</a></sup>"]],
-    ["Jarak pemindahan", [N,"–"], [G,"14 km lewat laut"], [B,"± "+V.distKm+" km"]],
-    ["Dilindungi tata ruang", [G,"100% konservasi"], [G,"100% konservasi"], [G,V.apRtrw+"% konservasi"]],
-    ["Tambang di sekitar", [G,"Tidak ada yang dekat"], [B,"Izin emas "+AM.antam.dist_m+" m dari batas"], [N,"Izin emas ± "+V.tpKm+" km"]]
+    ["Bahaya tsunami", [B,fmt(pen.medhigh_pct,0)+"% sedang–tinggi"], [G,fmt(hon.medhigh_pct,0)+"%"], [B,fmt(ap.medhigh_pct,0)+"%, menghadap Palung Jawa"]],
+    ["Air dan hujan", [G,"± 3.250 mm/tahun<sup><a href='#s23'>9</a></sup>"], [G,"Sama basahnya"], [B,"Kemarau panjang,<sup><a href='#s25'>10</a></sup> ± 1.000–1.500 mm/tahun<sup><a href='#s24'>11</a></sup>"]],
+    ["Dataran rendah", [G,"Landai, umumnya "+fmt(DZ["Peninsula"].median,0)+" m"], [B,"Berbukit, umumnya "+fmt(DZ["Gunung Honje"].median,0)+" m"], [B,"Bukit kapur, umumnya "+fmt(AP.stats.median,0)+" m"]],
+    ["Luas", [G,fmt(Math.round(pen.ha/100)*100)+" ha"], [N,fmt(Math.round(hon.ha/100)*100)+" ha (JRSCA ± 5.100 ha)"], [G,fmt(Math.round(AP.stats.ha/100)*100)+" ha"]],
+    ["Pakan dan kubangan", [G,"Terbukti"], [Q,"Belum teruji; badak pertama mati"], [Q,"Belum disurvei"]],
+    ["Kebakaran hutan", [N,"–"], [N,"–"], [B,"Rawan saat kemarau<sup><a href='#s26'>13</a></sup>"]],
+    ["Jarak pemindahan", [N,"–"], [G,"14 km lewat laut"], [B,"± "+V.distKm+" km"]]
   ];
-  var h='<table class="ck"><thead><tr><th>Syarat</th><th>Rumah badak sekarang</th><th>Rencana A: sisi JRSCA</th><th>Alas Purwo</th></tr></thead><tbody>';
+  var h='<table class="ck"><thead><tr><th>Syarat</th><th>Habitat saat ini</th><th>JRSCA</th><th>Alas Purwo</th></tr></thead><tbody>';
   R.forEach(function(r){ h+='<tr><td>'+r[0]+'</td>'+[r[1],r[2],r[3]].map(function(c){return '<td><div class="cell">'+c[0]+'<span>'+c[1]+'</span></div></td>';}).join("")+'</tr>'; });
   document.getElementById("cmpTab").innerHTML = h+'</tbody></table>';
 })();
@@ -431,32 +549,38 @@ L_.hazard = L.layerGroup([
   L.imageOverlay("data:image/png;base64,"+AP.hazard_overlay.png, AP.hazard_overlay.bounds,{pane:"hz",opacity:.85,interactive:false})
 ]).addTo(map);
 
-var NM = {"Peninsula":"Semenanjung Ujung Kulon","Gunung Honje":"Gunung Honje (sisi JRSCA)","Panaitan":"Pulau Panaitan","Peucang & islets":"Pulau Peucang","Alas Purwo":"Taman Nasional Alas Purwo"};
-var NOTE = {"Peninsula":"Tempat badak jawa liar hidup saat ini.","Gunung Honje":"Tujuan Rencana A. JRSCA berpagar (± 5.100 ha) ada di sisi selatan, dekat Desa Ujungjaya. Sisi timurnya berbatasan dengan tambang emas Cibaliung.",
-  "Alas Purwo":"Usulan rumah baru (Nov 2026). Sisi selatannya menghadap langsung Samudra Hindia.","Panaitan":"Pulau di Ujung Kulon, tidak dihuni badak.","Peucang & islets":"Pulau kecil di Ujung Kulon, tidak dihuni badak."};
+var NM = {"Peninsula":"Semenanjung Ujung Kulon","Gunung Honje":"Gunung Honje (lokasi JRSCA)","Panaitan":"Pulau Panaitan","Peucang & islets":"Pulau Peucang","Alas Purwo":"Taman Nasional Alas Purwo"};
+var NOTE = {"Peninsula":"Tempat badak jawa liar hidup saat ini.","Gunung Honje":"Lokasi translokasi saat ini. JRSCA (± 5.100 ha) berada di sisi selatan, dekat Desa Ujungjaya. Sisi timurnya berbatasan dengan tambang emas Cibaliung.",
+  "Alas Purwo":"Usulan habitat kedua (November 2026). Pantai selatannya menghadap langsung Samudra Hindia.","Panaitan":"Pulau di Ujung Kulon, tidak dihuni badak.","Peucang & islets":"Pulau kecil di Ujung Kulon, tidak dihuni badak."};
 function pop(z){
   var s=S[z], e = z==="Alas Purwo" ? AP.stats : DZ[z];
   if(!s) return '<div class="pp"><h4>Perairan Ujung Kulon</h4><div class="m">Laut di dalam taman nasional</div></div>';
   return '<div class="pp"><h4>'+NM[z]+'</h4><div class="m">'+fmt(s.ha||s.covered_ha)+' ha daratan</div>'+
     '<table><tr><td>Bahaya tsunami sedang–tinggi</td><td><b>'+fmt(s.medhigh_pct,0)+'%</b> daratan</td></tr>'+
     '<tr><td>Semua tingkat bahaya</td><td>'+fmt(s.exposed_pct,0)+'%</td></tr>'+
-    (e?'<tr><td>Ketinggian umum</td><td>'+fmt(e.median,0)+' m</td></tr><tr><td>Daratan di atas 100 m</td><td>'+fmt(e.gt100_pct,0)+'%</td></tr>':'')+
+    (e?'<tr><td>Ketinggian umumnya</td><td>'+fmt(e.median,0)+' m</td></tr><tr><td>Daratan di atas 100 m</td><td>'+fmt(e.gt100_pct,0)+'%</td></tr>':'')+
     '</table><div class="w">'+(NOTE[z]||"")+'</div></div>';
 }
 var zoneLayers = {};
 var ukZones = L.geoJSON(D.zones,{pane:"zn",
   style:function(f){var c=ZC[f.properties.zone]; var m=f.properties.zone==="Marine area";
     return m?{color:c,weight:1.2,dashArray:"5 5",fillOpacity:.03,fillColor:c}:{color:c,weight:1.6,fillColor:c,fillOpacity:.10};},
-  onEachFeature:function(f,l){zoneLayers[f.properties.zone]=l; l.bindPopup(pop(f.properties.zone));}
+  onEachFeature:function(f,l){var z=f.properties.zone; zoneLayers[z]=l; l.bindPopup(pop(z));
+    if(z!=="Marine area"){ l.bindTooltip(NM[z],{sticky:true,direction:"top",className:"htip"});
+      l.on("mouseover",function(){l.setStyle({fillOpacity:.22,weight:2.4});}); l.on("mouseout",function(){ukZones.resetStyle(l);}); }}
 });
 var apLayer = L.geoJSON(AP.geom,{pane:"zn",style:{color:ZC["Alas Purwo"],weight:1.8,fillColor:ZC["Alas Purwo"],fillOpacity:.10},
-  onEachFeature:function(f,l){zoneLayers["Alas Purwo"]=l; l.bindPopup(pop("Alas Purwo"));}});
+  onEachFeature:function(f,l){zoneLayers["Alas Purwo"]=l; l.bindPopup(pop("Alas Purwo")); l.bindTooltip(NM["Alas Purwo"],{sticky:true,direction:"top",className:"htip"});
+    l.on("mouseover",function(){l.setStyle({fillOpacity:.22,weight:2.6});}); l.on("mouseout",function(){apLayer.resetStyle(l);});}});
 var ukC = L.latLng(-6.78,105.40), apC = L.latLng(-8.63,114.40);
 var link = L.polyline([ukC,apC],{pane:"zn",color:"#475569",weight:1.6,dashArray:"6 8",opacity:.8})
   .bindTooltip("± "+V.distKm+" km",{permanent:true,direction:"center",className:"lbl"});
 var neck = L.geoJSON(D.isthmus_line,{pane:"top",style:{color:"#dc2626",weight:5,lineCap:"round"}})
-  .bindPopup('<div class="pp"><h4>Leher daratan</h4><div class="m">Lebar '+fmt(I.width_m)+' m</div>Satu-satunya penghubung darat antara rumah badak dan sisi JRSCA. Seluruhnya masuk zona bahaya tsunami tinggi.</div>');
+  .bindPopup('<div class="pp"><h4>Tanah genting</h4><div class="m">Lebar '+fmt(I.width_m)+' m</div>Satu-satunya jalur darat antara Semenanjung dan Gunung Honje. Seluruhnya berada di zona bahaya tsunami tinggi.</div>');
 L_.parks = L.layerGroup([ukZones, apLayer, neck]).addTo(map);
+function plab(ll,t,dir){ return L.marker(ll,{interactive:false,icon:L.divIcon({className:"",html:"",iconSize:[0,0]})}).bindTooltip(t,{permanent:true,direction:dir,className:"plbl",offset:[0,dir==="top"?-6:6]}); }
+var parkLbl = L.layerGroup([plab(ukC,"TN Ujung Kulon","top"), plab(apC,"TN Alas Purwo","bottom")]);
+L.control.scale({imperial:false,position:"bottomleft",maxWidth:120}).addTo(map);
 
 function poi(ll,txt,col,html,lab,dir){
   var m=L.marker(ll,{icon:L.divIcon({className:"",html:'<div class="poi" style="background:'+col+'">'+txt+'</div>',iconSize:[26,26],iconAnchor:[13,13]})});
@@ -465,8 +589,8 @@ function poi(ll,txt,col,html,lab,dir){
   return m;
 }
 L_.poi = L.layerGroup([
-  poi([-6.80000,105.50333],"J","#0d9488",'<h4>Ujungjaya: JRSCA</h4><div class="m">Tujuan Rencana A</div>Area penangkaran berpagar ada di dekat desa ini. Kandang pelepasan seluas 40 ha.',"JRSCA (Rencana A)"),
-  poi([-6.1020,105.4230],"▲","#7f1d1d",'<h4>Anak Krakatau</h4><div class="m">± '+fmt(X.krakatau,0)+' km dari Ujung Kulon</div>Pemicu tsunami 22 Desember 2018, dan ancaman utama yang disebut sang utusan.',"Anak Krakatau"),
+  poi([-6.80000,105.50333],"J","#0d9488",'<h4>JRSCA, Desa Ujungjaya</h4><div class="m">Lokasi translokasi saat ini</div>Area penangkaran berpagar ini berada di dekat Desa Ujungjaya, dengan kandang pelepasan seluas 40 ha.',"JRSCA"),
+  poi([-6.1020,105.4230],"▲","#7f1d1d",'<h4>Anak Krakatau</h4><div class="m">± '+fmt(X.krakatau,0)+' km dari Ujung Kulon</div>Pemicu tsunami 22 Desember 2018, sekaligus ancaman yang dijadikan alasan usulan Alas Purwo.',"Anak Krakatau"),
   poi([-6.74250,105.63011],"Au","#0f172a",'<h4>Tambang emas Cibaliung (Antam)</h4><div class="m">Di batas timur Ujung Kulon</div>Area izinnya hanya '+AM.antam.dist_m+' m dari batas taman nasional dan belum masuk ke dalamnya. Tambang ini butuh cadangan baru, dan masa izinnya tercatat berakhir Maret 2025.',"Tambang emas Cibaliung","left")
 ]).addTo(map);
 
@@ -499,50 +623,123 @@ var iupJ = L.geoJSON(AP.iup_near,{pane:"top",style:iupStyle,onEachFeature:iupPop
 L_.iup = L.layerGroup([iupB, iupJ]).addTo(map);
 L_.buf = L.geoJSON(D.mine_buffer_geom,{pane:"top",interactive:false,style:{color:"#b91c1c",weight:1.5,dashArray:"6 6",fillColor:"#b91c1c",fillOpacity:.05}});
 
-/* controls */
-document.querySelectorAll("#layers input[type=checkbox]").forEach(function(c){
-  c.addEventListener("change",function(){var l=L_[c.dataset.l]; if(c.checked) l.addTo(map); else map.removeLayer(l);
-    if(c.dataset.l==="parks"){ if(!c.checked) map.removeLayer(link); zoomRules(); }
-    if(c.dataset.l==="rtrw") document.getElementById("rtLeg").hidden=!c.checked;});
-});
-document.getElementById("op").addEventListener("input",function(e){L_.hazard.eachLayer(function(o){o.setOpacity(e.target.value/100);});});
-document.querySelectorAll("#layers [data-b]").forEach(function(b){
-  b.addEventListener("click",function(){
-    document.querySelectorAll("#layers [data-b]").forEach(function(x){x.classList.remove("on");}); b.classList.add("on");
-    Object.keys(base).forEach(function(k){map.removeLayer(base[k]);}); base[b.dataset.b].addTo(map);
-  });
-});
+
+/* ================= STORY ENGINE ================= */
 var ukB = ukZones.getBounds(), apB = apLayer.getBounds();
-function PADB(d){ var m=window.innerWidth<900; var o=m?{padding:[12,12]}:{paddingTopLeft:[30,80],paddingBottomRight:[270,40]}; if(d) o.duration=d; return o; }
 function both(){ return L.latLngBounds(ukB.getSouthWest(), ukB.getNorthEast()).extend(apB); }
-var VIEW = {
-  uk:function(){map.flyToBounds(ukB,{padding:[20,20],duration:.8});},
-  ap:function(){map.flyToBounds(apB.pad(0.25),{padding:[20,20],duration:.8});},
-  java:function(){map.flyToBounds(both(),PADB(.8));},
-  neck:function(){map.flyTo([-6.80,105.4475],13.4,{duration:.8});},
-  mine:function(){ if(!map.hasLayer(L_.buf)){ L_.buf.addTo(map); var cb=document.querySelector('[data-l=buf]'); if(cb) cb.checked=true; } map.flyToBounds(L.latLngBounds([[-6.88,105.45],[-6.66,105.74]]),PADB(.8)); }
-};
-document.querySelectorAll("#views button").forEach(function(b){b.addEventListener("click",function(){VIEW[b.dataset.v]();});});
-function fly(z){
-  var l=zoneLayers[z]; if(!l) return; map.closePopup();
-  map.once("moveend",function(){setTimeout(function(){l.openPopup();},60);});
-  map.flyToBounds(l.getBounds(),PADB(.8));
+function isMobile(){ return window.innerWidth < 900; }
+function pad(){
+  if(isMobile()){ var h=document.getElementById("card").offsetHeight; return {paddingTopLeft:[14,14], paddingBottomRight:[14,h+14]}; }
+  var w=document.getElementById("card").offsetWidth;
+  return {paddingTopLeft:[w+44,30], paddingBottomRight:[40,30]};
 }
-document.querySelectorAll(".kpi").forEach(function(k){k.addEventListener("click",function(){
-  var f=k.dataset.fly; if(f==="alaspurwo") fly("Alas Purwo"); else if(f==="both") VIEW.java(); else fly(f);
-});});
-var lb=document.getElementById("lbtn"), lp=document.getElementById("layers");
-lb.addEventListener("click",function(){var o=lp.classList.toggle("open"); lb.setAttribute("aria-expanded",o);});
+var TARGET = {
+  java: function(){ return both(); },
+  uk: function(){ return ukB; },
+  ap: function(){ return apB.pad(0.12); },
+  jrsca: function(){ return L.latLngBounds([[-6.87,105.40],[-6.71,105.60]]); },
+  neck: function(){ return L.latLngBounds([[-6.83,105.418],[-6.77,105.478]]); },
+  mine: function(){ return L.latLngBounds([[-6.88,105.47],[-6.66,105.74]]); }
+};
 function zoomRules(){
-  var z=map.getZoom();
-  if(z<8.5){ if(map.hasLayer(L_.parks)) link.addTo(map); } else map.removeLayer(link);
+  var z=map.getZoom(), on=map.hasLayer(L_.parks);
+  if(z<8.5 && on){ link.addTo(map); parkLbl.addTo(map); } else { map.removeLayer(link); map.removeLayer(parkLbl); }
   L_.poi.eachLayer(function(m){ var t=m.getTooltip(); if(!t) return; if(z>=8.5) m.openTooltip(); else m.closeTooltip(); });
 }
 map.on("zoomend",zoomRules);
-map.fitBounds(both(),PADB());
-zoomRules();
-setTimeout(function(){map.invalidateSize(); map.fitBounds(both(),PADB());},300);
-window.addEventListener("resize",function(){map.invalidateSize();});
+
+/* zoom out, then zoom in to the next focus */
+var seq = 0;
+function go(bounds, instant){
+  var o = pad(); seq++; var tok = seq;
+  map.stop();
+  if(instant){ map.fitBounds(bounds, o); return; }
+  var far = map.getCenter().distanceTo(bounds.getCenter()) > 150000;
+  if(far){ o.duration = 2.6; o.easeLinearity = 0.2; map.flyToBounds(bounds, o); return; }
+  var tz = map.getBoundsZoom(bounds, false, L.point(o.paddingTopLeft ? o.paddingTopLeft[0]+o.paddingBottomRight[0] : 28, 60));
+  var outZ = Math.max(5, Math.min(map.getZoom(), tz) - 1.6);
+  var mid = L.latLngBounds([map.getCenter(), bounds.getCenter()]).getCenter();
+  map.flyTo(mid, outZ, {duration:0.85, easeLinearity:0.3});
+  map.once("moveend", function(){ if(tok!==seq) return; o.duration = 1.35; o.easeLinearity = 0.3; map.flyToBounds(bounds, o); });
+}
+
+function setBase(k){
+  document.querySelectorAll("#layers [data-b]").forEach(function(x){ x.classList.toggle("on", x.dataset.b===k); });
+  Object.keys(base).forEach(function(b){ if(b!==k && map.hasLayer(base[b])) map.removeLayer(base[b]); });
+  if(!map.hasLayer(base[k])) base[k].addTo(map);
+}
+document.querySelectorAll("#layers [data-b]").forEach(function(b){ b.addEventListener("click",function(){ setBase(b.dataset.b); }); });
+
+function syncLegend(){
+  document.getElementById("hzLeg").hidden = !map.hasLayer(L_.hazard);
+  document.getElementById("rtLeg").hidden = !map.hasLayer(L_.rtrw);
+  document.querySelectorAll("#hz [data-lg]").forEach(function(r){ r.hidden = !map.hasLayer(L_[r.dataset.lg]); });
+}
+document.querySelectorAll("#layers input[type=checkbox]").forEach(function(c){
+  c.addEventListener("change",function(){ var l=L_[c.dataset.l]; if(c.checked) l.addTo(map); else map.removeLayer(l); zoomRules(); syncLegend(); });
+});
+document.getElementById("op").addEventListener("input",function(e){ L_.hazard.eachLayer(function(o){ o.setOpacity(e.target.value/100); }); });
+
+var slides = Array.prototype.slice.call(document.querySelectorAll("#slides .slide"));
+var N = slides.length, cur = -1;
+var dots = document.getElementById("dots");
+slides.forEach(function(s,i){
+  var b=document.createElement("button"); b.type="button"; b.setAttribute("role","tab");
+  b.setAttribute("aria-label",(i+1)+". "+s.dataset.name); b.title=s.dataset.name;
+  b.addEventListener("click",function(){ show(i); }); dots.appendChild(b);
+});
+var LAYERS = ["hazard","parks","poi","iup","buf","rtrw"];
+function show(i, instant){
+  if(i<0 || i>=N || i===cur) return;
+  var s = slides[i]; cur = i;
+  document.getElementById("card").classList.toggle("wide", !!s.dataset.wide);
+  slides.forEach(function(x,j){ x.classList.toggle("on", j===i); x.setAttribute("aria-hidden", j===i ? "false" : "true"); });
+  document.getElementById("slides").scrollTop = 0;
+  Array.prototype.forEach.call(dots.children,function(d,j){ d.classList.toggle("on", j===i); d.classList.toggle("done", j<i); d.setAttribute("aria-selected", j===i); });
+  document.getElementById("stepLbl").textContent = (i+1)+" / "+N;
+  document.getElementById("stepName").textContent = s.dataset.name;
+  document.getElementById("prev").disabled = (i===0);
+  var nx = document.getElementById("next"); nx.disabled = (i===N-1);
+  nx.querySelector("span").textContent = i===0 ? "Mulai" : (i===N-1 ? "Selesai" : "Lanjut");
+  var want = (s.dataset.layers||"").split(",");
+  LAYERS.forEach(function(k){
+    var on = want.indexOf(k) > -1, l = L_[k];
+    if(on && !map.hasLayer(l)) l.addTo(map);
+    if(!on && map.hasLayer(l)) map.removeLayer(l);
+    var cb = document.querySelector('#layers [data-l="'+k+'"]'); if(cb) cb.checked = on;
+  });
+  setBase(s.dataset.basemap || "light");
+  syncLegend(); map.closePopup();
+  go(TARGET[s.dataset.view](), instant);
+  if(s.querySelector("#cZone")) setTimeout(function(){ zoneChart.resize(); }, 40);
+  zoomRules();
+  try{ history.replaceState(null, "", "#"+(i+1)); }catch(e){}
+}
+document.getElementById("prev").addEventListener("click",function(){ show(cur-1); });
+document.getElementById("next").addEventListener("click",function(){ show(cur+1); });
+document.querySelectorAll('[data-go="next"]').forEach(function(b){ b.addEventListener("click",function(){ show(cur+1); }); });
+document.addEventListener("keydown",function(e){
+  var t=e.target.tagName; if(t==="INPUT"||t==="TEXTAREA"||t==="SELECT") return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){ e.preventDefault(); show(cur+1); }
+  if(e.key==="ArrowLeft"||e.key==="PageUp"){ e.preventDefault(); show(cur-1); }
+});
+(function(){ /* swipe on the card */
+  var card=document.getElementById("card"), x0=null, y0=null;
+  card.addEventListener("touchstart",function(e){ x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  card.addEventListener("touchend",function(e){ if(x0===null) return; var dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) show(cur + (dx<0?1:-1)); x0=null; },{passive:true});
+})();
+
+var lx=document.getElementById("lx"), lbody=document.getElementById("lbody");
+lx.addEventListener("click",function(){ var h=!lbody.hidden; lbody.hidden=h; lx.setAttribute("aria-expanded",!h); lx.classList.toggle("closed",h); });
+var lb=document.getElementById("lbtn"), lp=document.getElementById("layers");
+lb.addEventListener("click",function(){ var o=lp.classList.toggle("open"); lb.setAttribute("aria-expanded",o); if(o){ lbody.hidden=false; lx.classList.remove("closed"); } });
+
+var start = parseInt((location.hash||"").replace("#",""),10);
+start = (start>=1 && start<=N) ? start-1 : 0;
+show(start, true);
+setTimeout(function(){ map.invalidateSize(); var c=cur; cur=-1; show(c, true); }, 300);
+window.addEventListener("resize",function(){ map.invalidateSize(); });
 })();
 
 </script>
