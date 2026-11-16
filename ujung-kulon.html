@@ -216,6 +216,15 @@ html body .leaflet-bottom.leaflet-left{transition:left .35s}
   #layers.open{display:block;top:52px}
   #lbtn{display:block}
   .slide h1{font-size:20px}.slide h2{font-size:17px}
+  #card.wide{width:auto}
+  table.ck,table.ck tbody,table.ck tr,table.ck td{display:block;width:auto}
+  table.ck thead{display:none}
+  table.ck{table-layout:auto;margin-top:6px}
+  table.ck tr{border:1px solid var(--line);border-radius:11px;padding:9px 11px 6px;margin-bottom:8px;background:var(--card)}
+  table.ck td{border:0;padding:3px 0}
+  table.ck td:first-child{font-size:12.5px;padding:0 0 5px;margin-bottom:3px;border-bottom:1px solid var(--line)}
+  table.ck td[data-label]{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:start;font-size:12px}
+  table.ck td[data-label]:before{content:attr(data-label);font-size:10.5px;font-weight:700;color:var(--mut);padding-top:2px}
   .hero img{aspect-ratio:16/8}
 }
 .callout.warn{border-left-color:#b91c1c;background:#fef2f2;border-color:#fecaca;margin-top:10px}
@@ -520,7 +529,8 @@ var zoneChart = new Chart(document.getElementById("cZone"),{
     ["Jarak pemindahan", [N,"–"], [G,"14 km lewat laut"], [B,"± "+V.distKm+" km"]]
   ];
   var h='<table class="ck"><thead><tr><th>Syarat</th><th>Habitat saat ini</th><th>JRSCA</th><th>Alas Purwo</th></tr></thead><tbody>';
-  R.forEach(function(r){ h+='<tr><td>'+r[0]+'</td>'+[r[1],r[2],r[3]].map(function(c){return '<td><div class="cell">'+c[0]+'<span>'+c[1]+'</span></div></td>';}).join("")+'</tr>'; });
+  var HL=["Habitat saat ini","JRSCA","Alas Purwo"];
+  R.forEach(function(r){ h+='<tr><td>'+r[0]+'</td>'+[r[1],r[2],r[3]].map(function(c,j){return '<td data-label="'+HL[j]+'"><div class="cell">'+c[0]+'<span>'+c[1]+'</span></div></td>';}).join("")+'</tr>'; });
   document.getElementById("cmpTab").innerHTML = h+'</tbody></table>';
 })();
 
