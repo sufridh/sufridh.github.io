@@ -11,7 +11,7 @@ with its data embedded, so the whole site is static — no build step, no server
 | Portfolio home | `index.html` | scrolling |
 | Jakarta Waste Infrastructure | `projects/jakarta-waste.html` | full-screen app |
 | Methodology & Data Sources | `projects/jakarta-waste-methodology.html` | scrolling |
-| Perubahan Tata Guna Lahan Jawa | `projects/perubahan-lahan-jawa.html` | scrolling |
+| Perubahan Tutupan Lahan Jawa | `projects/perubahan-lahan-jawa.html` | scrolling |
 | Populasi Pesisir Utara | `projects/pesisir-utara.html` | full-screen app |
 | Rusunawa Nasional | `projects/rusunawa.html` | full-screen app |
 | Gaza Food Security | `projects/gaza-food-security.html` | full-screen app |
@@ -68,6 +68,6 @@ opening the file directly.
 ## Sources
 
 DKI Jakarta open data · BPS · WorldPop · Ministry of Environment and Forestry (KLHK)
-land cover · Ditjen Dukcapil Kemendagri · Ministry of Public Works and Housing (PUPR) ·
+land cover · Esri Sentinel-2 10m Land Use/Land Cover (Impact Observatory, Microsoft, Esri; CC BY 4.0) · Ditjen Dukcapil Kemendagri · Ministry of Public Works and Housing (PUPR) ·
 IPC Acute Food Insecurity classifications. Basemaps © CARTO, © OpenStreetMap
 contributors, Esri World Imagery.

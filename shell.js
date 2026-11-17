@@ -22,8 +22,8 @@
     {
       id: "perubahan-lahan-jawa",
       file: "perubahan-lahan-jawa.html",
-      title: "Perubahan Tata Guna Lahan Jawa",
-      sub: "Land use change across Java, 2000–2022"
+      title: "Perubahan Tutupan Lahan Jawa",
+      sub: "Land cover change across Java"
     },
     {
       id: "pesisir-utara",
