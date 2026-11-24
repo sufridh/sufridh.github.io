@@ -158,7 +158,7 @@ details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;f
   <details open><summary>Sumber data per kota</summary>
   <p>Jakarta: daftar rute Transjakarta dan Mikrotrans di Wikipedia (revisi 10–15 Nov 2026); geometri dari GPKG <i>Transportasi – JKT</i> (layer Rute Bus se-Jakarta, Commuter Line, MRT); rute baru yang belum ada di GPKG diambil dari OpenStreetMap; angkot reguler Mikrolet dan KWK dari Moovit. Surabaya: Wikipedia (Suroboyo Bus, Trans Semanggi, Wirawiri, Angkutan kota di Surabaya – status bemo 2023), Trans Jatim, relasi KAI Commuter di OSM. Palembang: UNESCAP SUTI (data Dishub 2020), Moovit, Wikipedia (Trans Musi Jaya, Feeder Musi Emas), RRI 2026. Makassar: RTRW Kota Makassar 2015–2034 (via Khoiril dkk. 2019), detikSulsel Mei 2026, Wikipedia (Trans Mamminasata, Trans Sulsel), OSM. Padang: Wikipedia Trans Padang, Moovit (41 dari 87 trayek Dishub). Surakarta: Wikipedia Batik Solo Trans, OSM, Traveloka (angkot). Yogyakarta: Wikipedia Trans Jogja, OSM (relasi Trans Jogja, Trans Gadjah Mada, KRL/KA Bandara).</p></details>
   <details><summary>Geometri</summary>
-  <p><b>GPKG</b> dan <b>OSM</b>: trase hasil digitasi (OSM disederhanakan ±25 m). <b>OSRM</b>: rute jalan tercepat antara terminal asal–tujuan (dan titik "via" bila ada) — perkiraan, bukan trase resmi. <b>Titik asal–tujuan</b>: angkot konvensional digambar sebagai sepasang titik saja (bukan trase) dari geocoding Nominatim/OSM; sebagian titik diletakkan manual secara perkiraan. Trayek tanpa titik yang bisa dipastikan tidak digambar.</p></details>
+  <p><b>GPKG</b> dan <b>OSM</b>: trase hasil digitasi (OSM disederhanakan ±25 m). <b>OSRM</b>: rute jalan tercepat antara terminal asal–tujuan (dan titik "via" bila ada) — perkiraan, bukan trase resmi. <b>Titik asal–tujuan</b>: angkot konvensional digambar sebagai sepasang titik saja (bukan trase) dari geocoding Nominatim/OSM; sebagian titik diletakkan manual secara perkiraan. Trayek tanpa titik yang bisa dipastikan tidak digambar. <b>Batas kota</b>: Jakarta (5 kota administrasi, tanpa Kepulauan Seribu), Surabaya, Surakarta, dan Yogyakarta memakai <i>kabkota_boundaries.geojson</i> yang sama dengan proyek lain di portofolio ini; Palembang, Makassar, dan Padang memakai batas administrasi OpenStreetMap.</p></details>
   <details><summary>Celah yang diketahui</summary>
   <p>Angkot reguler Jakarta di luar Mikrolet/KWK (mis. Koperasi APB, Koantas, KOASI) belum terdaftar lengkap; banyak trayek Mikrolet/KWK Moovit kemungkinan sudah dilebur ke Mikrotrans. Status per trayek angkot Palembang, Padang, Makassar, dan Surakarta tidak dipublikasikan per trayek. Kota Yogyakarta praktis tidak lagi memiliki angkot dalam kota; yang tersisa angkutan perdesaan/AKDP (tidak dimasukkan). Trayek bus AKDP/AKAP dan KA jarak jauh di luar cakupan.</p></details>
 </section>
@@ -189,9 +189,18 @@ function style(r){const st=r.status;const dead=st==='Tidak aktif'||st==='Rencana
  const dash=r.gt==='line'?'1 5':dead?'7 5':st==='Musiman'?'4 4':st==='Belum terverifikasi'&&r.gt!=='line'?'10 3':null;
  return{color:col,weight:w,opacity:dead?.55:st==='Semi-aktif'?.6:.85,dashArray:dash,lineCap:r.gt==='line'?'round':'butt'}}
 function pop(r){return `<b>${esc(r.code)}</b> · ${esc(r.system)}<br>${esc(r.o)}${r.d?' – '+esc(r.d):''}<br><span class="st s-${esc(r.status.split(' ')[0])}">${esc(r.status)}</span> · ${esc(r.scope)}<br><span class="sub">${esc(r.reg)}<br>Operator: ${esc(r.op)}<br>Skema: ${esc(r.bts)}</span>`}
+const BST={color:'#334155',weight:1.6,dashArray:'6 4',fillColor:'#1d4ed8',fillOpacity:.04,interactive:false};
+let KG=null,KGp=null;
+function loadKab(){return KGp||(KGp=fetch('data/kabkota_boundaries.geojson').then(r=>r.json()).then(g=>{KG={};for(const f of g.features)KG[f.properties.n]=f}).catch(()=>{KG={}}))}
+function drawBnd(cs){bndL.clearLayers();let need=false;
+ for(const c of cs){const b=D.cities[c];if(!b)continue;
+  if(b.b){L.polygon(b.b.map(e=>dec(e,4)),BST).addTo(bndL);continue}
+  if(!KG){need=true;continue}
+  const fs=(b.k||[]).map(n=>KG[n]).filter(Boolean);if(fs.length)L.geoJSON({type:'FeatureCollection',features:fs},{style:()=>BST,interactive:false}).addTo(bndL)}
+ if(need)loadKab().then(()=>{const now=city==='Semua'?D.order:[city];if(now.join()===cs.join())drawBnd(cs)})}
 function drawMap(fit){layer.clearLayers();bndL.clearLayers();
  const cs=city==='Semua'?D.order:[city];
- for(const c of cs){const b=D.cities[c];if(b)L.polygon(b.b.map(e=>dec(e,4)),{color:'#334155',weight:1.6,dashArray:'6 4',fillColor:'#1d4ed8',fillOpacity:.04,interactive:false}).addTo(bndL)}
+ drawBnd(cs);
  const rs=cityRows().filter(pass).filter(r=>r.geo.length);
  rs.sort((a,b)=>(a.gt==='line')-(b.gt==='line')||(b.g==='Rel')-(a.g==='Rel'));
  for(const r of rs.reverse()){const ll=r.geo.map(e=>dec(e,r.p));
