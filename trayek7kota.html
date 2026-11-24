@@ -102,6 +102,22 @@ tbody tr{cursor:pointer}tbody tr:hover,tbody tr.sel{background:var(--accsoft)}
 details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:700;font-size:13.5px}
 @media(max-width:900px){.main{grid-template-columns:minmax(0,1fr)}.side{border-left:0;border-top:1px solid var(--line);max-height:none}.grid2{grid-template-columns:minmax(0,1fr)}#map{height:60vh}}
 @media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:7em;margin-inline-start:-7.5em;white-space:normal;color:var(--mut);font-size:12px}.stack td:empty{display:none}}
+.side{overflow-x:hidden}
+.filt>summary{font-size:13px;font-weight:800;margin:18px 0 8px;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between}
+.filt>summary::-webkit-details-marker{display:none}
+.filt>summary::after{content:'';width:8px;height:8px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg);margin-right:4px;transition:transform .15s}
+.filt[open]>summary::after{transform:rotate(225deg)}
+.filt>h3:first-of-type,.filt>input{margin-top:0}
+.mleg{background:rgba(255,255,255,.94);border:1px solid var(--line2);border-radius:10px;box-shadow:0 2px 8px rgba(15,23,42,.12);font:500 11.5px/1.25 var(--font);color:var(--ink);max-width:230px}
+.mleg summary{cursor:pointer;font-weight:800;font-size:12px;padding:7px 10px;list-style:none;user-select:none}
+.mleg summary::-webkit-details-marker{display:none}
+.mleg summary::before{content:'▸ ';color:var(--mut)}.mleg[open] summary::before{content:'▾ '}
+.mleg .rows{padding:0 10px 8px;display:grid;gap:4px}
+.mleg .r{display:flex;align-items:center;gap:7px}
+.mleg .r svg{flex:none}
+.leaflet-bottom.leaflet-left .mleg{margin-bottom:20px}
+.mleg hr{border:0;border-top:1px solid var(--line);margin:3px 0}
+@media(max-width:600px){.mleg{max-width:190px;font-size:11px}.leaflet-bottom.leaflet-left .mleg{margin-bottom:24px;margin-left:8px}.leaflet-touch .leaflet-bar a{width:34px;height:34px;line-height:34px}#map{height:62vh;min-height:360px}.leaflet-control-attribution{font-size:9px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').tHead.rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
@@ -118,23 +134,15 @@ details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;f
   <div id="map" role="img" aria-label="Peta trayek kota terpilih"></div>
   <aside class="side">
     <h3>Status per trayek</h3><div class="bar" id="sbar"></div><div class="note" id="slegend" style="margin-top:6px"></div>
-    <h3>Saring</h3>
+    <details class="filt" id="filt" open><summary>Saring trayek</summary>
     <input type="search" id="q" placeholder="Cari kode, terminal, operator…" aria-label="Cari trayek">
     <h3>Status</h3><div class="chk" id="fSt"></div>
     <h3>Moda</h3><div class="chk" id="fMo"></div>
     <h3>Layanan</h3><div class="chk" id="fSc"></div>
     <h3>Skema pembiayaan</h3><div class="chk" id="fBt"></div>
     <h3>Warna garis</h3><select id="cby" aria-label="Warna garis menurut"><option value="mode">Menurut moda</option><option value="bts">Menurut skema BTS</option></select>
-    <h3>Legenda peta</h3>
-    <div class="legend"><div id="legB" hidden></div><div id="legM">
-      <div><svg width="44" height="10"><line x1="0" y1="5" x2="44" y2="5" stroke="var(--rail)" stroke-width="4"/></svg>Rel (KRL, MRT, LRT, KA)</div>
-      <div><svg width="44" height="10"><line x1="0" y1="5" x2="44" y2="5" stroke="var(--bus)" stroke-width="3"/></svg>Bus (BRT, bus kota, BTS)</div>
-      <div><svg width="44" height="10"><line x1="0" y1="5" x2="44" y2="5" stroke="var(--ang)" stroke-width="3"/></svg>Angkot, mikrotrans, feeder</div></div>
-      <div><svg width="44" height="10"><line x1="0" y1="5" x2="44" y2="5" stroke="#8d9893" stroke-width="2.5" stroke-dasharray="7 5"/></svg>Tidak aktif / rencana</div>
-      <div><svg width="44" height="12"><circle cx="9" cy="6" r="4" fill="var(--ang)" stroke="var(--ang)"/><circle cx="33" cy="6" r="4" fill="none" stroke="var(--ang)" stroke-width="1.6"/></svg>Angkot indikatif: titik asal (isi) dan tujuan (kosong)</div>
-      <div><svg width="44" height="10"><rect x="1" y="1" width="42" height="8" fill="rgba(29,78,216,.06)" stroke="#334155" stroke-width="1.4" stroke-dasharray="5 3"/></svg>Batas administrasi kota</div>
-    </div>
-    <p class="note">Ganti peta dasar (terang, OSM, satelit) lewat tombol lapisan di kanan atas peta. Ketebalan: trase OSM/GPKG paling tebal, trase OSRM (perkiraan jalan) lebih tipis. Klik baris angkot indikatif di tabel untuk melihat pasangan titiknya dihubungkan.</p>
+    </details>
+    <p class="note">Legenda ada di kiri bawah peta; ganti peta dasar (abu-abu, OSM, satelit) lewat tombol lapisan di kanan atas. Ketebalan: trase OSM/GPKG paling tebal, trase OSRM (perkiraan jalan) lebih tipis. Klik baris angkot indikatif di tabel untuk melihat pasangan titiknya dihubungkan.</p>
   </aside>
 </section>
 <section class="band">
@@ -228,19 +236,25 @@ function table(){const rs=cityRows().filter(pass);
  $('#tbl tbody').innerHTML=rs.map(r=>`<tr id="r${r.i}" data-i="${r.i}"><td><span class="code">${esc(r.code)}</span>${city==='Semua'?`<div class="sub">${esc(r.city)}</div>`:''}</td><td>${esc(r.system)}<div class="sub">${esc(r.mode)}</div></td><td>${esc(r.o)}${r.d?' – '+esc(r.d):''}</td><td><span class="st s-${esc(r.status.split(' ')[0])}">${esc(r.status)}</span></td><td>${esc(r.reg)}<div class="sub">Operator: ${esc(r.op)}</div></td><td style="min-width:15em"><span class="bt" style="--c:${BCOL[r.bts]}">${esc(r.bts)}</span>${r.btsn?`<div class="sub">${esc(r.btsn)}</div>`:''}</td><td>${esc(r.scope)}</td><td>${GT[r.gt]}${r.km?`<div class="sub">${r.km.toLocaleString('id-ID')} km${r.gt==='line'?' (jarak lurus)':''}</div>`:''}</td><td class="sub">${esc(r.src)}${r.note?'<br>'+esc(r.note):''}</td></tr>`).join('');
  $('#cnt').textContent=`${rs.length} dari ${cityRows().length} trayek ditampilkan. Klik baris untuk memperbesar peta ke trayek tersebut.`;
  $('#tblTitle').textContent='Daftar trayek'+(city==='Semua'?'':' '+city);}
+const BSHORT={'BTS Pemda (eks-BTS Kemenhub)':'BTS Pemda (eks-Kemenhub)','Eks-BTS (layanan berhenti)':'Eks-BTS (sudah berhenti)'};
+const sw=(c,w=3,d='')=>`<svg width="24" height="10"><line x1="1" y1="5" x2="23" y2="5" stroke="${c}" stroke-width="${w}" stroke-linecap="round"${d?` stroke-dasharray="${d}"`:''}/></svg>`;
+function legend(){const el=document.getElementById('mlegRows');if(!el)return;
+ const top=colorBy==='bts'?BTS.map(b=>[sw(BCOL[b]),BSHORT[b]||b]):[[sw(css('--rail'),4),'Rel (KRL, MRT, LRT)'],[sw(css('--bus')),'Bus (BRT, bus kota)'],[sw(css('--ang')),'Angkot, mikrotrans, feeder']];
+ const rest=[[sw('#8d9893',2.5,'5 4'),'Tidak aktif / rencana'],[`<svg width="24" height="10"><circle cx="5" cy="5" r="3.5" fill="${css('--ang')}"/><circle cx="18" cy="5" r="3.5" fill="none" stroke="${css('--ang')}" stroke-width="1.5"/></svg>`,'Angkot indikatif (asal, tujuan)'],[`<svg width="24" height="10"><rect x="1" y="1" width="22" height="8" fill="rgba(29,78,216,.06)" stroke="#334155" stroke-width="1.2" stroke-dasharray="4 2"/></svg>`,'Batas kota']];
+ el.innerHTML=top.map(([a,b])=>`<div class="r">${a}<span>${esc(b)}</span></div>`).join('')+'<hr>'+rest.map(([a,b])=>`<div class="r">${a}<span>${esc(b)}</span></div>`).join('')}
 function render(fit){figs();sys();table();drawMap(fit);if(sel&&!pass(sel))hl.clearLayers()}
 function setCity(c,push){city=c;document.querySelectorAll('#pills button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===c));hl&&hl.clearLayers();sel=null;render(true);
  if(push){try{history.replaceState(null,'','#'+slug(c))}catch(e){location.hash=slug(c)}}}
 (window.__DATA?Promise.resolve(window.__DATA):fetch('data/trayek7kota.json').then(r=>r.json())).then(d=>{D=d;R=d.routes.map((a,i)=>{const o={};d.cols.forEach((k,j)=>o[k]=a[j]);o.i=i;o.g=grp(o.mode);return o});
  $('#pills').innerHTML=[...d.order,'Semua'].map(c=>`<button type="button" data-c="${c}" aria-pressed="false">${c} <span style="opacity:.75">${c==='Semua'?R.length:R.filter(r=>r.city===c).length}</span></button>`).join('');
  $('#pills').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setCity(b.dataset.c,true)});
- chk('#fSt',STATUS,F.st);chk('#fMo',MODES,F.mo);chk('#fSc',SCOPES,F.sc);chk('#fBt',BTS,F.bt);$('#cby').addEventListener('change',e=>{colorBy=e.target.value;$('#legM').hidden=colorBy!=='mode';$('#legB').hidden=colorBy!=='bts';render(false)});$('#legB').innerHTML=BTS.map(b=>`<div><svg width="44" height="10"><line x1="0" y1="5" x2="44" y2="5" stroke="${BCOL[b]}" stroke-width="3"/></svg>${b}</div>`).join('');
+ chk('#fSt',STATUS,F.st);chk('#fMo',MODES,F.mo);chk('#fSc',SCOPES,F.sc);chk('#fBt',BTS,F.bt);$('#cby').addEventListener('change',e=>{colorBy=e.target.value;legend();render(false)});
  $('#q').addEventListener('input',e=>{F.q=e.target.value.trim().toLowerCase();render(false)});
  $('#tbl tbody').addEventListener('click',e=>{const tr=e.target.closest('tr');if(tr){select(R[+tr.dataset.i],true);document.getElementById('map').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'})}});
  $('#copy').addEventListener('click',async()=>{const rs=cityRows().filter(pass);const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
   const t=['kota,sistem,moda,kode,asal,tujuan,status,regulator,operator,skema_BTS,layanan,geometri,panjang_km,sumber,catatan'].concat(rs.map(r=>[r.city,r.system,r.mode,r.code,r.o,r.d,r.status,r.reg,r.op,r.bts,r.scope,GT[r.gt],r.km??'',r.src,r.note].map(q).join(','))).join('\n');
   try{await navigator.clipboard.writeText(t);$('#copy').textContent='Tersalin ('+rs.length+' baris)'}catch(e){$('#copy').textContent='Gagal menyalin'}setTimeout(()=>$('#copy').textContent='Salin CSV (tersaring)',2500)});
- map=L.map('map',{preferCanvas:true,scrollWheelZoom:false,zoomSnap:.25,attributionControl:true});map.attributionControl.setPrefix('');map.attributionControl.addAttribution('Trase: OSM, GPKG Transportasi JKT, OSRM');
+ map=L.map('map',{preferCanvas:true,scrollWheelZoom:true,wheelPxPerZoomLevel:90,zoomSnap:.25,attributionControl:true});map.attributionControl.setPrefix('');map.attributionControl.addAttribution('Trase: OSM, GPKG Transportasi JKT, OSRM');
  map.on('dragstart',()=>moved=true);map.on('zoomstart',e=>{});
  new ResizeObserver(()=>{map.invalidateSize();if(!moved)fitLast()}).observe(document.getElementById('map'));setTimeout(()=>{map.invalidateSize();if(!moved)fitLast()},600);
  const BM={
@@ -249,6 +263,8 @@ function setCity(c,push){city=c;document.querySelectorAll('#pills button').forEa
   'Citra satelit (Esri)':L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri — Esri, Maxar, Earthstar Geographics'}),
   'Tanpa peta dasar':L.layerGroup()};
  BM['Peta dasar abu-abu (Esri)'].addTo(map);L.control.layers(BM,null,{position:'topright'}).addTo(map);
+ const LC=L.control({position:'bottomleft'});LC.onAdd=()=>{const d=L.DomUtil.create('details','mleg');if(innerWidth>600)d.open=true;d.innerHTML='<summary>Legenda</summary><div class="rows" id="mlegRows"></div>';L.DomEvent.disableClickPropagation(d);L.DomEvent.disableScrollPropagation(d);return d};LC.addTo(map);legend();
+ if(innerWidth<=900)$('#filt').open=false;
  bndL=L.layerGroup().addTo(map);layer=L.layerGroup().addTo(map);hl=L.layerGroup().addTo(map);
  const retheme=()=>{for(const k in _cc)delete _cc[k];if(D)render(false)};matchMedia('(prefers-color-scheme: dark)').addEventListener('change',retheme);new MutationObserver(retheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
  const h=location.hash.slice(1);const c0=[...d.order,'Semua'].find(c=>slug(c)===h)||'Jakarta';setCity(c0,false);
