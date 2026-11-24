@@ -244,11 +244,11 @@ function setCity(c,push){city=c;document.querySelectorAll('#pills button').forEa
  map.on('dragstart',()=>moved=true);map.on('zoomstart',e=>{});
  new ResizeObserver(()=>{map.invalidateSize();if(!moved)fitLast()}).observe(document.getElementById('map'));setTimeout(()=>{map.invalidateSize();if(!moved)fitLast()},600);
  const BM={
-  'Peta dasar terang (CARTO)':L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>'}),
+  'Peta dasar abu-abu (Esri)':L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:16,maxZoom:19,attribution:'Basemap © Esri, HERE, Garmin, © OpenStreetMap contributors'}),
   'OpenStreetMap':L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   'Citra satelit (Esri)':L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri — Esri, Maxar, Earthstar Geographics'}),
   'Tanpa peta dasar':L.layerGroup()};
- BM['Peta dasar terang (CARTO)'].addTo(map);L.control.layers(BM,null,{position:'topright'}).addTo(map);
+ BM['Peta dasar abu-abu (Esri)'].addTo(map);L.control.layers(BM,null,{position:'topright'}).addTo(map);
  bndL=L.layerGroup().addTo(map);layer=L.layerGroup().addTo(map);hl=L.layerGroup().addTo(map);
  const retheme=()=>{for(const k in _cc)delete _cc[k];if(D)render(false)};matchMedia('(prefers-color-scheme: dark)').addEventListener('change',retheme);new MutationObserver(retheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
  const h=location.hash.slice(1);const c0=[...d.order,'Semua'].find(c=>slug(c)===h)||'Jakarta';setCity(c0,false);
