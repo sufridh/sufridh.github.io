@@ -47,7 +47,7 @@
       id: "trayek-7-kota",
       file: "trayek7kota.html",
       title: "Trayek Angkutan Umum 7 Kota",
-      sub: "771 transit routes: status, institutions, BTS scheme"
+      sub: "773 transit routes: status, institutions, BTS scheme"
     },
     {
       id: "gaza-food-security",
